@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
 
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html>
 <head runat="server">
     <meta charset="utf-8" />
     <title><%: Page.Title %> - My ASP.NET Application</title>
@@ -50,14 +50,44 @@
             </Scripts>
         </asp:ScriptManager>
         <header>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p class="site-title">
-                        <a runat="server" href="~/">Graphs4Social</a>
-                    </p>
+            <div class="headerAlign">
+                <div class="logo">
+                    <a href="~/" runat="server">Graphs4Social</a>
+                    <div class="headerRight">
+                        <div class="search">
+
+                            <input type="text" id="pesquisarText" class="pesquisarText" value="Pesquisar..." onfocus="if (this.value == 'Pesquisar...') { this.value = '';this.style.color='#000';}" onblur="if (this.value == '') { this.value = 'Pesquisar...';this.style.color='#999';}" />
+
+
+                            <a href="#">
+                                <img src="~/images/search.png" style="vertical-align: middle;" title="Pesquisar" runat="server" /></a>
+                        
+                        </div>
+
+                        <section class="login">
+                                <asp:LoginView ID="LoginView1" runat="server" ViewStateMode="Disabled">
+                                 
+                                    <AnonymousTemplate>
+                                    </AnonymousTemplate>
+
+                                    <LoggedInTemplate>
+                                        <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" Font-Size="Medium"/>
+                                     </LoggedInTemplate>
+
+                                </asp:LoginView>
+                        </section>
+                    </div>
                 </div>
-                <div class="float-right">
-                    <section id="login">
+            </div>
+        </header>
+        <div class="spacing"></div>
+        <div class="container">
+
+            <div class="sidebar1">
+
+                <div class="profile">
+
+                    <section class="login">
                         <asp:LoginView runat="server" ViewStateMode="Disabled">
                             <AnonymousTemplate>
                                 <ul>
@@ -67,37 +97,40 @@
                             </AnonymousTemplate>
                             <LoggedInTemplate>
                                 <p>
-                                    Hello, <a runat="server" class="username" href="~/Account/Manage.aspx" title="Manage your account">
+                                    Hello, <a runat="server" class="username" href="~/Profile/Inicio.aspx" title="Manage your account">
                                         <asp:LoginName runat="server" CssClass="username" />
                                     </a>!
-                                <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" />
+                                
                                 </p>
                             </LoggedInTemplate>
                         </asp:LoginView>
                     </section>
-                    <nav>
-                        <ul id="menu">
-                            <li><a runat="server" href="~/">Home</a></li>
-                            <li><a runat="server" href="~/About.aspx">About</a></li>
-                            <li><a runat="server" href="~/Contact.aspx">Contact</a></li>
+                </div>
+                <asp:LoginView runat="server" ViewStateMode="Disabled">
+                    <LoggedInTemplate>
+                        <ul class="nav">
+                            <li><a href="#" runat="server">Pedidos de Amizade</a></li>
+                            <li><a href="~/Profile/Editar.aspx" runat="server">Editar Perfil</a></li>
+                            <li><a href="~/Account/Manager.aspx" runat="server">Gerir Conta</a></li>
+                            <li><a href="#" runat="server">Download da App 3D</a></li>
                         </ul>
-                    </nav>
-                </div>
+                    </LoggedInTemplate>
+                </asp:LoginView>
+
             </div>
-        </header>
-        <div id="body">
-            <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
-            <section class="content-wrapper main-content clear-fix">
-                <asp:ContentPlaceHolder runat="server" ID="MainContent" />
-            </section>
+            <div class="content">
+                <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
+                <section class="content-wrapper main-content clear-fix">
+                    <asp:ContentPlaceHolder runat="server" ID="MainContent" />
+                </section>
+
+            </div>
         </div>
+
         <footer>
-            <div class="content-wrapper">
-                <div class="float-left">
-                    <p>
-                        &copy; <%: DateTime.Now.Year %> - MyVa
-                    </p>
-                </div>
+            <div class="footer">
+                <hr />
+                <p>Graphs4Social © <%: DateTime.Today.Year %> · Website created by MyVa</p>
             </div>
         </footer>
     </form>

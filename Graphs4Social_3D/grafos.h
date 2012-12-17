@@ -8,8 +8,8 @@
 #define ESTE_OESTE	1
 #define PLANO		2
 
-#define VELOCIDADE_VERTICAL 0.02
-#define VELOCIDADE_HORIZONTAL 0.02
+#define VELOCIDADE_VERTICAL 2
+#define VELOCIDADE_HORIZONTAL 2
 #define DIMEMSAO_CAMARA 4
 
 typedef struct No{

@@ -88,6 +88,7 @@ typedef struct Estado{
 	GLdouble	eixo[3];
 	teclas_t    teclas;
 	GLint       timer;
+	GLint		k;
 }Estado;
 
 typedef struct Modelo {
@@ -111,7 +112,7 @@ void initEstado(){
 	estado.camera.dir_lat=M_PI/4;
 	estado.camera.dir_long=-M_PI/4;
 	estado.camera.fov=60;
-	estado.camera.dist=0.4;
+	estado.camera.dist=2;
 	estado.eixo[0]=0;
 	estado.eixo[1]=0;
 	estado.eixo[2]=0;
@@ -121,6 +122,9 @@ void initEstado(){
 	estado.light=GL_FALSE;
 	estado.apresentaNormais=GL_FALSE;
 	estado.lightViewer=2;
+	estado.k = 1;
+	estado.camera.velh = VELOCIDADE_HORIZONTAL;
+	estado.camera.velv = VELOCIDADE_VERTICAL;
 }
 
 void initModelo(){
@@ -687,6 +691,9 @@ int colisao(){
 	double zmin = 10.0;
 	GLuint buffer[100], *ptr;
 	GLfloat vel = estado.camera.velh + estado.camera.velv;
+	GLdouble newx, newy, newz;
+	GLint vp[4];
+	GLdouble proj[16], mv[16];
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
@@ -696,7 +703,6 @@ int colisao(){
 	glLoadIdentity();
 	glOrtho( -DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0,
 		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + vel);
-	//setProjection(x,y,GL_TRUE);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -704,7 +710,6 @@ int colisao(){
 	glRotatef(graus(M_PI / 2.0 - estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
 
-	//desenhaEixos();
 	desenhaLabirinto();
 
 	n = glRenderMode(GL_RENDER);
@@ -718,12 +723,27 @@ int colisao(){
 				objid = ptr[3];
 			}
 			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
+			glGetIntegerv(GL_VIEWPORT, vp);
+			glGetDoublev(GL_PROJECTION_MATRIX, proj);
+			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+			
+			gluUnProject(10, glutGet(GLUT_WINDOW_HEIGHT) - 10, (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+	
+			GLfloat d = sqrt(pow(newx- estado.camera.center[0],2) + pow(newy-estado.camera.center[1],2) + pow(newz - estado.camera.center[2],2));
+			
+			float limit = std::numeric_limits<float>::infinity();
+			
+			k = (d - DIMEMSAO_CAMARA/2.0 - limit) / vel;
 		}
+	}
+	else{
+		estado.k = 1;
 	}
 
 	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+
 	return objid;
 }
 
@@ -733,20 +753,25 @@ void Timer(int value)
 	GLboolean andar=GL_FALSE;
 
 	GLuint curr = glutGet(GLUT_ELAPSED_TIME);
-	// calcula velocidade baseado no tempo passado
-	//float velocidade= modelo.objecto.vel*(curr - modelo.prev )*0.001;
+	GLfloat vel = estado.camera.velh + estado.camera.velv;
+	No *noi,*nof;
+	Arco arco = arcos[0];
+	noi=&nos[arco.noi];
+	nof=&nos[arco.nof];
+	GLfloat d = 0;
+
+	double zmin = 0;
 
 	glutTimerFunc(estado.timer, Timer, 0);
-	/*modelo.prev = curr;*/
 
 	if(estado.teclas.up){
 		estado.eixoTranslaccao=colisao();
 		if(estado.eixoTranslaccao)
 		{
 		}else{
-			estado.camera.center[0]=estado.camera.center[0]+cos(estado.camera.dir_long);
-			estado.camera.center[1]=estado.camera.center[1]+sin(estado.camera.dir_long);
-			estado.camera.center[2]=estado.camera.center[2];
+			estado.camera.center[0] = estado.camera.center[0] + estado.k*estado.camera.velh *cos(estado.camera.dir_long);
+			estado.camera.center[1] = estado.camera.center[1] + estado.k*estado.camera.velh*sin(estado.camera.dir_long);
+			estado.camera.center[2] = estado.camera.center[2];
 		}
 	}
 
@@ -755,8 +780,8 @@ void Timer(int value)
 		if(estado.eixoTranslaccao)
 		{
 		}else{
-			estado.camera.center[0]=estado.camera.center[0]-cos(estado.camera.dir_long);
-			estado.camera.center[1]=estado.camera.center[1]-sin(estado.camera.dir_long);
+			estado.camera.center[0]=estado.camera.center[0]- estado.k*estado.camera.velh *cos(estado.camera.dir_long);
+			estado.camera.center[1]=estado.camera.center[1]- estado.k*estado.camera.velh *sin(estado.camera.dir_long);
 			estado.camera.center[2]=estado.camera.center[2];
 		}
 	}
@@ -837,13 +862,23 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	case 'q':
 	case 'Q':
-		estado.camera.center[2]++;
+		estado.eixoTranslaccao=colisao();
+		if(estado.eixoTranslaccao)
+		{
+		}else{
+			estado.camera.center[2]++;
+		}
 		glutPostRedisplay();
 		break;
 	case 'a':
 	case 'A':
-		if(estado.camera.center[2]>=2){
-			estado.camera.center[2]--;
+		estado.eixoTranslaccao=colisao();
+		if(estado.eixoTranslaccao)
+		{
+		}else{
+			if(estado.camera.center[2]>=2){
+				estado.camera.center[2]--;
+			}
 		}
 		glutPostRedisplay();
 		break;

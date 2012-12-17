@@ -1,0 +1,8 @@
+﻿  lapr5.cpp
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(416): warning C4101: 'larguraNorte' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(418): warning C4101: 'nof' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(416): warning C4101: 'larguraEste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(416): warning C4101: 'larguraOeste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(416): warning C4101: 'larguraSul' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(892): warning C4101: 'objid' : unreferenced local variable
+  Lapr5.vcxproj -> C:\Users\leniker\Desktop\LAPR V\Graphs4Social_3D\Debug\Lapr5.exe

@@ -6,7 +6,7 @@ user(mario).
 user(tiago).
 %lig(user1,user2,forca1para2,forca2para1,[tags1para2],[tags2para1])
 
-tag(porto,[bruno,pedro,catia]).
+tag(porto,[bruno,pedro,catia,hugo]).
 tag(chelsea,[bruno]).
 
 lig(pedro,bruno,5,[amigo]).
@@ -34,34 +34,71 @@ ligacoes(U,L):-findall(X,ligado(U,X),L).
 %tamanho(User,Resposta) nivel 2
 tamanho2(U,R):-findall(U,ligado(U,_),L),length(L,R).
 
-%tamanho(User,Resposta) nivel 3
-tamanho3(U,R):-ligacoes(U,L),percorre(U,L,R).
+tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 
+redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
-percorre(U,L,R):-append([U],L,V),percorre(L,V,0,R).
+percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
-%percorre(Amigo a verificar|restantes,Já verificados,Somatório,resposta
-percorre([A|L],V,S,R):-somaRede(A,V,S,RS,RV),percorre(L,RV,RS,R).
-percorre([],_,S,S).
+%percorre(Amigo a verificar|restantes,JÃ¡ verificados,resposta
+percorre([A|L],V,R):-somaRede(A,V,RV,RX),percorre(L,RV,RS),append(RX,RS,R).
+percorre([],_,[]).
 
-somaRede(A,V,S,RS,RV):-ligacoes(A,TL),somaL(TL,V,RSL,RV),RS is S + 1 + RSL.
+somaRede(A,V,RV,[A|RX]):-ligacoes(A,TL),somaL(TL,V,RV,RX).
 
-somaL([],V,0,V).
-somaL([LA|LB],V,RS,RV):-member(LA,V),!,somaL(LB,V,RS,RV).
-somaL([LA|LB],V,RS,RV):-append([LA],V,TV),somaL(LB,TV,TS,RV),RS is TS+1.
+somaL([],V,V,[]).
+somaL([LA|LB],V,RV,RX):-member(LA,V),!,somaL(LB,V,RV,RX).
+somaL([LA|LB],V,RV,[LA|RS]):-append([LA],V,XV),somaL(LB,XV,RV,RS).
 
+
+%obter amigos por tags
+%User, Lista Tags, Amigos
+amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).
+
+traduz(T,T).
+%ligacoes,tags
+filtraAmigos([LA|LB],T,[LA|RX]):-verificaTags(LA,T),!,filtraAmigos(LB,T,RX).
+filtraAmigos([_|LB],T,R):-filtraAmigos(LB,T,R).
+filtraAmigos([],_,[]).
+
+
+verificaTags(U,[TA|TB]):-tag(TA,L),member(U,L),verificaTags(U,TB).
+verificaTags(_,[]).
+
+
+%sugereAmigos
+sugereAmigos(U,R):-redeNivel3(U,L),filtraNaoLigacoes(U,L,F),deletelist(L,F,LF),criaSugestao(U,LF,R),!.
+
+filtraNaoLigacoes(U,[LA|LB],[LA|R]):-ligado(U,LA),!,filtraNaoLigacoes(U,LB,R).
+filtraNaoLigacoes(U,[_|LB],R):-filtraNaoLigacoes(U,LB,R).
+filtraNaoLigacoes(_,[],[]).
+
+
+criaSugestao(U,[FA|FB],[FA|R]):-findall(X,tag(X,_),LT),semelhante(U,FA,LT),!,criaSugestao(U,FB,R).
+criaSugestao(U,[_|FB],R):-criaSugestao(U,FB,R).
+criaSugestao(_,[],[]).
+
+%LT = lista Tags
+semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT).
+semelhante(_,_,[]):-fail.
+semelhante(_,_,[_|_]).
+
+cl(L, R) :-
+        call(L, 0 , R).
+
+% 1 - Terminating condition
+call([], Count, Count).
+
+% 2 - Recursive rule
+call([H|T], Count, R) :-
+        Count1 is Count + 1,
+        call(T, Count1, R).
 
 
 add(X,[],[X]).
 add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
-
-
-
-
-
-
 
 run1 :-
 	member(X, [abc,def,ghi,jkl]),
@@ -72,4 +109,7 @@ run2 :-
 	read(X) <~ Input,
 	member(X, [abc,def,ghi,jkl]).
 	
-	
+
+deletelist([], _, []).                  
+deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
+deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).

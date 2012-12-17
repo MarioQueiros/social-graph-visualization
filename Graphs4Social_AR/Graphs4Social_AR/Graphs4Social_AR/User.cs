@@ -136,12 +136,12 @@ namespace Graphs4Social_AR
         // Load da tabela User através do Unique Identifier
         public static User LoadByUniqueIdentifier(string uniqueIdentifier)
         {
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserId='" + uniqueIdentifier + "'");
+            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Users WHERE UserId='" + uniqueIdentifier + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE UserId='" + uniqueIdentifier + "' AND ELIMINADO ='" + 0 + "'");
+                DataSet dt = ExecuteQuery(GetConnection(true), "SELECT * FROM UserLigado WHERE UserId='" + uniqueIdentifier + "' AND ELIMINADO ='" + 0 + "'");
                 if (dt.Tables[0].Rows.Count < 1)
                 {
                     return new User(ds.Tables[0].Rows[0], null);
@@ -156,7 +156,7 @@ namespace Graphs4Social_AR
         // Load da tabela UserLigado através do Id da respectiva tabela
         public static User LoadByUserLigadoId(int idUserLigado)
         {
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE ID_ULIG='" + idUserLigado + "' AND ELIMINADO ='" + 0 + "'");
+            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM UserLigado WHERE ID_ULIG='" + idUserLigado + "' AND ELIMINADO ='" + 0 + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
@@ -169,12 +169,12 @@ namespace Graphs4Social_AR
         // Load de um User através do Username
         public static User LoadByUserName(string username)
         {
-            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Users WHERE UserName ='" + username + "'");
+            DataSet ds = ExecuteQuery("SELECT * FROM Users WHERE UserName ='" + username + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery(GetConnection(true), "SELECT * FROM UserLigado WHERE UserId='" + ds.Tables[0].Rows[0]["UserId"] + "' AND ELIMINADO ='" + 0 + "'");
+                DataSet dt = ExecuteQuery("SELECT * FROM UserLigado WHERE UserId='" + ds.Tables[0].Rows[0]["UserId"] + "' AND ELIMINADO ='" + 0 + "'");
                 if (dt.Tables[0].Rows.Count < 1)
                 {
                         return new User(ds.Tables[0].Rows[0], null);
@@ -187,9 +187,10 @@ namespace Graphs4Social_AR
             }
         }
 
+        //Load dos amigos do Username
         public static IList<User> LoadAllAmigosUser(string username)
         {
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
+            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Ligacao WHERE UserId ='"
                 + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
                 + 1 +"'");
 
@@ -217,9 +218,10 @@ namespace Graphs4Social_AR
             return amigos;
         }
 
+        //Load dos pedidos de amizade do Username
         public static IList<User> LoadAllPedidosUser(string username)
         {
-            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Ligacao WHERE UserId ='"
+            DataSet ds = ExecuteQuery("SELECT * FROM Ligacao WHERE UserId ='"
                 + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='0' AND ESTADO ='0'");
 
             IList<Ligacao> lista = new List<Ligacao>();
@@ -277,14 +279,14 @@ namespace Graphs4Social_AR
             if (novaEntrada)
             {
 
-                sql.CommandText = "INSERT INTO UserLigado SET (UserId,ELIMINADO) VALUES (@UserId,@ELIMINADO)";
+                sql.CommandText = "INSERT INTO UserLigado (UserId,ELIMINADO) VALUES (@UserId,@ELIMINADO)";
 
                 sql.Transaction = CurrentTransaction;
 
                 IDataParameter param = sql.Parameters.Add("@UserId", SqlDbType.UniqueIdentifier);
                 param.Value = new Guid(UniqueIdentifierUserId);
 
-                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.UniqueIdentifier);
+                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                 param.Value = 0;
 
                 int rowsAfectadas = ExecuteTransactedNonQuery(sql);

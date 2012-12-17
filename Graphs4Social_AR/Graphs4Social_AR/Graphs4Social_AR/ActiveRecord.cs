@@ -29,7 +29,7 @@ namespace Graphs4Social_AR
         }
 
 
-        private const string _CONNSTR = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\Users\MpApQ\Desktop\Dropbox\LAPR5\Website\App_Data\aspnet-Website-20121211100326.mdf;Integrated Security=True";
+        private const string _CONNSTR = @"workstation id=Graphs4Social.mssql.somee.com;packet size=4096;user id=MpApQ_SQLLogin_1;pwd=e1i75j78ls;data source=Graphs4Social.mssql.somee.com;persist security info=False;initial catalog=Graphs4Social";
 
         private static string CONNSTR
         {
@@ -93,7 +93,7 @@ namespace Graphs4Social_AR
         {
             try
             {
-                if (myCnx == null)
+                //if (myCnx == null)
                     myCnx = GetConnection(false);
 
                 SqlDataAdapter da = new SqlDataAdapter(sql, myCnx);

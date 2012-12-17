@@ -1,0 +1,138 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
+
+<!DOCTYPE HTML>
+<html>
+<head runat="server">
+    <meta charset="utf-8" />
+    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/resources/demos/style.css" />
+    <script>
+        $(function () {
+            $(".DatepickerInput").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1850:2000',
+                inline: true
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--Framework scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="jquery.ui.combined" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+        <header>
+            <div class="headerAlign">
+                <div class="logo">
+                    <a href="~/" runat="server">Graphs4Social</a>
+                    <div class="headerRight">
+                        <div class="search">
+
+                            <input type="text" id="pesquisarText" class="pesquisarText" value="Pesquisar..." onfocus="if (this.value == 'Pesquisar...') { this.value = '';this.style.color='#000';}" onblur="if (this.value == '') { this.value = 'Pesquisar...';this.style.color='#999';}" />
+
+
+                            <a href="#">
+                                <img src="~/images/search.png" style="vertical-align: middle;" title="Pesquisar" runat="server" /></a>
+                        
+                        </div>
+
+                        <section class="login">
+                                <asp:LoginView ID="LoginView1" runat="server" ViewStateMode="Disabled">
+                                 
+                                    <AnonymousTemplate>
+                                    </AnonymousTemplate>
+
+                                    <LoggedInTemplate>
+                                        <asp:LoginStatus ID="LoginStatus1" runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" Font-Size="Medium"/>
+                                     </LoggedInTemplate>
+
+                                </asp:LoginView>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="spacing"></div>
+        <div class="container">
+
+            <div class="sidebar1">
+
+                <div class="profile">
+
+                    <section class="login">
+                        <asp:LoginView runat="server" ViewStateMode="Disabled">
+                            <AnonymousTemplate>
+                                <ul>
+                                    <li><a id="registerLink" runat="server" href="~/Account/Register.aspx">Register</a></li>
+                                    <li><a id="loginLink" runat="server" href="~/Account/Login.aspx">Log in</a></li>
+                                </ul>
+                            </AnonymousTemplate>
+                            <LoggedInTemplate>
+                                <p>
+                                    Hello, <a runat="server" class="username" href="~/Profile/Inicio.aspx" title="Manage your account">
+                                        <asp:LoginName runat="server" CssClass="username" />
+                                    </a>!
+                                
+                                </p>
+                            </LoggedInTemplate>
+                        </asp:LoginView>
+                    </section>
+                </div>
+                <asp:LoginView runat="server" ViewStateMode="Disabled">
+                    <LoggedInTemplate>
+                        <ul class="nav">
+                            <li><a href="#" runat="server">Pedidos de Amizade</a></li>
+                            <li><a href="~/Profile/Editar.aspx" runat="server">Editar Perfil</a></li>
+                            <li><a href="~/Account/Manage.aspx" runat="server">Gerir Conta</a></li>
+                            <li><a href="#" runat="server">Download da App 3D</a></li>
+                        </ul>
+                    </LoggedInTemplate>
+                </asp:LoginView>
+
+            </div>
+            <div class="content">
+                <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
+                <section class="content-wrapper main-content clear-fix">
+                    <asp:ContentPlaceHolder runat="server" ID="MainContent" />
+                </section>
+
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer">
+                <hr />
+                <p>Graphs4Social © <%: DateTime.Today.Year %> · Website created by MyVa</p>
+            </div>
+        </footer>
+    </form>
+</body>
+</html>

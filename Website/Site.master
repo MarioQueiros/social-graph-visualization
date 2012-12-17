@@ -111,7 +111,7 @@
                         <ul class="nav">
                             <li><a href="#" runat="server">Pedidos de Amizade</a></li>
                             <li><a href="~/Profile/Editar.aspx" runat="server">Editar Perfil</a></li>
-                            <li><a href="~/Account/Manager.aspx" runat="server">Gerir Conta</a></li>
+                            <li><a href="~/Account/Manage.aspx" runat="server">Gerir Conta</a></li>
                             <li><a href="#" runat="server">Download da App 3D</a></li>
                         </ul>
                     </LoggedInTemplate>

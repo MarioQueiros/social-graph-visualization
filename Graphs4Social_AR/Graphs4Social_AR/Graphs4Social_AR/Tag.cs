@@ -418,7 +418,7 @@ namespace Graphs4Social_AR
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
-                    param.Value = NOME;
+                    param.Value = Nome;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;
@@ -487,7 +487,71 @@ namespace Graphs4Social_AR
         public bool Delete()
         {
 
+            SqlCommand sql = new SqlCommand();
 
+            if (Relacao)
+            {
+                BeginTransaction();
+
+                sql.CommandText = "UPDATE FROM TagRelacao SET ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
+                param.Value = ID;
+
+                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
+                param.Value = 1;
+
+                Eliminado = true;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+                CommitTransaction();
+
+                // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+
+                if (rowsAfectadas == 0)
+                {
+
+                    return false;
+
+                }
+
+            }
+            else
+            {
+
+                BeginTransaction();
+
+                sql.CommandText = "UPDATE FROM Tag SET ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = ID;
+
+                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
+                param.Value = 1;
+
+                Eliminado = true;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+                CommitTransaction();
+
+                // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+
+                if (rowsAfectadas == 0)
+                {
+
+                    return false;
+
+                }
+
+            }
+
+            return true;
         }
 
     }

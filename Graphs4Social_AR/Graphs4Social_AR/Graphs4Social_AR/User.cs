@@ -190,7 +190,8 @@ namespace Graphs4Social_AR
         public static IList<User> LoadAllAmigosUser(string username)
         {
             DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
-                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "'");
+                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
+                + 1 +"'");
 
             IList<Ligacao> lista = new List<Ligacao>();
 
@@ -204,6 +205,36 @@ namespace Graphs4Social_AR
                     lista.Add(ligacao);
 
                     idLigacao = (int)row["ID_LIG"];
+            }
+
+            IList<User> amigos = new List<User>();
+
+            foreach (Ligacao lig in lista)
+            {
+                amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
+            }
+
+            return amigos;
+        }
+
+        public static IList<User> LoadAllPedidosUser(string username)
+        {
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
+                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
+                + 0 + "'");
+
+            IList<Ligacao> lista = new List<Ligacao>();
+
+            Ligacao ligacao = null;
+            int idLigacao = -1;
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+
+                ligacao = new Ligacao(row);
+                lista.Add(ligacao);
+
+                idLigacao = (int)row["ID_LIG"];
             }
 
             IList<User> amigos = new List<User>();

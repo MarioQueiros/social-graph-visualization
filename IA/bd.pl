@@ -67,7 +67,7 @@ verificaTags(_,[]).
 
 
 %sugereAmigos
-sugereAmigos(U,R):-redeNivel3(U,L),filtraNaoLigacoes(L,F),criaSugestao(U,F,LT,R).
+sugereAmigos(U,R):-redeNivel3(U,L),filtraNaoLigacoes(U,L,F),deletelist(L,F,LF),criaSugestao(U,LF,R),!.
 
 filtraNaoLigacoes(U,[LA|LB],[LA|R]):-ligado(U,LA),!,filtraNaoLigacoes(U,LB,R).
 filtraNaoLigacoes(U,[_|LB],R):-filtraNaoLigacoes(U,LB,R).
@@ -79,7 +79,7 @@ criaSugestao(U,[_|FB],R):-criaSugestao(U,FB,R).
 criaSugestao(_,[],[]).
 
 %LT = lista Tags
-semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT,R).
+semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT).
 semelhante(_,_,[]):-fail.
 semelhante(_,_,[_|_]).
 
@@ -100,8 +100,6 @@ add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
 
-
-
 run1 :-
 	member(X, [abc,def,ghi,jkl]),
 	write(X).
@@ -111,3 +109,7 @@ run2 :-
 	read(X) <~ Input,
 	member(X, [abc,def,ghi,jkl]).
 	
+
+deletelist([], _, []).                  
+deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
+deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).

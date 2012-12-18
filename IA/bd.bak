@@ -51,6 +51,18 @@ somaL([LA|LB],V,RS,RV):-member(LA,V),!,somaL(LB,V,RS,RV).
 somaL([LA|LB],V,RS,RV):-append([LA],V,TV),somaL(LB,TV,TS,RV),RS is TS+1.
 
 
+%obter amigos por tags
+%User, Lista Tags, Amigos
+%amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).		!!!!!!!!!!!!!!!!
+amigosTag(U,T,R):-ligacoes(U,L),filtraAmigos(L,T,R).
+%ligacoes,tags
+filtraAmigos([LA|LB],T,[R|RX]):-verificaTags(LA,T), R is LA, verificaTags(LB,T,RX).
+filtraAmigos([LA|LB],T,R):-filtraAmigos(LB,T,R).
+filtraAmigos([],_,[]).
+
+
+verificaTags(U,[TA|TB]):-tag(TA,L),member(U,L),verificaTags(U,TB).
+verificaTags(U,[]).
 
 add(X,[],[X]).
 add(X,[A|L],[A|L1]):- add(X,L,L1).

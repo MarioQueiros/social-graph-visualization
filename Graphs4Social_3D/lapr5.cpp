@@ -119,9 +119,9 @@ void initEstado(){
 	estado.eixo[0]=0;
 	estado.eixo[1]=0;
 	estado.eixo[2]=0;
-	estado.camera.center[0]=-90;
+	estado.camera.center[0]=-130;
 	estado.camera.center[1]=0;
-	estado.camera.center[2]=90;
+	estado.camera.center[2]=90;//86;
 	estado.light=GL_FALSE;
 	estado.apresentaNormais=GL_FALSE;
 	estado.lightViewer=2;
@@ -402,7 +402,7 @@ void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio){
 	GLfloat valAng=0;
 	GLint n=32;
 	GLfloat nAng=2*M_PI/n;
-	material(brass);
+	material(red_plastic);
 
 	glPushMatrix();
 	glNormal3f(0,0,1);
@@ -725,7 +725,7 @@ void setProjection(int x, int y, GLboolean picking){
 	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
 }
 
-int colisao(){
+int colisaoLivre(){
 	int i, n, objid=0;
 	double zmin = 10.0;
 	GLuint buffer[100], *ptr;
@@ -741,7 +741,7 @@ int colisao(){
 	glPushMatrix(); // guarda a projecção
 	glLoadIdentity();
 	glOrtho( -DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0,
-		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + vel);
+		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + vel*4);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -786,37 +786,105 @@ int colisao(){
 	return objid;
 }
 
+int colisaoRasante(){
+	int i, n, objid=0;
+	double zmin = 10.0, zmax = 10.0;;
+	GLuint buffer[100], *ptr;
+	GLfloat vel = estado.camera.velh + estado.camera.velv;
+	GLdouble newx, newy, newz;
+	GLint vp[4];
+	GLdouble proj[16], mv[16];
+	glSelectBuffer(100, buffer);
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	GLint farP = 0, nearP = 0; 
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix(); // guarda a projecção
+	glLoadIdentity();
+	glOrtho(estado.camera.center[0] - estado.camera.velh, estado.camera.center[0] + estado.camera.velh, 
+		estado.camera.center[1] - estado.camera.velh, estado.camera.center[1] + estado.camera.velh, nearP, farP);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	desenhaLabirinto();
+
+	n = glRenderMode(GL_RENDER);
+	if (n > 0)
+	{
+		ptr = buffer;
+		for (i = 0; i < n; i++)
+		{
+			if (zmin > (double) ptr[1] / UINT_MAX) {
+				zmin = (double) ptr[1] / UINT_MAX;
+				objid = ptr[3];
+			}
+
+			if (zmax < (double) ptr[1] / UINT_MAX) {
+				zmax = (double) ptr[1] / UINT_MAX;
+			}
+			glGetIntegerv(GL_VIEWPORT, vp);
+			glGetDoublev(GL_PROJECTION_MATRIX, proj);
+			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+
+			gluUnProject(estado.camera.center[0], glutGet(GLUT_WINDOW_HEIGHT) - estado.camera.center[2], (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
+		}
+	}
+
+	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	return objid;
+}
+
 void Timer(int value)
 {
-	GLfloat nx=0,nz=0;
-	GLboolean andar=GL_FALSE;
-
 	GLuint curr = glutGet(GLUT_ELAPSED_TIME);
 	GLfloat vel = estado.camera.velh + estado.camera.velv;
 
 	glutTimerFunc(estado.timer, Timer, 0);
-
+	// ir p/ frente
 	if(estado.teclas.up){
-		// ir p/ frente
-		estado.eixoTranslaccao=colisao();
-		if(estado.eixoTranslaccao)
+		// se voo livre
+		if(!estado.vooRasante)
 		{
+			estado.eixoTranslaccao=colisaoLivre();
+			if(!estado.eixoTranslaccao){
+				estado.camera.center[0] = estado.camera.center[0] + estado.k*estado.camera.velh * cos(estado.camera.dir_long);
+				estado.camera.center[1] = estado.camera.center[1] + estado.k*estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.center[2] = estado.camera.center[2];
+			}
 		}else{
-			estado.camera.center[0] = estado.camera.center[0] + estado.k*estado.camera.velh *cos(estado.camera.dir_long);
-			estado.camera.center[1] = estado.camera.center[1] + estado.k*estado.camera.velh*sin(estado.camera.dir_long);
-			estado.camera.center[2] = estado.camera.center[2];
+			// se voo rasante
+			estado.eixoTranslaccao=colisaoRasante();
+			if(estado.eixoTranslaccao!=0)
+			{
+				estado.camera.center[0] = estado.camera.center[0] + estado.camera.velh * cos(estado.camera.dir_long);
+				estado.camera.center[1] = estado.camera.center[1] + estado.camera.velh * sin(estado.camera.dir_long);
+			}
 		}
 	}
-
+	// ir p/ tras
 	if(estado.teclas.down){
-		// ir p/ tras
-		estado.eixoTranslaccao=colisao();
-		if(estado.eixoTranslaccao)
-		{
+		// se voo livre
+		if(!estado.vooRasante){
+			estado.eixoTranslaccao=colisaoLivre();
+			if(!estado.eixoTranslaccao)
+			{
+				estado.camera.center[0]=estado.camera.center[0]- estado.k*estado.camera.velh * cos(estado.camera.dir_long);
+				estado.camera.center[1]=estado.camera.center[1]- estado.k*estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.center[2]=estado.camera.center[2];
+			}
 		}else{
-			estado.camera.center[0]=estado.camera.center[0]- estado.k*estado.camera.velh *cos(estado.camera.dir_long);
-			estado.camera.center[1]=estado.camera.center[1]- estado.k*estado.camera.velh *sin(estado.camera.dir_long);
-			estado.camera.center[2]=estado.camera.center[2];
+			// se voo rasante
+			estado.eixoTranslaccao=colisaoRasante();
+			if(estado.eixoTranslaccao!=0)
+			{
+				estado.camera.center[0] = estado.camera.center[0] - estado.camera.velh * cos(estado.camera.dir_long);
+				estado.camera.center[1] = estado.camera.center[1] - estado.camera.velh * sin(estado.camera.dir_long);
+			}
 		}
 	}
 
@@ -832,7 +900,7 @@ void Timer(int value)
 	if(!estado.vooRasante){
 		if(estado.teclas.q){
 			// subir camara
-			estado.eixoTranslaccao=colisao();
+			estado.eixoTranslaccao=colisaoLivre();
 			if(estado.eixoTranslaccao)
 			{
 			}else{
@@ -842,7 +910,7 @@ void Timer(int value)
 
 		if(estado.teclas.a){
 			// descer camara
-			estado.eixoTranslaccao=colisao();
+			estado.eixoTranslaccao=colisaoLivre();
 			if(estado.eixoTranslaccao)
 			{
 			}else{
@@ -910,6 +978,7 @@ void keyboard(unsigned char key, int x, int y)
 	case 'R':
 		if(!estado.vooRasante){
 			initEstado();
+			estado.camera.center[2]=86;
 			initModelo();
 			estado.vooRasante = GL_TRUE;
 		}
@@ -1143,50 +1212,6 @@ int picking(int x, int y){
 	return objid;
 }
 
-/*detecta Colisao*/
-void detectaColisao(){
-	GLfloat vel = estado.camera.velh +estado.camera.velv;
-	GLfloat d = 0;
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-DIMEMSAO_CAMARA/2.0, DIMEMSAO_CAMARA/2.0, -DIMEMSAO_CAMARA/2.0, DIMEMSAO_CAMARA/2.0, 0.0, DIMEMSAO_CAMARA/2.0 + vel);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glRotatef(-M_PI/2.0 -atan2(estado.camera.velh,estado.camera.velv),1,0,0);
-	glRotatef(M_PI/2.0 -estado.camera.dir_long,0,0,1);
-	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
-
-	No *noi,*nof;
-	Arco arco = arcos[0];
-	noi=&nos[arco.noi];
-	nof=&nos[arco.nof];
-
-	int pos = 0;
-
-	if(pos!=0){
-		GLfloat x = (estado.camera.center[0]-cos(estado.camera.dir_long)-noi->x)*cos(graus(atan2(nof->y-noi->y,nof->x-noi->x)))
-			+(estado.camera.center[1]-sin(estado.camera.dir_long)-noi->y)*sin(graus(atan2(nof->y-noi->y,nof->x-noi->x)));
-
-		GLfloat y = (estado.camera.center[1]-sin(estado.camera.dir_long)-noi->x)*cos(graus(atan2(nof->y-noi->y,nof->x-noi->x)))
-			-(estado.camera.center[0]-cos(estado.camera.dir_long)-noi->y)*sin(graus(atan2(nof->y-noi->y,nof->x-noi->x)));
-
-		d = sqrt(pow(x-estado.camera.center[0],2) + pow(y-estado.camera.center[1],2) + pow(estado.camera.center[2],2));
-
-		k = (d - DIMEMSAO_CAMARA/2.0) / vel;
-
-		estado.camera.center[0]=estado.camera.center[0]+cos(estado.camera.dir_long);
-		estado.camera.center[1]=estado.camera.center[1]+sin(estado.camera.dir_long);
-		estado.camera.center[2]=estado.camera.center[2];
-	}else{
-		k = 1;
-		estado.camera.center[0]=estado.camera.center[0]+cos(estado.camera.dir_long);
-		estado.camera.center[1]=estado.camera.center[1]+sin(estado.camera.dir_long);
-		estado.camera.center[2]=estado.camera.center[2];
-	}
-}
-
 void mouse(int btn, int state, int x, int y){
 	switch(btn) {
 	case GLUT_RIGHT_BUTTON :
@@ -1226,13 +1251,6 @@ void mouse(int btn, int state, int x, int y){
 	}
 }
 
-void MousePosition(int x, int y)
-{
-	int mouse_x = x;
-	int mouse_y = y;
-	cout << "\nX: " << mouse_x << " Y:" << mouse_y << endl;
-}
-
 void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -1246,7 +1264,6 @@ void main(int argc, char **argv)
 	glutKeyboardUpFunc(keyboardUp);
 	glutSpecialFunc(Special);
 	glutSpecialUpFunc(SpecialKeyUp);
-	glutPassiveMotionFunc(MousePosition);
 	glutMouseFunc(mouse);
 	myInit();
 

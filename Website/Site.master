@@ -86,9 +86,8 @@
             <div class="sidebar1">
 
                 <div class="profile">
-
                     <section class="login">
-                        <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <asp:LoginView ID="loginView" runat="server" ViewStateMode="Disabled">
                             <AnonymousTemplate>
                                 <ul>
                                     <li><a id="registerLink" runat="server" href="~/Account/Register.aspx">Register</a></li>
@@ -97,8 +96,8 @@
                             </AnonymousTemplate>
                             <LoggedInTemplate>
                                 <p>
-                                    Hello, <a runat="server" class="username" href="~/Profile/Inicio.aspx" title="Manage your account">
-                                        <asp:LoginName runat="server" CssClass="username" />
+                                    Hello, <a runat="server" id="linkProfile" class="username" href="~/Profile/Inicio.aspx" title="Manage your account">
+                                        <asp:LoginName runat="server" CssClass="username"/>
                                     </a>!
                                 
                                 </p>
@@ -106,11 +105,11 @@
                         </asp:LoginView>
                     </section>
                 </div>
-                <asp:LoginView runat="server" ViewStateMode="Disabled">
+                <asp:LoginView ID="loginView2" runat="server" ViewStateMode="Disabled">
                     <LoggedInTemplate>
                         <ul class="nav">
                             <li><a href="#" runat="server">Pedidos de Amizade</a></li>
-                            <li><a href="~/Profile/Editar.aspx" runat="server">Editar Perfil</a></li>
+                            <li><a href="~/Profile/Editar.aspx" id="editar" runat="server">Editar Perfil</a></li>
                             <li><a href="~/Account/Manage.aspx" runat="server">Gerir Conta</a></li>
                             <li><a href="#" runat="server">Download da App 3D</a></li>
                         </ul>

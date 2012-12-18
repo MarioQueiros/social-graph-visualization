@@ -33,7 +33,6 @@ public partial class Profile_Editar : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-
             fillSexo();
             if (!(Profile.Sexo == null || Profile.Sexo.Equals("")))
             {

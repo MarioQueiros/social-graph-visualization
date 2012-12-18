@@ -12,16 +12,14 @@ public partial class Profile_Inicio : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            if (Request.QueryString["user"] != null)
-            {
-                //Profile de outro user
+            string username = Request.QueryString["user"];
 
-            }
-            else
-            {
-                //Profile do proprio user
+            IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(username);
 
-            }
+            
+
+
+
         }
     }
 }

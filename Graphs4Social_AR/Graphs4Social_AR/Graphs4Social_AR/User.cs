@@ -136,12 +136,12 @@ namespace Graphs4Social_AR
         // Load da tabela User através do Unique Identifier
         public static User LoadByUniqueIdentifier(string uniqueIdentifier)
         {
-            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Users WHERE UserId='" + uniqueIdentifier + "'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserId='" + uniqueIdentifier + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery(GetConnection(true), "SELECT * FROM UserLigado WHERE UserId='" + uniqueIdentifier + "' AND ELIMINADO ='" + 0 + "'");
+                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE UserId='" + uniqueIdentifier + "' AND ELIMINADO ='" + 0 + "'");
                 if (dt.Tables[0].Rows.Count < 1)
                 {
                     return new User(ds.Tables[0].Rows[0], null);
@@ -156,12 +156,12 @@ namespace Graphs4Social_AR
         // Load da tabela UserLigado através do Id da respectiva tabela
         public static User LoadByUserLigadoId(int idUserLigado)
         {
-            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM UserLigado WHERE ID_ULIG='" + idUserLigado + "' AND ELIMINADO ='" + 0 + "'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE ID_ULIG='" + idUserLigado + "' AND ELIMINADO ='" + 0 + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery(GetConnection(true), "SELECT * FROM Users WHERE UserId='" + (int)ds.Tables[0].Rows[0]["UserId"] + "'");
+                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserId='" + (int)ds.Tables[0].Rows[0]["UserId"] + "'");
                 return new User(dt.Tables[0].Rows[0], ds.Tables[0].Rows[0]);
             }
         }
@@ -169,12 +169,12 @@ namespace Graphs4Social_AR
         // Load de um User através do Username
         public static User LoadByUserName(string username)
         {
-            DataSet ds = ExecuteQuery("SELECT * FROM Users WHERE UserName ='" + username + "'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserName ='" + username + "'");
             if (ds.Tables[0].Rows.Count < 1)
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery("SELECT * FROM UserLigado WHERE UserId='" + ds.Tables[0].Rows[0]["UserId"] + "' AND ELIMINADO ='" + 0 + "'");
+                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE UserId='" + ds.Tables[0].Rows[0]["UserId"] + "' AND ELIMINADO ='" + 0 + "'");
                 if (dt.Tables[0].Rows.Count < 1)
                 {
                         return new User(ds.Tables[0].Rows[0], null);
@@ -187,10 +187,9 @@ namespace Graphs4Social_AR
             }
         }
 
-        //Load dos amigos do Username
         public static IList<User> LoadAllAmigosUser(string username)
         {
-            DataSet ds = ExecuteQuery(GetConnection(true), "SELECT * FROM Ligacao WHERE UserId ='"
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
                 + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
                 + 1 +"'");
 
@@ -218,11 +217,11 @@ namespace Graphs4Social_AR
             return amigos;
         }
 
-        //Load dos pedidos de amizade do Username
         public static IList<User> LoadAllPedidosUser(string username)
         {
-            DataSet ds = ExecuteQuery("SELECT * FROM Ligacao WHERE UserId ='"
-                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='0' AND ESTADO ='0'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
+                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
+                + 0 + "'");
 
             IList<Ligacao> lista = new List<Ligacao>();
 
@@ -250,6 +249,37 @@ namespace Graphs4Social_AR
 
 
 
+        public static IList<string> LoadProfileByUser(string username)
+        {
+            User user = User.LoadByUserName(username);
+
+            IList<string> profile = new List<string>();
+
+            if (user != null)
+            {
+                DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM [Profiles] WHERE UserId = '" + user.UniqueIdentifierUserId + "'");
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    IList<string> nomes = ((string)ds.Tables[0].Rows[0]["PropertyNames"]).Split(':');
+                    string valores = ((string)ds.Tables[0].Rows[0]["PropertyValueStrings"]);
+
+                    for (int i = 0; i < nomes.Count - 1; i = i + 3)
+                    {
+
+                        int inicio = Convert.ToInt32(nomes[i + 1]);
+                        int fim = Convert.ToInt32(nomes[i + 2]);
+                        profile.Add(nomes[i] + ":" + valores.Substring(inicio, fim));
+
+                    }
+                    return profile;
+                }
+            }
+            return null;
+        }
+
+
         // Save
         //
         //
@@ -258,9 +288,12 @@ namespace Graphs4Social_AR
         public override void Save()
         {
 
+            BeginTransaction();
+
+
             SqlCommand sql = new SqlCommand();
 
-            BeginTransaction();
+           
 
             bool novaEntrada = true;
 
@@ -269,7 +302,7 @@ namespace Graphs4Social_AR
             // Se for o caso o Save não é efectuado
 
 
-            DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM UserLigado WHERE UserId = '" + UniqueIdentifierUserId + "'");
+            DataSet dataSetLigacao = ExecuteQuery(GetConnection(false),"SELECT * FROM UserLigado WHERE UserId = '" + UniqueIdentifierUserId + "'");
 
             if (dataSetLigacao.Tables[0].Rows.Count > 0)
             {
@@ -282,6 +315,7 @@ namespace Graphs4Social_AR
                 sql.CommandText = "INSERT INTO UserLigado (UserId,ELIMINADO) VALUES (@UserId,@ELIMINADO)";
 
                 sql.Transaction = CurrentTransaction;
+                sql.Connection = sql.Transaction.Connection;
 
                 IDataParameter param = sql.Parameters.Add("@UserId", SqlDbType.UniqueIdentifier);
                 param.Value = new Guid(UniqueIdentifierUserId);
@@ -293,10 +327,12 @@ namespace Graphs4Social_AR
 
                 // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
 
+                CommitTransaction();
+
                 if (rowsAfectadas > 0)
                 {
                     Gravado = true;
-                    dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM UserLigado WHERE UserId = '" + UniqueIdentifierUserId + "'");
+                    dataSetLigacao = ExecuteQuery(GetConnection(false), "SELECT * FROM UserLigado WHERE UserId = '" + UniqueIdentifierUserId + "'");
                     IdUserLigado = (int) dataSetLigacao.Tables[0].Rows[0]["ID_ULIG"];
                 }
                 else
@@ -305,7 +341,7 @@ namespace Graphs4Social_AR
                 }
             }
 
-            CommitTransaction();
+            
         }
 
 

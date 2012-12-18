@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
 
 public partial class SiteMaster : MasterPage
 {
@@ -65,6 +66,20 @@ public partial class SiteMaster : MasterPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            if (!Profile.IsAnonymous)
+            {
 
+                HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
+                
+                hl.HRef += "?user=" + Profile.UserName;
+
+                hl = loginView2.FindControl("editar") as HtmlAnchor;
+
+                hl.HRef += "?user=" + Profile.UserName;
+            }
+
+        }
     }
 }

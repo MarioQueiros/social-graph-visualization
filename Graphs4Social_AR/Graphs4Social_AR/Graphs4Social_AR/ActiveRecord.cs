@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Graphs4Social_AR
 {
@@ -29,7 +33,7 @@ namespace Graphs4Social_AR
         }
 
 
-        private const string _CONNSTR = @"workstation id=Graphs4Social.mssql.somee.com;packet size=4096;user id=MpApQ_SQLLogin_1;pwd=e1i75j78ls;data source=Graphs4Social.mssql.somee.com;persist security info=False;initial catalog=Graphs4Social";
+        private const string _CONNSTR = "workstation id=Graphs4Social.mssql.somee.com;packet size=4096;user id=MpApQ_SQLLogin_1;pwd=e1i75j78ls;data source=Graphs4Social.mssql.somee.com;persist security info=False;initial catalog=Graphs4Social";
 
         private static string CONNSTR
         {
@@ -50,7 +54,7 @@ namespace Graphs4Social_AR
 
         protected static SqlConnection GetConnection(bool open)
         {
-            SqlConnection cnx = new SqlConnection(CONNSTR);
+            SqlConnection cnx = new SqlConnection(@CONNSTR);
             if (open)
                 cnx.Open();
             return cnx;
@@ -93,7 +97,7 @@ namespace Graphs4Social_AR
         {
             try
             {
-                //if (myCnx == null)
+                if (myCnx == null)
                     myCnx = GetConnection(false);
 
                 SqlDataAdapter da = new SqlDataAdapter(sql, myCnx);
@@ -107,11 +111,13 @@ namespace Graphs4Social_AR
             }
         }
 
+
         protected static DataSet ExecuteTransactedQuery(string sql)
         {
             try
             {
                 SqlDataAdapter da = new SqlDataAdapter(sql, myCnx);
+                da.SelectCommand.Connection = myCnx;
                 DataSet ds = new DataSet();
                 da.Fill(ds);
                 return ds;
@@ -146,7 +152,6 @@ namespace Graphs4Social_AR
             }
             catch (SqlException ex)
             {
-                // debug purposes only!!!
                 throw ex;
             }
         }
@@ -156,10 +161,12 @@ namespace Graphs4Social_AR
             try
             {
                 //if (myTx == null)
+                //  Retirado pois, após uma operação, não se conseguia criar uma connection
                 myTx = GetConnection(true).BeginTransaction();
             }
             catch (SqlException ex)
             {
+
                 throw new ApplicationException("Erro BD", ex);
             }
         }

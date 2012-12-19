@@ -7,9 +7,15 @@ using System.Web.UI.WebControls;
 using Microsoft.AspNet.Membership.OpenAuth;
 using System.Collections;
 using System.Drawing;
+using System.Resources;
+using System.Reflection;
+using System.Globalization;
 
 public partial class Profile_Editar : System.Web.UI.Page
 {
+    private static string baseName = "Resources.Graphs4Social";
+    private static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
+    private CultureInfo ci;
 
     protected string SuccessMessage
     {
@@ -31,30 +37,65 @@ public partial class Profile_Editar : System.Web.UI.Page
 
     protected void Page_Load()
     {
+
+
         if (!IsPostBack)
         {
-            fillSexo();
-            if (!(Profile.Sexo == null || Profile.Sexo.Equals("")))
+            LoadLabels();
+
+        }
+    }
+
+    private void LoadLabels()
+    {
+        chooseLanguage();
+
+        fillSexo();
+        if (!(Profile.Sexo == null || Profile.Sexo.Equals("")))
+        {
+            DropDownList1.SelectedValue = Profile.Sexo;
+        }
+
+        string data = Profile.DataNas.Month + "/" + Profile.DataNas.Day + "/" + Profile.DataNas.Year;
+
+        datepicker.Text = data;
+
+
+        TextBox1.Text = Profile.Regiao;
+
+        TextBox2.Text = Convert.ToString(Profile.Contacto);
+
+        fillLinguagem();
+
+        if (!(Profile.Language == null || Profile.Language.Equals("")))
+        {
+            DropDownList2.SelectedValue = Profile.Language;
+        }
+    }
+
+    private void chooseLanguage()
+    {
+
+        if (Profile.Language != null || Profile.Language.Equals(""))
+        {
+
+            if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
             {
-                DropDownList1.SelectedValue = Profile.Sexo;
+                ci = new CultureInfo("pt");
+
             }
-            
-            string data = Profile.DataNas.Month+"/"+Profile.DataNas.Day+"/"+Profile.DataNas.Year;
-
-            datepicker.Text = data;
-            
-            
-            TextBox1.Text = Profile.Regiao;
-
-            TextBox2.Text = Convert.ToString(Profile.Contacto);
-
-            fillLinguagem();
-
-            if (!(Profile.Language == null || Profile.Language.Equals("")))
+            else
             {
-                DropDownList2.SelectedValue = Profile.Language;
+                ci = new CultureInfo("en-US");
             }
         }
+        else
+        {
+            ci = new CultureInfo("en-US");
+            Profile.Language = "English";
+            DropDownList2.SelectedIndex = 1;
+        }
+        
     }
 
     private void fillLinguagem()
@@ -69,6 +110,8 @@ public partial class Profile_Editar : System.Web.UI.Page
 
     private void fillSexo()
     {
+
+        Label3.Text = rm.GetString("Editar_Sexo_Label",ci);
         IList<string> sexos = new List<string>();
         sexos.Add("Masculino");
         sexos.Add("Feminino");
@@ -123,6 +166,7 @@ public partial class Profile_Editar : System.Web.UI.Page
     protected void setSexo_click(object sender, EventArgs e)
     {
         Profile.Sexo = DropDownList1.SelectedValue;
+        
     }
 
     protected void setRegiao_click(object sender, EventArgs e)
@@ -162,6 +206,8 @@ public partial class Profile_Editar : System.Web.UI.Page
     protected void setLinguagem_click(object sender, EventArgs e)
     {
         Profile.Language = DropDownList2.SelectedValue;
+        LoadLabels();
+
     }
 
 }

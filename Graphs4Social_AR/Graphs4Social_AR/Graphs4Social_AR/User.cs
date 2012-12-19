@@ -29,7 +29,10 @@ namespace Graphs4Social_AR
         // Campo para verificar se foi gravado com sucesso ( iniciado a false ) e um campo para delete
         private bool _gravado = false;
         private bool _eliminado = false;
-        
+
+        // Nome do User
+        private string _username;
+
         public User()
         {
             _idUserLigado = -1;
@@ -43,6 +46,8 @@ namespace Graphs4Social_AR
             if (user != null)
             {
                 this._uniqueIdentifierUserId = Convert.ToString(user["UserId"]);
+                this._username = Convert.ToString(user["UserName"]);
+
                 if (ligado != null)
                 {
                     this._idUserLigado = (int)ligado["ID_ULIG"];
@@ -91,6 +96,12 @@ namespace Graphs4Social_AR
             set { this._eliminado = value; }
         }
 
+            public string Username
+            {
+                get { return _username; }
+                set { this._username = value; }
+
+            }
 
 
         // To String
@@ -189,32 +200,41 @@ namespace Graphs4Social_AR
 
         public static IList<User> LoadAllAmigosUser(string username)
         {
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
-                + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
-                + 1 +"'");
-
-            IList<Ligacao> lista = new List<Ligacao>();
-
-            Ligacao ligacao = null;
-            int idLigacao = -1;
-
-            foreach (DataRow row in ds.Tables[0].Rows)
+            if (LoadByUserName(username) != null)
             {
-               
+                DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId ='"
+                    + LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "' AND ESTADO ='"
+                    + 1 + "'");
+
+                IList<Ligacao> lista = new List<Ligacao>();
+
+                Ligacao ligacao = null;
+                int idLigacao = -1;
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+
                     ligacao = new Ligacao(row);
                     lista.Add(ligacao);
 
                     idLigacao = (int)row["ID_LIG"];
+                }
+
+                IList<User> amigos = new List<User>();
+
+                foreach (Ligacao lig in lista)
+                {
+                    amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
+                }
+
+                return amigos;
             }
-
-            IList<User> amigos = new List<User>();
-
-            foreach (Ligacao lig in lista)
+            else
             {
-                amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
-            }
 
-            return amigos;
+                IList<User> amigos = new List<User>();
+                return amigos;
+            }
         }
 
         public static IList<User> LoadAllPedidosUser(string username)

@@ -42,10 +42,11 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 
 /* ~~this fixed width container surrounds the other divs~~ */
 .container {
-	width: 1000px;
+	width: 1050px;
 
+    
+    height:auto;
     overflow:auto;
-    height:100%;
 
 	background: #FFF;
 	margin: 0 auto;
@@ -88,7 +89,6 @@ header {
 	width: 1000px;
 	height: inherit;
 	margin: 0 auto;
-	
 }
 
 .headerRight {
@@ -159,14 +159,16 @@ header {
 */
 .content {
 	padding: 10px;
-	width: 780px;
+	width: 800px;
 	float: left;
+    margin-left: 15px;
 	
 	-moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
 	behavior: url(/css/border-radius.htc);
     border-radius: 5px;
+    font-variant:small-caps;
 }
 
 .profile{
@@ -249,8 +251,14 @@ ul.nav a:hover, ul.nav a:active, ul.nav a:focus { /* this changes the background
 	background: #CDD7E4;
 }
 
-/* ~~ The footer ~~ */
 .footer {
+    margin: 0 auto;
+}
+
+/* ~~ The footer ~~ */
+.footerDiv {
+    
+    font-variant:small-caps;
 	padding-left:14%;
 	padding-right:14%;
 	position: relative;/* this gives IE6 hasLayout to properly clear */
@@ -302,6 +310,26 @@ ul.nav a:hover, ul.nav a:active, ul.nav a:focus { /* this changes the background
         display: inline;
         list-style: none;
     }
+
+#editarProfile {
+    width: 500px;
+    height: 50px;
+    margin-left: 150px;
+}
+
+#editarProfile tablesEditar {
+    width: 400px;
+}
+
+#editarProfile elementoEditar {
+    width:150px;
+    float:right;
+}
+
+#editarProfile botaoEditar {
+    width:150px;
+    float:left;
+}
 
 /* login page */
 #loginForm {

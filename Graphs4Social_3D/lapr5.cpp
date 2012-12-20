@@ -12,7 +12,8 @@ using namespace std;
 
 #define graus(X) (double)((X)*180/M_PI)
 #define rad(X)   (double)((X)*M_PI/180)
-
+#define NO		1
+#define ARCO	10000
 // luzes e materiais
 
 const GLfloat mat_ambient[][4] = {
@@ -66,7 +67,8 @@ GLfloat k = 1;
 GLint  height = 512; 
 GLint width = 640;
 
-typedef struct Camera{
+typedef struct Camera
+{
 	GLfloat fov;
 	GLdouble dir_lat;
 	GLdouble dir_long;
@@ -76,11 +78,13 @@ typedef struct Camera{
 	GLfloat velh;
 }Camera;
 
-typedef struct teclas_t{
+typedef struct teclas_t
+{
 	GLboolean   up,down,left,right,a,q;
 }teclas_t;
 
-typedef struct Estado{
+typedef struct Estado
+{
 	Camera		camera;
 	int			xMouse,yMouse;
 	GLboolean	light;
@@ -111,7 +115,8 @@ typedef struct Modelo {
 Estado estado;
 Modelo modelo;
 
-void initEstado(){
+void initEstado()
+{
 	estado.camera.dir_lat=M_PI/4;
 	estado.camera.dir_long=-M_PI/4;
 	estado.camera.fov=60;
@@ -121,7 +126,7 @@ void initEstado(){
 	estado.eixo[2]=0;
 	estado.camera.center[0]=-130;
 	estado.camera.center[1]=0;
-	estado.camera.center[2]=90;//86;
+	estado.camera.center[2]=90;
 	estado.light=GL_FALSE;
 	estado.apresentaNormais=GL_FALSE;
 	estado.lightViewer=2;
@@ -130,7 +135,8 @@ void initEstado(){
 	estado.camera.velv = VELOCIDADE_VERTICAL;
 }
 
-void initModelo(){
+void initModelo()
+{
 	modelo.escala=0.2;
 	modelo.cor_cubo = brass;
 	modelo.g_pos_luz1[0]=-5.0;
@@ -252,7 +258,8 @@ void putLights(GLfloat* diffuse)
 	glEnable(GL_LIGHT1);
 }
 
-void desenhaSolo(){
+void desenhaSolo()
+{
 #define STEP 10
 	glBegin(GL_QUADS);
 	glNormal3f(0,0,1);
@@ -294,7 +301,8 @@ GLdouble VectorNormalize (GLdouble v[])
 	return length;
 }
 
-void desenhaNormal(GLdouble x, GLdouble y, GLdouble z, GLdouble normal[], tipo_material mat){
+void desenhaNormal(GLdouble x, GLdouble y, GLdouble z, GLdouble normal[], tipo_material mat)
+{
 
 	switch (mat){
 	case red_plastic:
@@ -321,7 +329,8 @@ void desenhaNormal(GLdouble x, GLdouble y, GLdouble z, GLdouble normal[], tipo_m
 	glEnable(GL_LIGHTING);
 }
 
-void desenhaChao(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat xf, GLfloat yf, GLfloat zf, int orient){
+void desenhaChao(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat xf, GLfloat yf, GLfloat zf, int orient)
+{
 	GLdouble v1[3],v2[3],cross[3];
 	GLdouble length;
 	v1[0]=xf-xi;
@@ -397,7 +406,8 @@ void desenhaChao(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat xf, GLfloat yf, GLf
 	}
 }
 
-void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio){
+void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio)
+{
 	GLdouble cross[3];
 	GLfloat valAng=0;
 	GLint n=32;
@@ -424,7 +434,8 @@ void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio){
 	}
 }
 
-void desenhaNo(int no){
+void desenhaNo(int no)
+{
 	GLboolean norte,sul,este,oeste;
 	GLfloat larguraNorte,larguraSul,larguraEste,larguraOeste;
 	Arco arco=arcos[0];
@@ -502,7 +513,8 @@ desenhaParede(nos[no].x+0.5*noi->largura,nos[no].y-0.5*larguraOeste,nos[no].z,no
 }
 }*/
 
-void desenhaArco(Arco arco){
+void desenhaArco(Arco arco)
+{
 	No *noi,*nof;
 	noi=&nos[arco.noi];
 	nof=&nos[arco.nof];
@@ -557,21 +569,28 @@ cout << "arco diagonal... não será desenhado";
 }
 }*/
 
-void desenhaLabirinto(){
+void desenhaLabirinto()
+{
 	glPushMatrix();
 	glTranslatef(0,0,0.05);
 	glScalef(5,5,5);
 
 	for(int i=0; i<numNos; i++){
+		glPushName(NO + i);
 		desenhaNo(i);
+		glPopName();
 	}
 	material(red_plastic);
-	for(int i=0; i<numArcos; i++)
+	for(int i=0; i<numArcos; i++){
+		glPushName(ARCO + i);
 		desenhaArco(arcos[i]);
+		glPopName();
+	}
 	glPopMatrix();
 }
 
-void desenhaEixo(){
+void desenhaEixo()
+{
 	gluCylinder(modelo.quad,0.5,0.5,20,16,15);
 	glPushMatrix();
 	glTranslatef(0,0,20);
@@ -587,7 +606,8 @@ void desenhaEixo(){
 #define EIXO_Y		2
 #define EIXO_Z		3
 
-void desenhaPlanoDrag(int eixo){
+void desenhaPlanoDrag(int eixo)
+{
 	glPushMatrix();
 	glTranslated(estado.eixo[0],estado.eixo[1],estado.eixo[2]);
 	switch (eixo) {
@@ -620,7 +640,8 @@ void desenhaPlanoDrag(int eixo){
 	glPopMatrix();
 }
 
-void desenhaEixos(){
+void desenhaEixos()
+{
 
 	glPushMatrix();
 	glTranslated(estado.eixo[0],estado.eixo[1],estado.eixo[2]);
@@ -645,7 +666,8 @@ void desenhaEixos(){
 	glPopMatrix();
 }
 
-void setCamera(){
+void setCamera()
+{
 	Vertice eye;
 
 	eye[0]=estado.camera.center[0] + estado.camera.dist * cos(estado.camera.dir_long) * cos(estado.camera.dir_lat);
@@ -666,7 +688,8 @@ void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
 {
 	glTranslatef(x, y, z);
 	glScalef(scale, scale, scale);
-	for (int i = 0; i < strlen(msg); i++)
+	int n = strlen(msg);
+	for (int i = 0; i < n; i++)
 		glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, msg[i]);
 }
 
@@ -686,7 +709,7 @@ void display(void)
 	if(estado.eixoTranslaccao) {
 		// desenha plano de translacção
 		//cout << "Translate... " << estado.eixoTranslaccao << endl; 
-		desenhaPlanoDrag(estado.eixoTranslaccao);
+		//desenhaPlanoDrag(estado.eixoTranslaccao);
 	}
 
 	if(estado.vooRasante){
@@ -715,7 +738,8 @@ void display(void)
 	glutSwapBuffers();
 }
 
-void setProjection(int x, int y, GLboolean picking){
+void setProjection(int x, int y, GLboolean picking)
+{
 	glLoadIdentity();
 	if (picking) { // se está no modo picking, lê viewport e define zona de picking
 		GLint vport[4];
@@ -725,14 +749,16 @@ void setProjection(int x, int y, GLboolean picking){
 	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
 }
 
-int colisaoLivre(){
+int colisaoLivre()
+{
 	int i, n, objid=0;
-	double zmin = 10.0;
+	double zmin = 10.0, zmax = 0;
 	GLuint buffer[100], *ptr;
 	GLfloat vel = estado.camera.velh + estado.camera.velv;
 	GLdouble newx, newy, newz;
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
+
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
@@ -761,7 +787,11 @@ int colisaoLivre(){
 				zmin = (double) ptr[1] / UINT_MAX;
 				objid = ptr[3];
 			}
+			if (zmax < (double) ptr[1] / UINT_MAX) {
+				zmax = (double) ptr[1] / UINT_MAX;
+			}
 			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
+
 			glGetIntegerv(GL_VIEWPORT, vp);
 			glGetDoublev(GL_PROJECTION_MATRIX, proj);
 			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
@@ -786,7 +816,8 @@ int colisaoLivre(){
 	return objid;
 }
 
-int colisaoRasante(){
+int colisaoRasante()
+{
 	int i, n, objid=0;
 	double zmin = 10.0, zmax = 10.0;;
 	GLuint buffer[100], *ptr;
@@ -794,10 +825,11 @@ int colisaoRasante(){
 	GLdouble newx, newy, newz;
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
+	GLint farP = 0, nearP = 0; 
+
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
-	GLint farP = 0, nearP = 0; 
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix(); // guarda a projecção
@@ -836,6 +868,7 @@ int colisaoRasante(){
 	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+
 	return objid;
 }
 
@@ -863,6 +896,7 @@ void Timer(int value)
 			{
 				estado.camera.center[0] = estado.camera.center[0] + estado.camera.velh * cos(estado.camera.dir_long);
 				estado.camera.center[1] = estado.camera.center[1] + estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
@@ -884,6 +918,7 @@ void Timer(int value)
 			{
 				estado.camera.center[0] = estado.camera.center[0] - estado.camera.velh * cos(estado.camera.dir_long);
 				estado.camera.center[1] = estado.camera.center[1] - estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
@@ -897,7 +932,9 @@ void Timer(int value)
 		// rodar camara p/ direita
 		estado.camera.dir_long-=M_PI/64;
 	}
-	if(!estado.vooRasante){
+
+	if(!estado.vooRasante)
+	{
 		if(estado.teclas.q){
 			// subir camara
 			estado.eixoTranslaccao=colisaoLivre();
@@ -914,13 +951,12 @@ void Timer(int value)
 			if(estado.eixoTranslaccao)
 			{
 			}else{
-				if(estado.camera.center[2]>=2){
+				if(estado.camera.center[2]>=2)
 					estado.camera.center[2]--;
-				}
 			}
 		}
 	}
-	glutPostRedisplay();
+	glutPostRedisplay ();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -984,6 +1020,7 @@ void keyboard(unsigned char key, int x, int y)
 		}
 		else{
 			estado.vooRasante = GL_FALSE;
+			estado.camera.center[2]=90;
 		}
 		glutPostRedisplay();
 		break;
@@ -1018,7 +1055,8 @@ void keyboardUp(unsigned char key, int x, int y)
 	}
 }
 
-void Special(int key, int x, int y){
+void Special(int key, int x, int y)
+{
 #define DRAG_SCALE	0.01
 	double lim=M_PI/2-0.1;
 	switch(key){
@@ -1082,7 +1120,8 @@ void SpecialKeyUp(int key, int x, int y)
 	}
 }
 
-void myReshape(int w, int h){	
+void myReshape(int w, int h)
+{	
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	setProjection(0,0,GL_FALSE);
@@ -1091,7 +1130,8 @@ void myReshape(int w, int h){
 	height = h;
 }
 
-void motionRotate(int x, int y){
+void motionRotate(int x, int y)
+{
 #define DRAG_SCALE	0.01
 	double lim=M_PI/2-0.1;
 	estado.camera.dir_long+=(estado.xMouse-x)*DRAG_SCALE;
@@ -1106,7 +1146,8 @@ void motionRotate(int x, int y){
 	glutPostRedisplay();
 }
 
-void motionZoom(int x, int y){
+void motionZoom(int x, int y)
+{
 #define ZOOM_SCALE	0.5
 	estado.camera.dist-=(estado.yMouse-y)*ZOOM_SCALE;
 	if(estado.camera.dist<5)
@@ -1118,7 +1159,8 @@ void motionZoom(int x, int y){
 	glutPostRedisplay();
 }
 
-void motionDrag(int x, int y){
+void motionDrag(int x, int y)
+{
 	GLuint buffer[100];
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
@@ -1170,7 +1212,8 @@ void motionDrag(int x, int y){
 	glutPostRedisplay();
 }
 
-int picking(int x, int y){
+int picking(int x, int y)
+{
 	int i, n, objid=0;
 	double zmin = 10.0;
 	GLuint buffer[100], *ptr;
@@ -1212,7 +1255,8 @@ int picking(int x, int y){
 	return objid;
 }
 
-void mouse(int btn, int state, int x, int y){
+void mouse(int btn, int state, int x, int y)
+{
 	switch(btn) {
 	case GLUT_RIGHT_BUTTON :
 		if(state == GLUT_DOWN){

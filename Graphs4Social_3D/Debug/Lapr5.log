@@ -1,0 +1,11 @@
+﻿  lapr5.cpp
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraNorte' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(447): warning C4101: 'nof' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraEste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraOeste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraSul' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(1050): warning C4129: 'Y' : unrecognized character escape sequence
+  grafos.cpp
+  Generating Code...
+grafos.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  Lapr5.vcxproj -> C:\Users\leniker\Desktop\LAPR V\Graphs4Social_3D\Debug\Lapr5.exe

@@ -8,6 +8,7 @@ user(tiago).
 
 tag(porto,[bruno,pedro,catia,hugo]).
 tag(chelsea,[bruno]).
+tag(comida,[mario,bruno,hugo,carlos]).
 
 lig(pedro,bruno,5,[amigo]).
 lig(bruno,pedro,1,[urso]).
@@ -21,8 +22,12 @@ lig(bruno,mario,2,[contador]).
 lig(mario,bruno,5,[cavendish]).
 lig(hugo,mario,3,[myva]).
 lig(mario,hugo,5,[myva]).
+lig(carlos,mario,2,[testeMaven]).
+lig(mario,carlos,1,[testeMaven]).
 
-
+%Verificar 
+minimoMaven(3).
+percentagemMaven(1.25).
 
 
 %ligado(A,B):-lig(A,B,_,_), write('ligado').
@@ -32,15 +37,17 @@ ligado(A,B):-lig(A,B,_,_).
 ligacoes(U,L):-findall(X,ligado(U,X),L).
 
 %tamanho(User,Resposta) nivel 2
-tamanho2(U,R):-findall(U,ligado(U,_),L),length(L,R).
+tamanho2(U,R):-redeNivel2(U,L),length(L,R).
 
 tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
+
+redeNivel2(U,R):-findall(U,ligado(U,_),R).
 
 redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
-%percorre(Amigo a verificar|restantes,JÃ¡ verificados,resposta
+%percorre(Amigo a verificar|restantes,Já verificados,resposta
 percorre([A|L],V,R):-somaRede(A,V,RV,RX),percorre(L,RV,RS),append(RX,RS,R).
 percorre([],_,[]).
 
@@ -82,6 +89,45 @@ criaSugestao(_,[],[]).
 semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT).
 semelhante(_,_,[]):-fail.
 semelhante(_,_,[_|_]).
+
+%Ver Calculo Equilibrio vertices Estrela
+%Maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,TM,R).
+
+%calculaMaven(T,[U|UR],TV,UA,VA,R):-forca(T,U,TV,CL),CL>VA,!,calculaMaven(T,UR,TV,U,CL,R).
+%calculaMaven(T,[_|UR],TV,UA,VA,R):-calculaMaven(T,UR,RV,UA,VA,R).
+%calculaMaven(_,[],_,UA,_,UA).
+
+maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,F,TM),!,estrela(U,F,R).
+%Tag, users, forcas, total vertices
+calculaMaven(T,[U|UR],[F|FR],TV):-forca(T,U,TV,F),calculaMaven(T,UR,FR,TV).
+calculaMaven(_,[],[],_).
+
+forca(T,U,TV,R):-tag(T,L),deletelist(L,[U],LF),calculaForcaVertices(U,LF,RS),R is RS/TV. %??.
+%user, vertices c/ tag
+calculaForcaVertices(U,[A|L],R):-ligado(U,A),!,calculaForcaVertices(U,L,RS),R is RS + 1.
+calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
+calculaForcaVertices(_,[],0).
+
+%estrela(U,F,R):-estrela(U,F,F,R).
+%manipulados e originais, max actuais, resposta
+%estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
+%estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
+%estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
+
+estrela(U,F,R):-estrela(U,F,U,F,R).
+%manipulados e originais, max actuais, resposta
+estrela([U|UR],[F|FR],OU,OF,U):-percorreForca(U,F,OU,OF),!.
+estrela([_|UR],[_|FR],OU,OF,R):-estrela(UR,FR,OU,OF,R).
+estrela([],[],_,_,_):-fail.
+
+
+
+%forca
+percorreForca(U,F,[U|UR],[F|FR]):-percorreForca(U,F,UR,FR).
+percorreForca(U,F,[_|UR],[V|FR]):-percentagemMaven(X),T is V*X,F>T,percorreForca(U,F,UR,FR).
+percorreForca(_,_,[],[]).
+
+
 
 cl(L, R) :-
         call(L, 0 , R).

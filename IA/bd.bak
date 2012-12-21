@@ -8,7 +8,7 @@ user(tiago).
 
 tag(porto,[bruno,pedro,catia,hugo]).
 tag(chelsea,[bruno]).
-tag(comida,[mario,bruno,hugo]).
+tag(comida,[mario,bruno,hugo,carlos]).
 
 lig(pedro,bruno,5,[amigo]).
 lig(bruno,pedro,1,[urso]).
@@ -98,25 +98,34 @@ semelhante(_,_,[_|_]).
 %calculaMaven(_,[],_,UA,_,UA).
 
 maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,F,TM),!,estrela(U,F,R).
-
+%Tag, users, forcas, total vertices
 calculaMaven(T,[U|UR],[F|FR],TV):-forca(T,U,TV,F),calculaMaven(T,UR,FR,TV).
 calculaMaven(_,[],[],_).
 
-forca(T,U,TV,R):-tag(T,L),deletelist(L,U,LF),calculaForcaVertices(U,LF,RS),R is RS/TV. %??.
-
+forca(T,U,TV,R):-tag(T,L),deletelist(L,[U],LF),calculaForcaVertices(U,LF,RS),R is RS/TV. %??.
+%user, vertices c/ tag
 calculaForcaVertices(U,[A|L],R):-ligado(U,A),!,calculaForcaVertices(U,L,RS),R is RS + 1.
-calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,RS).
+calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
 calculaForcaVertices(_,[],0).
 
-estrela(U,F,R):-estrela(U,F,F,R).
-
+%estrela(U,F,R):-estrela(U,F,F,R).
 %manipulados e originais, max actuais, resposta
-estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
-estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
-estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
+%estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
+%estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
+%estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
 
-percorreForca(F,[V|FR]):-percentagemMaven(X),T is V*X,F>T,percorreForca(F,FR).
-percorreForca(_,[]).
+estrela(U,F,R):-estrela(U,F,U,F,R).
+%manipulados e originais, max actuais, resposta
+estrela([U|UR],[F|FR],OU,OF,U):-percorreForca(U,F,OU,OF),!.
+estrela([_|UR],[_|FR],OU,OF,R):-estrela(UR,FR,OU,OF,R).
+estrela([],[],_,_,_):-fail.
+
+
+
+%forca
+percorreForca(U,F,[U|UR],[F|FR]):-percorreForca(U,F,UR,FR).
+percorreForca(U,F,[_|UR],[V|FR]):-percentagemMaven(X),T is V*X,F>T,percorreForca(U,F,UR,FR).
+percorreForca(_,_,[],[]).
 
 
 

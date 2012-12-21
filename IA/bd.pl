@@ -41,7 +41,7 @@ tamanho2(U,R):-redeNivel2(U,L),length(L,R).
 
 tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 
-redeNivel2(U,R):-findall(U,ligado(U,_),R).
+redeNivel2(U,R):-findall(X,ligado(U,X),R).
 
 redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
@@ -109,7 +109,7 @@ calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
 calculaForcaVertices(_,[],0).
 
 %estrela(U,F,R):-estrela(U,F,F,R).
-%manipulados e originais, max actuais, resposta
+
 %estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
 %estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
 %estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
@@ -120,14 +120,18 @@ estrela([U|UR],[F|FR],OU,OF,U):-percorreForca(U,F,OU,OF),!.
 estrela([_|UR],[_|FR],OU,OF,R):-estrela(UR,FR,OU,OF,R).
 estrela([],[],_,_,_):-fail.
 
-
-
 %forca
 percorreForca(U,F,[U|UR],[F|FR]):-percorreForca(U,F,UR,FR).
 percorreForca(U,F,[_|UR],[V|FR]):-percentagemMaven(X),T is V*X,F>T,percorreForca(U,F,UR,FR).
 percorreForca(_,_,[],[]).
 
+grafoComum(U,U,_):-fail.
+grafoComum(UA,UB,G):-redeNivel2(UA,R1),redeNivel2(UB,R2),intersect(R1,R2,G).
 
+
+intersect([ ],_,[ ]).
+intersect([X|L1],L2,[X|LI]):-member(X,L2),!,intersect(L1,L2,LI).
+intersect([_|L1],L2, LI):- intersect(L1,L2,LI).
 
 cl(L, R) :-
         call(L, 0 , R).

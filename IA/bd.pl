@@ -150,6 +150,32 @@ add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
 
+
+
+
+%Branch and bound
+go(Orig,Dest,Perc):- 
+	go1([(0,[Orig])],Dest,P), 
+	reverse(P,Perc). 
+
+go1([(_,Prim)|_],Dest,Prim):- Prim=[Dest|_]. 
+
+go1([(_,[Dest|_])|Resto],Dest,Perc):- !, go1(Resto,Dest,Perc).
+
+go1([(C,[Ult|T])|Outros],Dest,Perc):- 
+	findall((NC,[Z,Ult|T]), 
+	(proximo_no(Ult,T,Z,C1),NC is C+C1),Lista), 
+	append(Outros,Lista,NPerc), 
+	sort(NPerc,NPerc1), 
+	go1(NPerc1,Dest,Perc). 
+
+proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T). 
+
+
+
+
+
+
 run1 :-
 	member(X, [abc,def,ghi,jkl]),
 	write(X).

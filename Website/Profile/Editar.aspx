@@ -13,12 +13,12 @@
                 </legend>
                 <asp:PlaceHolder runat="server" ID="PlaceHolder1" Visible="True">
                     <table class="tablesEditar">
-                        <tr>
-                            <td class="elementoEditar">
+                        <tr style="width:500px;">
+                            <td style="width:250px; float:left;">
                                 <asp:DropDownList ID="DropDownList1" runat="server"></asp:DropDownList>
                             </td>
-                            <td class="botaoEditar">
-                                <asp:Button ID="Button2" Height="40px" runat="server" Text="Gravar" ValidationGroup="SetSexo" OnClick="setSexo_click" />
+                            <td style="width:250px; vertical-align:middle;">
+                                <asp:Button ID="Button2" Height="30px" runat="server" Text="Gravar" ValidationGroup="SetSexo" OnClick="setSexo_click" />
                             </td>
                         </tr>
                     </table>

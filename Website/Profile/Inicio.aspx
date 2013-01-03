@@ -13,7 +13,18 @@
             </td>
         </tr>
     </table>
-    <br /><br />
+    <br />
+    <asp:Button ID="Button1" runat="server" Text="" Visible="false" OnClick="Button1_Click" CssClass="btProfile"/>
+    
+    <asp:DropDownList ID="DropDownList1" runat="server" CssClass="listProfile" AutoPostBack="false" Visible="false">
+        <asp:ListItem Value="1">1</asp:ListItem>
+        <asp:ListItem Value="2">2</asp:ListItem>
+        <asp:ListItem Value="3">3</asp:ListItem>
+        <asp:ListItem Value="4">4</asp:ListItem>
+        <asp:ListItem Value="5">5</asp:ListItem>
+    </asp:DropDownList>
+
+    <br />
 
     <asp:Label ID="Label9" runat="server" Text="" Visible="false"></asp:Label>
     <asp:Label ID="Label1" runat="server" Text="" Visible="false"></asp:Label>
@@ -69,5 +80,30 @@
 
     <table id="tabelaDeAmigos" runat="server"></table>
 
-
+    <style>
+        .btProfile {
+            width: 200px;
+            height: 40px;
+            padding: 5px;
+            color: #333333;
+            background-color: white;
+            border-color: gray;
+            border-style:solid;
+            font-variant:small-caps;
+            font-weight:bold;
+        }
+        .listProfile {
+            width: 50px;
+            height: 40px;
+            padding: 5px;
+            text-align:center;
+            color: #333333;
+            background-color: white;
+            border-color: gray;
+            border-style:solid;
+            border-width: 2px;
+            font-variant:small-caps;
+            font-weight:bold;
+        }
+    </style>
 </asp:Content>

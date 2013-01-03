@@ -314,7 +314,7 @@ namespace Graphs4Social_AR
                 // Se for o caso o Save é um update, mais provavel do Estado da Tag
 
 
-                DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM TagRelacao WHERE "
+                DataSet dataSetLigacao = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE "
                     + "NOME = '" + Nome + "'");
 
 
@@ -350,7 +350,7 @@ namespace Graphs4Social_AR
                         Gravado = true;
 
                         // Vai buscar a tabela o Id atribuido por increment a Nova Entrada
-                        myID = (int)ExecuteTransactedQuery("SELECT * FROM TagRelacao WHERE "
+                        myID = (int)ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE "
                                                             + "NOME = '" + Nome + "'")
                                                             .Tables[0].Rows[0]["ID_REL"];
                     }
@@ -361,7 +361,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO AND ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -399,7 +399,7 @@ namespace Graphs4Social_AR
                 // Se for o caso o Save é um update, mais provavel do Estado da Tag
 
 
-                DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM Tag WHERE "
+                DataSet dataSetLigacao = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag WHERE "
                     + "NOME = '" + Nome + "'");
 
 
@@ -435,7 +435,7 @@ namespace Graphs4Social_AR
                         Gravado = true;
 
                         // Vai buscar a tabela o Id atribuido por increment a Nova Entrada
-                        myID = (int)ExecuteTransactedQuery("SELECT * FROM Tag WHERE "
+                        myID = (int)ExecuteQuery(GetConnection(false),"SELECT * FROM Tag WHERE "
                                                             + "NOME = '" + Nome + "'")
                                                             .Tables[0].Rows[0]["ID_TAG"];
                     }
@@ -446,7 +446,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO AND ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 

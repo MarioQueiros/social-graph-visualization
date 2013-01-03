@@ -140,7 +140,7 @@ cl(L, R) :-
 call([], Count, Count).
 
 % 2 - Recursive rule
-call([H|T], Count, R) :-
+call([_|T], Count, R) :-
         Count1 is Count + 1,
         call(T, Count1, R).
 
@@ -154,25 +154,20 @@ notmember(X,L):-(member(X,L), !, fail);true.
 
 
 %Branch and bound
-go(Orig,Dest,Perc):- 
-	go1([(0,[Orig])],Dest,P), 
-	reverse(P,Perc). 
+camCurto(O,D,Perc):- 
+	go1([(0,[O])],D,P),reverse(P,Perc). 
 
-go1([(_,Prim)|_],Dest,Prim):- Prim=[Dest|_]. 
+go1([(_,Pr)|_],D,Pr):- Pr=[D|_]. 
 
-go1([(_,[Dest|_])|Resto],Dest,Perc):- !, go1(Resto,Dest,Perc).
+go1([(_,[D|_])|R],D,Perc):- !, go1(R,D,Perc).
 
-go1([(C,[Ult|T])|Outros],Dest,Perc):- 
-	findall((NC,[Z,Ult|T]), 
-	(proximo_no(Ult,T,Z,C1),NC is C+C1),Lista), 
-	append(Outros,Lista,NPerc), 
-	sort(NPerc,NPerc1), 
-	go1(NPerc1,Dest,Perc). 
+go1([(C,[Ult|T])|O],D,Perc):- findall((NC,[Z,Ult|T]),	(proximo_no(Ult,T,Z,C1),NC is C+C1),L), append(O,L,NPerc), 
+	sort(NPerc,NPerc1),go1(NPerc1,D,Perc). 
 
 proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T). 
 
 
-
+camForte(O,D,Perc):-findall(P,camCurto(O,D,P),L),reverse(L,[Perc|_]).
 
 
 

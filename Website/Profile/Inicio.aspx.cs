@@ -6,18 +6,61 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
+using Graphs4Social_AR;
 
 public partial class Profile_Inicio : System.Web.UI.Page
 {
+    protected int forca = 1;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
             string username = Request.QueryString["user"];
+
             if (username == null)
             {
                 username = Profile.UserName;
+            }
+
+            if (!Profile.UserName.Equals(username))
+            {
+                Ligacao lig = Ligacao.LoadByUserNames(Profile.UserName,username);
+                Button1.Visible = true;
+
+                DropDownList1.Visible = true;
+
+                if ( lig == null)
+                {
+
+                    Button1.Text = "Enviar Pedido de Amizade";
+
+                }
+                else
+                {
+                    if (lig.Estado == -1)
+                    {
+
+                        Button1.Text = "Pedido Rejeitado";
+                        Button1.Enabled = true;
+
+                    }
+                    else if (lig.Estado == 0)
+                    {
+
+                        Button1.Text = "Pedido Enviado";
+                        Button1.Enabled = false;
+
+                    }
+                    else if (lig.Estado == 1)
+                    {
+
+                        Button1.Text = "Amigo";
+                        Button1.Enabled = false;
+
+                    }
+
+                }
             }
 
             tituloPerfil.InnerText = username;
@@ -25,7 +68,11 @@ public partial class Profile_Inicio : System.Web.UI.Page
             FillProfileLabels(username);
 
             FillTabelaDeAmigos(username);
+
+
+
         }
+
     }
 
     protected void FillTabelaDeAmigos(string username)
@@ -242,5 +289,11 @@ public partial class Profile_Inicio : System.Web.UI.Page
         img.Width = 150;
         img.BorderWidth = 2;
         img.BorderColor = Color.Gray;
+    }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        forca = Convert.ToInt32(DropDownList1.SelectedValue);
+        Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca);
     }
 }

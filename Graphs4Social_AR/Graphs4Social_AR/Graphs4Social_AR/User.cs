@@ -172,10 +172,12 @@ namespace Graphs4Social_AR
                 return null;
             else
             {
-                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserId='" + (int)ds.Tables[0].Rows[0]["UserId"] + "'");
+                DataSet dt = ExecuteQuery(GetConnection(false), "SELECT * FROM Users WHERE UserId='" + Convert.ToString(ds.Tables[0].Rows[0]["UserId"]) + "'");
                 return new User(dt.Tables[0].Rows[0], ds.Tables[0].Rows[0]);
             }
         }
+
+
 
         // Load de um User através do Username
         public static User LoadByUserName(string username)
@@ -224,7 +226,8 @@ namespace Graphs4Social_AR
 
                 foreach (Ligacao lig in lista)
                 {
-                    amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
+                    if (lig.Estado == 1)
+                        amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
                 }
 
                 return amigos;
@@ -257,14 +260,15 @@ namespace Graphs4Social_AR
                 idLigacao = (int)row["ID_LIG"];
             }
 
-            IList<User> amigos = new List<User>();
+            IList<User> pedidos = new List<User>();
 
             foreach (Ligacao lig in lista)
             {
-                amigos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
+                if(lig.Estado==0 && lig.ForcaDeLigacao==-1)
+                    pedidos.Add(User.LoadByUserLigadoId(lig.IdUserLigado));
             }
 
-            return amigos;
+            return pedidos;
         }
 
 

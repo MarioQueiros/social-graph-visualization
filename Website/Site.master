@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
     <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-    <link rel="stylesheet" href="/Website/resources/demos/style.css" />
+    <link rel="stylesheet" runat="server" href="~/Content/Site.css" />
     <script>
         $(function () {
             $(".DatepickerInput").datepicker({
@@ -60,7 +60,7 @@
 
 
                             <a href="#">
-                                <img src="/Website/images/search.png" style="vertical-align: middle;" title="Pesquisar" runat="server" /></a>
+                                <img src="~/Images/search.png" style="vertical-align: middle;" title="Pesquisar" runat="server" /></a>
                         
                         </div>
 
@@ -108,7 +108,7 @@
                 <asp:LoginView ID="loginView2" runat="server" ViewStateMode="Disabled">
                     <LoggedInTemplate>
                         <ul class="nav">
-                            <li><a href="#" runat="server">Pedidos de Amizade</a></li>
+                            <li><a href="~/Profile/Pedidos.aspx" runat="server">Pedidos de Amizade</a></li>
                             <li><a href="~/Profile/Editar.aspx" id="editar" runat="server">Editar Perfil</a></li>
                             <li><a href="~/Account/Manage.aspx" runat="server">Gerir Conta</a></li>
                             <li><a href="#" runat="server">Download da App 3D</a></li>

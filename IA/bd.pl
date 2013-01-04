@@ -41,7 +41,7 @@ tamanho2(U,R):-redeNivel2(U,L),length(L,R).
 
 tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 
-redeNivel2(U,R):-findall(U,ligado(U,_),R).
+redeNivel2(U,R):-findall(X,ligado(U,X),R).
 
 redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
@@ -109,7 +109,7 @@ calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
 calculaForcaVertices(_,[],0).
 
 %estrela(U,F,R):-estrela(U,F,F,R).
-%manipulados e originais, max actuais, resposta
+
 %estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
 %estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
 %estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
@@ -120,14 +120,18 @@ estrela([U|UR],[F|FR],OU,OF,U):-percorreForca(U,F,OU,OF),!.
 estrela([_|UR],[_|FR],OU,OF,R):-estrela(UR,FR,OU,OF,R).
 estrela([],[],_,_,_):-fail.
 
-
-
 %forca
 percorreForca(U,F,[U|UR],[F|FR]):-percorreForca(U,F,UR,FR).
 percorreForca(U,F,[_|UR],[V|FR]):-percentagemMaven(X),T is V*X,F>T,percorreForca(U,F,UR,FR).
 percorreForca(_,_,[],[]).
 
+grafoComum(U,U,_):-fail.
+grafoComum(UA,UB,G):-redeNivel2(UA,R1),redeNivel2(UB,R2),intersect(R1,R2,G).
 
+
+intersect([ ],_,[ ]).
+intersect([X|L1],L2,[X|LI]):-member(X,L2),!,intersect(L1,L2,LI).
+intersect([_|L1],L2, LI):- intersect(L1,L2,LI).
 
 cl(L, R) :-
         call(L, 0 , R).
@@ -136,7 +140,7 @@ cl(L, R) :-
 call([], Count, Count).
 
 % 2 - Recursive rule
-call([H|T], Count, R) :-
+call([_|T], Count, R) :-
         Count1 is Count + 1,
         call(T, Count1, R).
 
@@ -145,6 +149,33 @@ add(X,[],[X]).
 add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
+
+
+
+
+%Branch and bound
+camPesado(O,D,Perc):- go1([(0,[O])],D,P),reverse(P,Perc). 
+
+go1([(_,Pr)|_],D,Pr):- Pr=[D|_]. 
+go1([(_,[D|_])|R],D,Perc):- !, go1(R,D,Perc).
+go1([(C,[Ult|T])|O],D,Perc):- findall((NC,[Z,Ult|T]),	(proximo_no(Ult,T,Z,C1),NC is C+C1),L),
+ 	append(O,L,NPerc),sort(NPerc,NPerc1),go1(NPerc1,D,Perc). 
+
+proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T). 
+
+camForte(O,D,Perc):-findall(P,camPesado(O,D,P),L),reverse(L,[Perc|_]).
+
+%primeiro em largura
+camCurto(Orig,Dest,Perc) :- largura([[Orig]],Dest,P), reverse(P,Perc). 
+
+largura([Prim|Resto],Dest,Prim) :- Prim=[Dest|_]. 
+largura([[Dest|T]|Resto],Dest,Perc) :- !, largura(Resto,Dest,Perc). 
+largura([[Ult|T]|Outros],Dest,Perc):-findall([Z,Ult|T],proximo_no(Ult,T,Z),Lista),
+ append(Outros,Lista,NPerc), largura(NPerc,Dest,Perc). 
+
+proximo_no(X,T,Z) :- ligado(X,Z), not member(Z,T). 
+
+
 
 run1 :-
 	member(X, [abc,def,ghi,jkl]),

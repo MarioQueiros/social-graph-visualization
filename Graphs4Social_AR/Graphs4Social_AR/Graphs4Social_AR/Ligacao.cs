@@ -91,7 +91,9 @@ namespace Graphs4Social_AR
             this._idUserLigado = (int)row["ID_ULIG"];
             this._forcaDeLigacao = (int)row["FORCALIGACAO"];
 
-            if (row["ID_REL"] != null)
+            string rel = Convert.ToString(row["ID_REL"]);
+
+            if (!rel.Equals(""))
             {
 
                 this._idTagRelacao = (int)row["ID_REL"];
@@ -407,7 +409,7 @@ namespace Graphs4Social_AR
             DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId='" 
                 + User.LoadByUserName(username1).UniqueIdentifierUserId  
                 + "' AND ID_ULIG='" 
-                + User.LoadByUserName(username1).IdUserLigado
+                + User.LoadByUserName(username2).IdUserLigado
                 + "' AND ELIMINADO ='" + 0 + "'");
 
             if (ds.Tables[0].Rows.Count < 1)
@@ -501,7 +503,7 @@ namespace Graphs4Social_AR
         //
         //
         // Load de ligações de um User Ligado por IdUserLigado
-        internal static IList<Ligacao> LoadAllByUserLigadoId(int IdUserLigado)
+        public static IList<Ligacao> LoadAllByUserLigadoId(int IdUserLigado)
         {
             DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE ID_ULIG ='"
                 + IdUserLigado + "' AND ELIMINADO ='" + 0 + "'");
@@ -546,7 +548,7 @@ namespace Graphs4Social_AR
             // Se for o caso o Save é um update, mais provavel do Tag de Relação e/ou Força da mesma
 
 
-            DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM Ligacao WHERE"
+            DataSet dataSetLigacao = ExecuteQuery(GetConnection(false),"SELECT * FROM Ligacao WHERE"
                 + " UserId = '" + UniqueIdentifierUserId
                 + "' AND ID_ULIG = '" + IdUserLigado+"'");
 
@@ -561,18 +563,32 @@ namespace Graphs4Social_AR
             if (novaEntrada)
             {
 
-                sql.CommandText = "INSERT INTO Ligacao(UserId, ID_ULIG, ID_REL,FORCALIGACAO,ELIMINADO,ESTADO) "
-                    +"VALUES(@UserId, @ID_ULIG, @ID_REL,@FORCA,@ELIMINADO,@ESTADO)";
+                IDataParameter param;
+
+                if (IdTagRelacao <= 0)
+                {
+                    sql.CommandText = "INSERT INTO Ligacao(UserId, ID_ULIG, FORCALIGACAO,ELIMINADO,ESTADO) "
+                        + "VALUES(@UserId, @ID_ULIG,@FORCA,@ELIMINADO,@ESTADO)";
+
+                }
+                else
+                {
+                    sql.CommandText = "INSERT INTO Ligacao(UserId, ID_ULIG, ID_REL,FORCALIGACAO,ELIMINADO,ESTADO) "
+                        + "VALUES(@UserId, @ID_ULIG, @ID_REL,@FORCA,@ELIMINADO,@ESTADO)";
+                    
+                    param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
+                    param.Value = IdTagRelacao;
+
+                }
                 sql.Transaction = CurrentTransaction;
 
-                IDataParameter param = sql.Parameters.Add("@UserId", SqlDbType.UniqueIdentifier);
+                param = sql.Parameters.Add("@UserId", SqlDbType.UniqueIdentifier);
                 param.Value = new Guid(UniqueIdentifierUserId);
 
                 param = sql.Parameters.Add("@ID_ULIG", SqlDbType.Int);
                 param.Value = IdUserLigado;
 
-                param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
-                param.Value = IdTagRelacao;
+                
 
                 param = sql.Parameters.Add("@FORCA", SqlDbType.Int);
                 param.Value = ForcaDeLigacao;
@@ -587,29 +603,41 @@ namespace Graphs4Social_AR
 
                 // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
 
+                CommitTransaction();
+
                 if (rowsAfectadas > 0)
                 {
                     Gravado = true;
-
                     // Vai buscar a tabela o Id atribuido por increment a Nova Entrada
-                    myID = (int)ExecuteTransactedQuery("SELECT * FROM Ligacao WHERE UserId = '" 
+                    myID = Convert.ToInt32(ExecuteQuery(GetConnection(false), "SELECT * FROM Ligacao WHERE UserId = '" 
                         + UniqueIdentifierUserId
                         + "' AND ID_ULIG = '" + IdUserLigado + "'")
-                        .Tables[0].Rows[0]["ID_LIG"];
+                        .Tables[0].Rows[0]["ID_LIG"]);
                 }
                 else
                 {
                     Gravado = false;
                 }
+
             }
             else
             {
-                sql.CommandText = "UPDATE FROM Ligacao SET ID_REL=@ID_REL AND FORCALIGACAO=@FORCA AND ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
 
+                IDataParameter param;
+
+                if (IdTagRelacao <= 0)
+                {
+                    sql.CommandText = "UPDATE Ligacao SET FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
+                }
+                else
+                {
+                    sql.CommandText = "UPDATE Ligacao SET ID_REL=@ID_REL, FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
+                    param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
+                    param.Value = IdTagRelacao;
+                }
                 sql.Transaction = CurrentTransaction;
 
-                IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
-                param.Value = IdTagRelacao;
+                
 
                 param = sql.Parameters.Add("@FORCA", SqlDbType.Int);
                 param.Value = ForcaDeLigacao;
@@ -627,6 +655,8 @@ namespace Graphs4Social_AR
 
                 // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
 
+                CommitTransaction();
+
                 if (rowsAfectadas > 0)
                 {
                     Gravado = true;
@@ -635,10 +665,13 @@ namespace Graphs4Social_AR
                 {
                     Gravado = false;
                 }
+                
             }
 
 
-            CommitTransaction();
+            
+
+
         }
 
         
@@ -660,7 +693,7 @@ namespace Graphs4Social_AR
 
                 BeginTransaction();
 
-                sql.CommandText = "UPDATE FROM UserLigado SET ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
+                sql.CommandText = "UPDATE UserLigado SET ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
 
                 sql.Transaction = CurrentTransaction;
 

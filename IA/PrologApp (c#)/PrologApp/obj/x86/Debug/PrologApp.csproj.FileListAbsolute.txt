@@ -9,4 +9,3 @@ C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\obj\x86\Debug
 C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Debug\PrologApp.exe
 C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Debug\PrologApp.pdb
 C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Debug\LPA.DLL
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\obj\x86\Debug\PrologApp.csprojResolveAssemblyReference.cache

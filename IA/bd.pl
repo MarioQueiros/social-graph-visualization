@@ -182,9 +182,8 @@ run1 :-
 	write(X).
 	
 run2 :-
-	input( `Enter a value:`, Input ),
-	read(X) <~ Input,
-	member(X, [abc,def,ghi,jkl]).
+	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
+	user(X),nl,write('Existe').
 	
 
 deletelist([], _, []).                  

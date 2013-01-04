@@ -177,14 +177,13 @@ proximo_no(X,T,Z) :- ligado(X,Z), not member(Z,T).
 
 
 
-run1 :-
-	member(X, [abc,def,ghi,jkl]),
-	write(X).
+run1(N) :-
+	user(N),
+	write('Existe').
 	
 run2 :-
-	input( `Enter a value:`, Input ),
-	read(X) <~ Input,
-	member(X, [abc,def,ghi,jkl]).
+	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
+	user(X),nl,write('Existe').
 	
 
 deletelist([], _, []).                  

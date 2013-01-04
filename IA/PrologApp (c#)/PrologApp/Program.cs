@@ -40,8 +40,8 @@ namespace PrologApp
                 prolog.ExitGoal();
 
                 // executa um predicado
-                s = prolog.InitGoal("run1.\n");
-
+                //s = prolog.InitGoal("run1.\n");
+                s = prolog.InitGoal("run1(catia).\n");
                 s = prolog.CallGoal();
 
                 while (s.StartsWith("T"))
@@ -53,14 +53,17 @@ namespace PrologApp
                 prolog.ExitGoal();
 
                 // executa um predicado
-                /*s = prolog.InitGoal("run2.\n");
+
+              /*  prolog = new LPA.IntServer("", 0, 1, 0);
+                
+                s = prolog.InitGoal("run2.\n");
 
                 s = prolog.CallGoal();
                 s = prolog.TellGoal("def.\n");
 
 
                 prolog.ExitGoal();*/
-
+                Console.WriteLine("Teste: "+s+"FIM TESTE\n");
                 Console.WriteLine("Sucesso...");
                 Console.ReadLine();
             }

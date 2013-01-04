@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using LPA;
 
 namespace PrologApp
 {
@@ -33,18 +32,19 @@ namespace PrologApp
                 // inicia o motor do prolog
                 LPA.IntServer prolog = new LPA.IntServer("", 0, 1, 0);
 
+                String s;
+
                 // carrega o programa em prolog ('teste.pl')
-                string s = prolog.InitGoal("load_files(prolog(teste)).\n");
+                s = prolog.InitGoal("load_files(prolog(teste)).\n");
                 s = prolog.CallGoal();
                 prolog.ExitGoal();
 
                 // executa um predicado
-               // s = prolog.InitGoal("run1.\n");
-                s = prolog.InitGoal("ligado(pedro,bruno).\n");
+                s = prolog.InitGoal("run1.\n");
+
                 s = prolog.CallGoal();
 
-                //while (s.StartsWith("T"))
-                if(s.StartsWith("T"))
+                while (s.StartsWith("T"))
                 {
                     Console.WriteLine(s.Substring(8));
                     s = prolog.CallGoal();
@@ -53,7 +53,7 @@ namespace PrologApp
                 prolog.ExitGoal();
 
                 // executa um predicado
-               /* s = prolog.InitGoal("run2.\n");
+                /*s = prolog.InitGoal("run2.\n");
 
                 s = prolog.CallGoal();
                 s = prolog.TellGoal("def.\n");
@@ -61,10 +61,10 @@ namespace PrologApp
 
                 prolog.ExitGoal();*/
 
-                Console.WriteLine("Programa a terminar...");
+                Console.WriteLine("Sucesso...");
                 Console.ReadLine();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();

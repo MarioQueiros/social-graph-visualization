@@ -1,10 +1,10 @@
-
+user(catia).
 run1 :-
-	member(X, [abc,def,ghi,jkl]),
-	write(X).
+	user(catia),
+	write(catia).
 	
 run2 :-
-	input( `Enter a value:`, Input ),
+	input( 'Enter a value:', Input ),
 	read(X) <~ Input,
 	member(X, [abc,def,ghi,jkl]).
 	

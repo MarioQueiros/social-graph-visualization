@@ -4,6 +4,8 @@ user(catia).
 user(hugo).
 user(mario).
 user(tiago).
+user(carlos).
+
 %lig(user1,user2,forca1para2,forca2para1,[tags1para2],[tags2para1])
 
 tag(porto,[bruno,pedro,catia,hugo]).
@@ -11,7 +13,7 @@ tag(chelsea,[bruno]).
 tag(comida,[mario,bruno,hugo,carlos]).
 
 lig(pedro,bruno,5,[amigo]).
-lig(bruno,pedro,1,[urso]).
+lig(bruno,pedro,1,[ursologia]).
 lig(bruno,catia,2,[ese]).
 lig(catia,bruno,5,[isep]).
 lig(tiago,catia,2,[ese]).
@@ -41,9 +43,9 @@ tamanho2(U,R):-redeNivel2(U,L),length(L,R).
 
 tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 
-redeNivel2(U,R):-findall(X,ligado(U,X),R).
+redeNivel2(U,R):-user(U),findall(X,ligado(U,X),R).
 
-redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
+redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
@@ -182,8 +184,8 @@ run1 :-
 	write(X).
 	
 run2 :-
-	write('insira o nome do user a verificar:'),nl,read(X),
-	user(X),nl,write('Existe').
+	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
+	ligado(X,_),!,nl,write('Existe').
 	
 
 deletelist([], _, []).                  

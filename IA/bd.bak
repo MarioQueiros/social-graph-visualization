@@ -5,12 +5,13 @@ user(hugo).
 user(mario).
 user(tiago).
 user(carlos).
+user(sara).
 
 %lig(user1,user2,forca1para2,forca2para1,[tags1para2],[tags2para1])
 
-tag(porto,[bruno,pedro,catia,hugo]).
-tag(chelsea,[bruno]).
-tag(comida,[mario,bruno,hugo,carlos]).
+tag(porto,[bruno,pedro,catia,hugo,carlos,sara]).
+tag(chelsea,[bruno,sara]).
+tag(comida,[mario,bruno,hugo,sara]).
 
 lig(pedro,bruno,5,[amigo]).
 lig(bruno,pedro,1,[ursologia]).
@@ -26,6 +27,8 @@ lig(hugo,mario,3,[myva]).
 lig(mario,hugo,5,[myva]).
 lig(carlos,mario,2,[testeMaven]).
 lig(mario,carlos,1,[testeMaven]).
+lig(sara,catia,3,[testeSug]).
+lig(catia,sara,2,[testeSug]).
 
 %Verificar 
 minimoMaven(3).
@@ -89,8 +92,10 @@ criaSugestao(_,[],[]).
 
 %LT = lista Tags
 semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT).
-semelhante(_,_,[]):-fail.
-semelhante(_,_,[_|_]).
+semelhante(U,F,[TA|_]):-tag(TA,L),(member(U,L);member(F,L)),!,fail.
+semelhante(U,F,[_|LT]):-semelhante(U,F,LT).
+semelhante(_,_,[]).
+
 
 %Ver Calculo Equilibrio vertices Estrela
 %Maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,TM,R).

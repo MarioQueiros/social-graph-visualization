@@ -10,8 +10,10 @@ user(sara).
 %lig(user1,user2,forca1para2,forca2para1,[tags1para2],[tags2para1])
 
 tag(porto,[bruno,pedro,catia,hugo,carlos,sara]).
-tag(chelsea,[bruno,sara]).
+tag(chelsea,[bruno,sara,catia]).
 tag(comida,[mario,bruno,hugo,sara]).
+
+traduzir(blues,chelsea).
 
 lig(pedro,bruno,5,[amigo]).
 lig(bruno,pedro,1,[ursologia]).
@@ -67,7 +69,7 @@ somaL([LA|LB],V,RV,[LA|RS]):-append([LA],V,XV),somaL(LB,XV,RV,RS).
 %User, Lista Tags, Amigos
 amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).
 
-traduz([T|TR],[F|FR]):-traduzir(T,F),tag(F,_),traduz(TR,FR).
+traduz([T|TR],[F|FR]):-traduzir(T,F),!,tag(F,_),traduz(TR,FR).
 traduz([T|TR],[T|R]):-tag(T,_),traduz(TR,R).
 traduz([],[]).
 

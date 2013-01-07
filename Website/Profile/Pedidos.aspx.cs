@@ -86,23 +86,24 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                 IList<User> list = Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName);
 
-                HtmlTableRow rw = new HtmlTableRow();
-                HtmlTableCell cell = new HtmlTableCell();
 
                 HtmlTable htmltb = new HtmlTable();
+
+
+                HtmlTableRow rw = new HtmlTableRow();
                 HtmlTableRow rw1 = new HtmlTableRow();
                 HtmlTableRow rw2 = new HtmlTableRow();
                 HtmlTableRow rw3 = new HtmlTableRow();
                 HtmlTableRow rw4 = new HtmlTableRow();
 
+
+                HtmlTableCell cell = new HtmlTableCell();
                 HtmlTableCell cell1 = new HtmlTableCell();
                 HtmlTableCell cell2 = new HtmlTableCell();
                 HtmlTableCell cell3 = new HtmlTableCell();
                 HtmlTableCell cell4 = new HtmlTableCell();
 
 
-
-                //mudar length para list.Count
                 for (int i = 0; i < list.Count; i++)
                 {
 
@@ -118,7 +119,6 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                     Label name = new Label();
                     name.Text = list[i].Username;
-                    //name.Text = "texto something";
                     cell2.Controls.Add(name);
 
 
@@ -164,12 +164,12 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                         rw = new HtmlTableRow();
 
-                        rw.Cells.Add(cell);
+                        rw.Controls.Add(cell);
 
                     }
                     else
                     {
-                        rw.Cells.Add(cell);
+                        rw.Controls.Add(cell);
                     }
 
                     cell = new HtmlTableCell();

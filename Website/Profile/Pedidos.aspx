@@ -33,9 +33,7 @@
         }
 
     </script>
-    <table id="pedidosTable" runat="server">
-         
-    </table>
+    <table id="pedidosTable" runat="server"></table>
 
     <asp:Button ID="btt" runat="server" OnClientClick="return false;"/>
     <asp:Button ID="btt1" runat="server" UseSubmitBehavior="false" OnClick="btt1_Click"/>

@@ -182,9 +182,9 @@ void myInit()
 
 void imprime_ajuda(void)
 {
-	printf("Desenho de um labirinto a partir de um grafo\n\n");
+	printf("Desenho de um labirinto a partir de um grafo \n\n");
 	printf("h,H - Ajuda \n");
-	printf("i,I - Repor os valores iniciais\n");
+	printf("i,I - Repor os valores iniciais \n");
 	printf("ESC - Sair \n");
 
 	printf("\n******* Grafo ******* \n");
@@ -192,27 +192,27 @@ void imprime_ajuda(void)
 	printf("F2  - Ler grafo de ficheiro \n");
 	printf("F6  - Grava grafo em ficheiro \n");
 
-	printf("\n******* Desenho ******* \n");
+	printf("\n****** Desenho ****** \n");
 	printf("f,F - PolygonMode Fill \n");
 	printf("w,W - PolygonMode Wireframe \n");
 	printf("p,P - PolygonMode Point \n");
 
-	printf("\n******* Iluminacao ******* \n");
-	printf("l,L - Luz fixa em relacao a cena/viewport\n");
+	printf("\n**** Iluminacao ***** \n");
+	printf("l,L - Luz fixa em relacao a cena/viewport \n");
 	printf("k,K - Alerna luz de camera com luz global \n");
 	printf("c,C - Liga/Desliga Cull Face \n");
 
-	printf("\n******* Camera ******* \n");
-	printf("Botao esquerdo - Rodar camera\n");
+	printf("\n****** Camera ******* \n");
+	printf("Botao esquerdo - Rodar camera \n");
 
-	printf("\nVoo Livre\n");
-	printf("q/Q/a/A - Subir/descer\n");
-	printf("Up/Down - Avancar/recuar\n");
-	printf("Left/Right - Rodar para a esquerda/direita");
+	printf("\n Voo Livre \n");
+	printf("q/Q/a/A - Subir/descer \n");
+	printf("Up/Down - Avancar/recuar \n");
+	printf("Left/Right - Rodar para a esquerda/direita \n");
 
-	printf("\nVoo Rasante\n");
-	printf("Up/Down - Avancar/recuar\n");
-	printf("Left/Right - Rodar para a esquerda/direita");
+	printf("\n Voo Rasante \n");
+	printf("Up/Down - Avancar/recuar \n");
+	printf("Left/Right - Rodar para a esquerda/direita \n");
 }
 
 void material(enum tipo_material mat)
@@ -603,15 +603,13 @@ void desenhaLabirinto()
 	glScalef(5,5,5);
 
 	for(int i=0; i<numNos; i++){
-		glPushName(NO + i);
+		glLoadName(NO + i);
 		desenhaNo(i);
-		glPopName();
 	}
 	material(red_plastic);
 	for(int i=0; i<numArcos; i++){
-		glPushName(ARCO + i);
+		glLoadName(ARCO + i);
 		desenhaArco(arcos[i]);
-		glPopName();
 	}
 	glPopMatrix();
 }
@@ -778,8 +776,9 @@ void setProjection(int x, int y, GLboolean picking)
 
 int colisaoLivre()
 {
-	int i, n, objid=0;
-	double zmin2 = 10.0, zmax2 = 0;
+	unsigned int i, j;
+	int n, objid=0;
+	double zmin2 = 10.0, zmax2 = 10.0;
 	GLuint buffer[100], *ptr;
 	GLfloat vel = estado.camera.velh + estado.camera.velv;
 	GLdouble newx, newy, newz;
@@ -789,11 +788,12 @@ int colisaoLivre()
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
+	glPushName(0);
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix(); // guarda a projecção
 	glLoadIdentity();
-	glOrtho( -DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0,
+	glOrtho(-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0,
 		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + vel*4);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -807,9 +807,23 @@ int colisaoLivre()
 	n = glRenderMode(GL_RENDER);
 	if (n > 0)
 	{
-		ptr = buffer;
+		GLuint names;
+		ptr = (GLuint *) buffer;
 		for (i = 0; i < n; i++)
 		{
+			names = *ptr;
+
+			/*printf (" number of names for hit = %d\n", names); ptr++;
+			printf(" z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
+			printf(" z2 is %g\n", (float) *ptr/0x7fffffff); ptr++;
+			printf (" the name is ");
+			for (j = 0; j < names; j++)
+			{ 
+			// for each name 
+			printf ("%d ", *ptr); ptr++;
+			}
+			printf ("\n");*/
+
 			if (zmin2 > (double) ptr[1] / UINT_MAX) {
 				zmin2 = (double) ptr[1] / UINT_MAX;
 				objid = ptr[3];
@@ -823,14 +837,15 @@ int colisaoLivre()
 			glGetDoublev(GL_PROJECTION_MATRIX, proj);
 			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
 
-			gluUnProject(estado.camera.center[0], glutGet(GLUT_WINDOW_HEIGHT) - estado.camera.center[2], (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
 
-			cout << "\nX: " << newx << " Y: " << newy << " Z: " << newz << endl;
 			GLfloat d = sqrt(pow(newx- estado.camera.center[0],2) + pow(newy-estado.camera.center[1],2) + pow(newz - estado.camera.center[2],2));
 
 			float limit = std::numeric_limits<float>::infinity();
 
 			k = (d - DIMEMSAO_CAMARA/2.0 - limit) / vel;
+
+			//estado.camera.center[0] -= d;
 		}
 	}
 	else{
@@ -846,7 +861,9 @@ int colisaoLivre()
 
 int colisaoRasante()
 {
-	int i, n, objid=0;
+	unsigned int i, j;
+	int n, objid=0;
+	double zmin2 = 10.0, zmax2 = 10.0;
 	estado.zmin =  (estado.zmin + 1) * 35;
 	estado.zmax =  (estado.zmax + 1) * 35;
 	GLuint buffer[100], *ptr;
@@ -856,9 +873,13 @@ int colisaoRasante()
 	GLdouble proj[16], mv[16];
 	GLint farP = 0, nearP = 0; 
 
+	nearP = -(estado.zmin - 1);
+	farP  = -(estado.zmax + 1);
+
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
+	glPushName(0);
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix(); // guarda a projecção
@@ -874,24 +895,39 @@ int colisaoRasante()
 	n = glRenderMode(GL_RENDER);
 	if (n > 0)
 	{
-		ptr = buffer;
+		GLuint names;
+		ptr = (GLuint *) buffer;
 		for (i = 0; i < n; i++)
 		{
-			/*if (zmin > (double) ptr[1] / UINT_MAX) {
-			zmin = (double) ptr[1] / UINT_MAX;
+			/*names = *ptr;
+			printf (" number of names for hit = %d\n", names); ptr++;
+			printf(" z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
+			printf(" z2 is %g\n", (float) *ptr/0x7fffffff); ptr++;
+			printf (" the name is ");
+			for (j = 0; j < names; j++)
+			{ 
+				// for each name
+				printf ("%d ", *ptr); ptr++;
+			}
+			printf ("\n");*/
+
+			if (zmin2 > (double) ptr[1] / UINT_MAX) {
+			zmin2 = (double) ptr[1] / UINT_MAX;
 			objid = ptr[3];
 			}
 
-			if (zmax < (double) ptr[1] / UINT_MAX) {
-			zmax = (double) ptr[1] / UINT_MAX;
-			}*/
+			if (zmax2 < (double) ptr[1] / UINT_MAX) {
+			zmax2 = (double) ptr[1] / UINT_MAX;
+			}
+
 			glGetIntegerv(GL_VIEWPORT, vp);
 			glGetDoublev(GL_PROJECTION_MATRIX, proj);
 			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
 
-			gluUnProject(estado.camera.center[0], glutGet(GLUT_WINDOW_HEIGHT) - estado.camera.center[2], (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
 			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
 		}
+		//estado.camera.center[2] = newz + DISTANCIA_SOLO;
 	}
 
 	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
@@ -913,7 +949,8 @@ void Timer(int value)
 		if(!estado.vooRasante)
 		{
 			estado.eixoTranslaccao=colisaoLivre();
-			if(!estado.eixoTranslaccao){
+			if(!estado.eixoTranslaccao)
+			{
 				estado.camera.center[0] = estado.camera.center[0] + estado.k*estado.camera.velh * cos(estado.camera.dir_long);
 				estado.camera.center[1] = estado.camera.center[1] + estado.k*estado.camera.velh * sin(estado.camera.dir_long);
 				estado.camera.center[2] = estado.camera.center[2];
@@ -921,11 +958,12 @@ void Timer(int value)
 		}else{
 			// se voo rasante
 			estado.eixoTranslaccao=colisaoRasante();
-			if(estado.eixoTranslaccao != 0)
+			if(estado.eixoTranslaccao)
 			{
 				estado.camera.center[0] = estado.camera.center[0] + estado.camera.velh * cos(estado.camera.dir_long);
 				estado.camera.center[1] = estado.camera.center[1] + estado.camera.velh * sin(estado.camera.dir_long);
-				estado.camera.center[2] = estado.camera.center[2] + estado.camera.distância_solo;
+				//estado.camera.center[2] = estado.camera.center[2] + DISTANCIA_SOLO;
+				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
@@ -936,18 +974,19 @@ void Timer(int value)
 			estado.eixoTranslaccao=colisaoLivre();
 			if(!estado.eixoTranslaccao)
 			{
-				estado.camera.center[0]=estado.camera.center[0] - estado.k*estado.camera.velh * cos(estado.camera.dir_long);
-				estado.camera.center[1]=estado.camera.center[1] - estado.k*estado.camera.velh * sin(estado.camera.dir_long);
-				estado.camera.center[2]=estado.camera.center[2];
+				estado.camera.center[0] = estado.camera.center[0] - estado.k*estado.camera.velh * cos(estado.camera.dir_long);
+				estado.camera.center[1] = estado.camera.center[1] - estado.k*estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}else{
 			// se voo rasante
 			estado.eixoTranslaccao=colisaoRasante();
-			if(estado.eixoTranslaccao != 0)
+			if(estado.eixoTranslaccao)
 			{
 				estado.camera.center[0] = estado.camera.center[0] - estado.camera.velh * cos(estado.camera.dir_long);
 				estado.camera.center[1] = estado.camera.center[1] - estado.camera.velh * sin(estado.camera.dir_long);
-				estado.camera.center[2] = estado.camera.center[2] - estado.camera.distância_solo;
+				//estado.camera.center[2] = estado.camera.center[2] - DISTANCIA_SOLO;
+				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
@@ -1046,8 +1085,6 @@ void keyboard(unsigned char key, int x, int y)
 			initModelo();
 			estado.camera.center[2] = estado.camera.distância_solo;
 			estado.vooRasante = GL_TRUE;
-			cout << "\nZmin: " << (estado.zmin + 1) * 35 << " Zmax: " << (estado.zmax + 1) * 35 << endl;
-			cout << "\Y: " << estado.camera.distância_solo << endl;
 		}
 		else{
 			estado.vooRasante = GL_FALSE;

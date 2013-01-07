@@ -4,8 +4,9 @@ c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(447): warning C4101: 
 c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraEste' : unreferenced local variable
 c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraOeste' : unreferenced local variable
 c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraSul' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(1050): warning C4129: 'Y' : unrecognized character escape sequence
-  grafos.cpp
-  Generating Code...
-grafos.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(812): warning C4018: '<' : signed/unsigned mismatch
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(779): warning C4101: 'j' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(900): warning C4018: '<' : signed/unsigned mismatch
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(864): warning C4101: 'j' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(898): warning C4101: 'names' : unreferenced local variable
   Lapr5.vcxproj -> C:\Users\leniker\Desktop\LAPR V\Graphs4Social_3D\Debug\Lapr5.exe

@@ -67,16 +67,17 @@ somaL([LA|LB],V,RV,[LA|RS]):-append([LA],V,XV),somaL(LB,XV,RV,RS).
 %User, Lista Tags, Amigos
 amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).
 
-traduz(T,T).
+traduz([T|TR],[F|FR]):-traduzir(T,F),tag(F,_),traduz(TR,FR).
+traduz([T|TR],[T|R]):-tag(T,_),traduz(TR,R).
+traduz([],[]).
+
 %ligacoes,tags
 filtraAmigos([LA|LB],T,[LA|RX]):-verificaTags(LA,T),!,filtraAmigos(LB,T,RX).
 filtraAmigos([_|LB],T,R):-filtraAmigos(LB,T,R).
 filtraAmigos([],_,[]).
 
-
 verificaTags(U,[TA|TB]):-tag(TA,L),member(U,L),verificaTags(U,TB).
 verificaTags(_,[]).
-
 
 %sugereAmigos
 sugereAmigos(U,R):-redeNivel3(U,L),filtraNaoLigacoes(U,L,F),deletelist(L,F,LF),criaSugestao(U,LF,R),!.
@@ -175,7 +176,7 @@ proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T).
 
 
 %primeiro em largura
-camCurto(Orig,Dest,Perc) :- largura([[Orig]],Dest,P), reverse(P,Perc),!. 
+camCurto(Orig,Dest,Perc) :- largura([[Orig]],Dest,P), reverse(P,Perc). 
 
 largura([Prim|_],Dest,Prim) :- Prim=[Dest|_]. 
 largura([[Dest|_]|Resto],Dest,Perc) :- !, largura(Resto,Dest,Perc). 
@@ -184,17 +185,18 @@ largura([[Ult|T]|Outros],Dest,Perc):-findall([Z,Ult|T],proximo_no(Ult,T,Z),Lista
 
 proximo_no(X,T,Z) :- ligado(X,Z), not member(Z,T). 
 
+deletelist([], _, []).                  
+deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
+deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 
+%grauMedio separacao (s/ cut/complexidade)
+grauMedio(O,D,R):-user(O),user(D),findall(X,camCurto(O,D,X),L),somaCaminho(L,C),length(L,T),R is C/T.
 
-run1 :-
-	member(X, [abc,def,ghi,jkl]),
-	write(X).
+somaCaminho([C|CR],R):-somaCaminho(CR,R1),length(C,R2),R is R1+R2.
+somaCaminho([],0).
+
+run1 :-member(X, [abc,def,ghi,jkl]),write(X).
 	
 run2 :-
 	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
 	ligado(X,_),!,nl,write('Existe').
-	
-
-deletelist([], _, []).                  
-deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
-deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).

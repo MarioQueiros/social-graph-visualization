@@ -11,65 +11,72 @@ using System.Reflection;
 public partial class Profile_Pedidos : System.Web.UI.Page
 {
 
-    protected string forca;
-
     protected void Page_Load(object sender, EventArgs e)
     {
+        btt.Visible = false;
+        btt1.Visible = false;
+        dropi.Visible = false;
+        int forca = -1;
         if (Request.QueryString["user"] != null && Request.QueryString["forca"] != null)
         {
-            Label1.Visible = true;
-
-            btt.Visible = false;
-            btt1.Visible = false;
-            dropi.Visible = false;
-
-            IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(Request.QueryString["user"]);
-
-            foreach (string element in profile)
+            try
             {
+                forca = Convert.ToInt32(Request.QueryString["forca"]);
 
-                if (element.Contains("Imagem:"))
-                {
-
-                    img.ImageUrl = "~/Images/" + element.Split(':')[1];
-                    img.Height = 150;
-                    img.Width = 150;
-                    img.BorderWidth = 2;
-                    img.BorderColor = System.Drawing.Color.Gray;
-                    Label1.Text = Request.QueryString["user"];
-                    break;
-                }
-
-            }
-
-            if (img.ImageUrl.Equals(""))
-            {
-                img.ImageUrl = "~/Images/Indeciso.png";
-                img.Height = 150;
-                img.Width = 150;
-                img.BorderWidth = 2;
-                img.BorderColor = System.Drawing.Color.Gray;
-                Label1.Text = Request.QueryString["user"];
-            }
-            //
-            //
-            //
-            //remover comentário
-            //
-            //
-            //
-            /*try
-            {
                 bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]));
                 if (!a)
                 {
                     Graphs4Social_AR.Ligacao.RejeitarPedido(Profile.UserName, Request.QueryString["user"]);
                 }
+
+                Label1.Visible = true;
+
+                IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(Request.QueryString["user"]);
+
+                string imagem = "", sexo = "";
+
+                foreach (string element in profile)
+                {
+                    if (element.Contains("Imagem:"))
+                    {
+                        imagem = element;
+                    }
+                    else if (element.Contains("Sexo:"))
+                    {
+                        sexo = element;
+                    }
+
+                }
+
+                if (!imagem.Equals(""))
+                {
+                    if (imagem.Split(':')[1].Contains("Masculino") ||
+                                imagem.Split(':')[1].Contains("Feminino") ||
+                                imagem.Split(':')[1].Contains("Digo depois") ||
+                                imagem.Split(':')[1].Contains("Indeciso"))
+                    {
+                        if (!sexo.Equals(""))
+                        {
+                            FillImagemPerfil(img, sexo.Split(':')[1] + ".png");
+                        }
+                    }
+                    else
+                        FillImagemPerfil(img, imagem.Split(':')[1]);
+                }
+                else
+                {
+                    FillImagemPerfil(img, "Indeciso.png");
+                }
+
+                //Globalization aqui!!!
+                Label2.Text = "Amigo adicionado com sucesso";
+                Label2.Visible = true;
             }
             catch (Exception ex)
             {
-                ex.ToString(); 
-            }*/
+                Label2.Text = "Ocorreu um erro. Tente mais tarde";
+                Label2.Visible = true;
+            }
         }
         else
         {
@@ -93,10 +100,10 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 HtmlTableCell cell3 = new HtmlTableCell();
                 HtmlTableCell cell4 = new HtmlTableCell();
 
-                int numAmigos = 10;
+
 
                 //mudar length para list.Count
-                for (int i = 0; i < numAmigos; i++)
+                for (int i = 0; i < list.Count; i++)
                 {
 
 
@@ -110,18 +117,16 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
 
                     Label name = new Label();
-                    //name.Text = list[i].Username;
-                    name.Text = "texto something";
+                    name.Text = list[i].Username;
+                    //name.Text = "texto something";
                     cell2.Controls.Add(name);
 
 
                     Button btA = new Button();
                     btA = (Button)CloneObject(btt);
                     btA.Text = "Aceitar";
-                    // NÂO ESQUECER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-                    btA.PostBackUrl = "~/Profile/Pedidos.aspx?user=" + Profile.UserName;
-
-
+                    btA.PostBackUrl = "~/Profile/Pedidos.aspx?user=" + list[i].Username;
+                    btA.Visible = true;
                     cell3.Controls.Add(btA);
 
 
@@ -129,8 +134,8 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     Button btR = new Button();
                     btR = (Button)CloneObject(btt1);
                     btR.Text = "Rejeitar";
-                    // NÂO ESQUECER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-                    btR.PostBackUrl = "~/Profile/Pedidos.aspx?user=" + Profile.UserName;
+                    btR.PostBackUrl = "~/Profile/Pedidos.aspx?user=" + list[i].Username;
+                    btR.Visible = true;
                     cell4.Controls.Add(btR);
 
 
@@ -183,7 +188,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     htmltb = new HtmlTable();
                 }
 
-                if (numAmigos % 3 > 0)
+                if (list.Count % 3 > 0)
                     pedidosTable.Controls.Add(rw);
 
                 btt.Visible = false;
@@ -200,34 +205,14 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         }
     }
 
-    protected void btA_Click(object sender, EventArgs e)
+    private void FillImagemPerfil(Image img, string image)
     {
-        btt.Visible = false;
-        dropi.Visible = false;
-
-        Button bt = (Button)sender;
-        string s = Request.QueryString["user"];
-
-        Label1.Text = "index:" + forca + "  - ";
-
-        Label1.Text += "Aceitar=" + s + " - forca: ";
-        Label1.Visible = true;
-        //Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, s, 0);
-    }
-
-    protected void btR_Click(object sender, EventArgs e)
-    {
-
-        btt.Visible = false;
-        btt1.Visible = false;
-        dropi.Visible = false;
-
-        Button bt = (Button)sender;
-        string s = Request.QueryString["user"];
-
-        Label1.Text = "Rejeitar=" + s;
-        Label1.Visible = true;
-        //Graphs4Social_AR.Ligacao.RejeitarPedido(Profile.UserName, s);
+        img.ImageUrl = "~/Images/" + image;
+        img.Height = 150;
+        img.Width = 150;
+        img.BorderWidth = 2;
+        img.BorderColor = System.Drawing.Color.Gray;
+        Label1.Text = Request.QueryString["user"];
     }
 
     public static Object CloneObject(object o)
@@ -244,8 +229,8 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         }
         return p;
     }
-    protected void drop_SelectedIndexChanged(object sender, EventArgs e)
+    protected void btt1_Click(object sender, EventArgs e)
     {
-        forca = ((DropDownList)sender).SelectedValue;
+
     }
 }

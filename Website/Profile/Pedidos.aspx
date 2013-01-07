@@ -33,15 +33,17 @@
         }
 
     </script>
-    <table id="pedidosTable" runat="server">
-         
-    </table>
+    <table id="pedidosTable" runat="server"></table>
 
     <asp:Button ID="btt" runat="server" OnClientClick="return false;"/>
-    <asp:Button ID="btt1" runat="server" OnClick="btR_Click" UseSubmitBehavior="false"/>
-    <asp:DropDownList ID="dropi" runat="server" OnSelectedIndexChanged="drop_SelectedIndexChanged" AutoPostBack="True"/>
+    <asp:Button ID="btt1" runat="server" UseSubmitBehavior="false" OnClick="btt1_Click"/>
+    <asp:DropDownList ID="dropi" runat="server" AutoPostBack="True"/>
     <asp:Image ID="img" runat="server" />
     <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
+    <br />
+    <br />
+    <br />
+    <asp:Label ID="Label2" runat="server" Visible="false" style="font-weight: 700"></asp:Label>
 
     <div id="dialog" title="Força Ligação">
         Escolha a força da ligação:<br />

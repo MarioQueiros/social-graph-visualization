@@ -105,23 +105,28 @@ public partial class Profile_Inicio : System.Web.UI.Page
             else
                 Label18.Text += " amigos";
 
+
+
+
             HtmlTableRow row = new HtmlTableRow();
 
             foreach (Graphs4Social_AR.User amigo in amigos)
             {
-                IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(amigo.Username);
-                
-                
-                
-                HtmlTableCell cell = new HtmlTableCell();
-
-
 
                 HtmlTable amigoTable = new HtmlTable();
 
+                HtmlTableCell cell = new HtmlTableCell();
+                HtmlTableCell cell1 = new HtmlTableCell();
+                HtmlTableCell cell2 = new HtmlTableCell();
 
+                
                 HtmlTableRow imagem = new HtmlTableRow();
-                imagem.Controls.Add(cell);
+                HtmlTableRow titulo = new HtmlTableRow();
+
+                IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(amigo.Username);
+
+                
+                //imagem.Controls.Add(cell);
                 System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
                 foreach(string elemento in profile){
 
@@ -131,30 +136,31 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     }
 
                 }
-
-                cell.Controls.Add(img);
-
-
-                cell = new HtmlTableCell();
-                HtmlTableRow titulo = new HtmlTableRow();
-                titulo.Controls.Add(cell);
+                cell1.Controls.Add(img);
+                
+                
                 HtmlAnchor a = new HtmlAnchor();
                 a.InnerHtml = amigo.Username;
                 a.HRef = "~/Profile/Inicio.aspx?user=" + amigo.Username;
-                cell.Controls.Add(a);
+                cell2.Controls.Add(a);
 
 
+                imagem.Controls.Add(cell1);
                 amigoTable.Controls.Add(imagem);
+                
+
+                titulo.Controls.Add(cell2);
                 amigoTable.Controls.Add(titulo);
 
-                cell = new HtmlTableCell();
                 cell.Controls.Add(amigoTable);
-                if (index == 0 || index / 4 == 0)
-                {
 
+
+                if (index % 3 == 0 || index == 0)
+                {
                     row = new HtmlTableRow();
                     row.Controls.Add(cell);
                     tabelaDeAmigos.Controls.Add(row);
+                    
                 }
                 else
                 {
@@ -163,6 +169,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
                 index++;
             }
+
 
         }else{
             Label18.Text = "0 amigos";

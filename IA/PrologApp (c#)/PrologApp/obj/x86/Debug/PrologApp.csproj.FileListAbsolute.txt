@@ -1,0 +1,6 @@
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\x86\Debug\PrologApp.exe
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\x86\Debug\PrologApp.pdb
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\x86\Debug\LPA.DLL
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\obj\x86\Debug\PrologApp.exe
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\obj\x86\Debug\PrologApp.pdb
+C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\obj\x86\Debug\PrologApp.csprojResolveAssemblyReference.cache

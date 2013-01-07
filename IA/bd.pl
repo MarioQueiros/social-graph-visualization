@@ -4,19 +4,22 @@ user(catia).
 user(hugo).
 user(mario).
 user(tiago).
+user(carlos).
+user(sara).
+
 %lig(user1,user2,forca1para2,forca2para1,[tags1para2],[tags2para1])
 
-tag(porto,[bruno,pedro,catia,hugo]).
-tag(chelsea,[bruno]).
-tag(comida,[mario,bruno,hugo,carlos]).
+tag(porto,[bruno,pedro,catia,hugo,carlos,sara]).
+tag(chelsea,[bruno,sara]).
+tag(comida,[mario,bruno,hugo,sara]).
 
 lig(pedro,bruno,5,[amigo]).
-lig(bruno,pedro,1,[urso]).
+lig(bruno,pedro,1,[ursologia]).
 lig(bruno,catia,2,[ese]).
 lig(catia,bruno,5,[isep]).
 lig(tiago,catia,2,[ese]).
 lig(catia,tiago,5,[isep]).
-lig(hugo,catia,2,[ese]).
+lig(hugo,catia,5,[ese]).
 lig(catia,hugo,5,[isep]).
 lig(bruno,mario,2,[contador]).
 lig(mario,bruno,5,[cavendish]).
@@ -24,6 +27,8 @@ lig(hugo,mario,3,[myva]).
 lig(mario,hugo,5,[myva]).
 lig(carlos,mario,2,[testeMaven]).
 lig(mario,carlos,1,[testeMaven]).
+lig(sara,catia,3,[testeSug]).
+lig(catia,sara,2,[testeSug]).
 
 %Verificar 
 minimoMaven(3).
@@ -41,9 +46,9 @@ tamanho2(U,R):-redeNivel2(U,L),length(L,R).
 
 tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 
-redeNivel2(U,R):-findall(X,ligado(U,X),R).
+redeNivel2(U,R):-user(U),findall(X,ligado(U,X),R).
 
-redeNivel3(U,R):-ligacoes(U,L),percorreUser(U,L,R).
+redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
@@ -87,8 +92,10 @@ criaSugestao(_,[],[]).
 
 %LT = lista Tags
 semelhante(U,F,[TA|LT]):-tag(TA,L),member(U,L),member(F,L),!,semelhante(U,F,LT).
-semelhante(_,_,[]):-fail.
-semelhante(_,_,[_|_]).
+semelhante(U,F,[TA|_]):-tag(TA,L),(member(U,L);member(F,L)),!,fail.
+semelhante(U,F,[_|LT]):-semelhante(U,F,LT).
+semelhante(_,_,[]).
+
 
 %Ver Calculo Equilibrio vertices Estrela
 %Maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,TM,R).
@@ -154,8 +161,10 @@ notmember(X,L):-(member(X,L), !, fail);true.
 
 
 %Branch and bound
-camPesado(O,D,Perc):- go1([(0,[O])],D,P),reverse(P,Perc). 
+camForte(O,D,Perc):-findall(P,camPesado(O,D,P),L),reverse(L,[Perc|_]).
 
+
+camPesado(O,D,Perc):- go1([(0,[O])],D,P),reverse(P,Perc). 
 go1([(_,Pr)|_],D,Pr):- Pr=[D|_]. 
 go1([(_,[D|_])|R],D,Perc):- !, go1(R,D,Perc).
 go1([(C,[Ult|T])|O],D,Perc):- findall((NC,[Z,Ult|T]),	(proximo_no(Ult,T,Z,C1),NC is C+C1),L),
@@ -163,13 +172,13 @@ go1([(C,[Ult|T])|O],D,Perc):- findall((NC,[Z,Ult|T]),	(proximo_no(Ult,T,Z,C1),NC
 
 proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T). 
 
-camForte(O,D,Perc):-findall(P,camPesado(O,D,P),L),reverse(L,[Perc|_]).
+
 
 %primeiro em largura
-camCurto(Orig,Dest,Perc) :- largura([[Orig]],Dest,P), reverse(P,Perc). 
+camCurto(Orig,Dest,Perc) :- largura([[Orig]],Dest,P), reverse(P,Perc),!. 
 
-largura([Prim|Resto],Dest,Prim) :- Prim=[Dest|_]. 
-largura([[Dest|T]|Resto],Dest,Perc) :- !, largura(Resto,Dest,Perc). 
+largura([Prim|_],Dest,Prim) :- Prim=[Dest|_]. 
+largura([[Dest|_]|Resto],Dest,Perc) :- !, largura(Resto,Dest,Perc). 
 largura([[Ult|T]|Outros],Dest,Perc):-findall([Z,Ult|T],proximo_no(Ult,T,Z),Lista),
  append(Outros,Lista,NPerc), largura(NPerc,Dest,Perc). 
 
@@ -182,9 +191,8 @@ run1 :-
 	write(X).
 	
 run2 :-
-	input( `Enter a value:`, Input ),
-	read(X) <~ Input,
-	member(X, [abc,def,ghi,jkl]).
+	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
+	ligado(X,_),!,nl,write('Existe').
 	
 
 deletelist([], _, []).                  

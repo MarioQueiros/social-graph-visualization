@@ -30,8 +30,56 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 {
                     Ligacao lig = Ligacao.LoadByUserNames(Profile.UserName, username);
                     Button1.Visible = true;
-
+                    
                     DropDownList1.Visible = true;
+
+                    tagsRelacao.Visible = true;
+                    
+                    IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+                    string sexo="";
+
+                    foreach(string elemento in lis){
+
+                        if (elemento.Contains("Sexo:")){
+                            sexo = elemento.Split(':')[1];
+                            break;
+                        }
+
+                    }
+                    IList<Tag> listatagsM=null;
+                    IList<Tag> listatagsF=null;
+
+                    if (sexo.Contains("Masculino") || sexo.Contains("Man") || sexo.Contains("Men"))
+                    {
+                        listatagsM = Tag.LoadAllMenTagRelacao();
+                        foreach (Tag tag in listatagsM)
+                        {
+                            tagsRelacao.Items.Add(tag.Nome);
+                        }
+                    }
+                    else if (sexo.Contains("Feminino") || sexo.Contains("Women") || sexo.Contains("Woman"))
+                    {
+                        listatagsF = Tag.LoadAllWomenTagRelacao();
+                        foreach (Tag tag in listatagsF)
+                        {
+                            tagsRelacao.Items.Add(tag.Nome);
+                        }
+                    }
+                    else
+                    {
+                        listatagsM = Tag.LoadAllMenTagRelacao();
+                        listatagsF = Tag.LoadAllWomenTagRelacao();
+                        foreach (Tag tag in listatagsF)
+                        {
+                            tagsRelacao.Items.Add(tag.Nome);
+                        }
+                        foreach (Tag tag in listatagsM)
+                        {
+                            tagsRelacao.Items.Add(tag.Nome);
+                        }
+                    }
+
 
                     if (lig == null)
                     {
@@ -89,7 +137,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void FillTabelaDeAmigos(string username)
     {
-        
+
 
         Label17.Text = "Amigos - ";
         IList<Graphs4Social_AR.User> amigos = Graphs4Social_AR.User.LoadAllAmigosUser(username);
@@ -119,26 +167,28 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 HtmlTableCell cell1 = new HtmlTableCell();
                 HtmlTableCell cell2 = new HtmlTableCell();
 
-                
+
                 HtmlTableRow imagem = new HtmlTableRow();
                 HtmlTableRow titulo = new HtmlTableRow();
 
                 IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(amigo.Username);
 
-                
+
                 //imagem.Controls.Add(cell);
                 System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
-                foreach(string elemento in profile){
+                foreach (string elemento in profile)
+                {
 
-                    if (elemento.Contains("Imagem:")){
+                    if (elemento.Contains("Imagem:"))
+                    {
                         FillImagemPerfil(img, elemento.Split(':')[1]);
                         break;
                     }
 
                 }
                 cell1.Controls.Add(img);
-                
-                
+
+
                 HtmlAnchor a = new HtmlAnchor();
                 a.InnerHtml = amigo.Username;
                 a.HRef = "~/Profile/Inicio.aspx?user=" + amigo.Username;
@@ -147,7 +197,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
                 imagem.Controls.Add(cell1);
                 amigoTable.Controls.Add(imagem);
-                
+
 
                 titulo.Controls.Add(cell2);
                 amigoTable.Controls.Add(titulo);
@@ -160,7 +210,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     row = new HtmlTableRow();
                     row.Controls.Add(cell);
                     tabelaDeAmigos.Controls.Add(row);
-                    
+
                 }
                 else
                 {
@@ -171,7 +221,9 @@ public partial class Profile_Inicio : System.Web.UI.Page
             }
 
 
-        }else{
+        }
+        else
+        {
             Label18.Text = "0 amigos";
         }
     }
@@ -185,7 +237,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
         {
             foreach (string elemento in profile)
             {
-                
+
                 if (elemento.Contains("Regiao:"))
                 {
                     Label2.Visible = true;
@@ -248,7 +300,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     Label3.Visible = true;
                     Label11.Visible = true;
 
-                    string [] data = (elemento.Split(':')[1]).Split('-');
+                    string[] data = (elemento.Split(':')[1]).Split('-');
 
                     DateTime dt = new DateTime(Convert.ToInt32(data[0]),
                         Convert.ToInt32(data[1]),
@@ -263,7 +315,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     else
                         Label1.Text = ano + " anos";
 
-                    Label3.Text = data[2]+"/"+data[1]+"/"+data[0];
+                    Label3.Text = data[2] + "/" + data[1] + "/" + data[0];
                 }
                 else if (elemento.Contains("Imagem:"))
                 {
@@ -287,7 +339,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
             Label4.Visible = true;
             Label4.Text = "Sem informação disponível";
-            
+
 
         }
 
@@ -297,7 +349,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
             {
                 FillImagemPerfil(Image1, sexo);
             }
-            else if(sexo.Equals(""))
+            else if (sexo.Equals(""))
             {
                 FillImagemPerfil(Image1, "Indeciso");
 
@@ -309,23 +361,24 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 sexo = Label4.Text;
             }
         }
-        
+
     }
 
-    protected void FillImagemPerfil(System.Web.UI.WebControls.Image img,string elemento)
+    protected void FillImagemPerfil(System.Web.UI.WebControls.Image img, string elemento)
     {
-        if (elemento.Equals("Masculino")||
-            elemento.Equals("Feminino")||
-            elemento.Equals("Digo depois")||
+        if (elemento.Equals("Masculino") ||
+            elemento.Equals("Feminino") ||
+            elemento.Equals("Digo depois") ||
             elemento.Equals("Indeciso"))
         {
-        img.ImageUrl = "~/Images/" + elemento +".png";
-        if (elemento.Equals("Indeciso"))
+            img.ImageUrl = "~/Images/" + elemento + ".png";
+            if (elemento.Equals("Indeciso"))
                 Profile.Sexo = elemento;
 
             Profile.Imagem = elemento + ".png";
         }
-        else{
+        else
+        {
             img.ImageUrl = "~/Images/" + elemento;
         }
 

@@ -24,7 +24,13 @@
         <asp:ListItem Value="5">5</asp:ListItem>
     </asp:DropDownList>
 
+    <asp:DropDownList ID="tagsRelacao" runat="server" CssClass="listProfile" AutoPostBack="false" Visible="false">
+        
+    </asp:DropDownList>
+
     <br />
+
+    <asp:Label ID="Label19" runat="server" Text="ola" Visible="true"></asp:Label>
 
     <asp:Label ID="Label9" runat="server" Text="" Visible="false"></asp:Label>
     <asp:Label ID="Label1" runat="server" Text="" Visible="false"></asp:Label>

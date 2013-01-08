@@ -3,3 +3,7 @@ C:\Users\Tiago\Documents\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_A
 C:\Users\Tiago\Documents\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\obj\Debug\Graphs4Social_AR.dll
 C:\Users\Tiago\Documents\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\obj\Debug\Graphs4Social_AR.pdb
 C:\Users\Tiago\Documents\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\obj\Debug\Graphs4Social_AR.csprojResolveAssemblyReference.cache
+C:\Users\MpApQ\Desktop\Dropbox\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\bin\Debug\Graphs4Social_AR.dll
+C:\Users\MpApQ\Desktop\Dropbox\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\bin\Debug\Graphs4Social_AR.pdb
+C:\Users\MpApQ\Desktop\Dropbox\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\obj\Debug\Graphs4Social_AR.dll
+C:\Users\MpApQ\Desktop\Dropbox\LAPR5\Graphs4Social_AR\Graphs4Social_AR\Graphs4Social_AR\obj\Debug\Graphs4Social_AR.pdb

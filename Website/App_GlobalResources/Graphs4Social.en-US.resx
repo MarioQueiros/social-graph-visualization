@@ -159,6 +159,42 @@
   <data name="Editar_Sexo_Label" xml:space="preserve">
     <value>I'm</value>
   </data>
+  <data name="Inicio_Amigo" xml:space="preserve">
+    <value>Friend</value>
+  </data>
+  <data name="Inicio_Ano" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="Inicio_Contacto" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Inicio_DataNasc" xml:space="preserve">
+    <value>Birthday</value>
+  </data>
+  <data name="Inicio_Enviado" xml:space="preserve">
+    <value>Friend Request Sent</value>
+  </data>
+  <data name="Inicio_Idade" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="Inicio_Info" xml:space="preserve">
+    <value>No information available</value>
+  </data>
+  <data name="Inicio_Lingua" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Inicio_Pedido" xml:space="preserve">
+    <value>Send Friendship Request</value>
+  </data>
+  <data name="Inicio_Regiao" xml:space="preserve">
+    <value>Zone</value>
+  </data>
+  <data name="Inicio_Rejeitado" xml:space="preserve">
+    <value>Rejected Friend Request</value>
+  </data>
+  <data name="Inicio_Sexo" xml:space="preserve">
+    <value>Sex</value>
+  </data>
   <data name="Master_Download" xml:space="preserve">
     <value>3D App Download</value>
   </data>

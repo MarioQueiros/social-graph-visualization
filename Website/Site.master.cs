@@ -77,13 +77,15 @@ public partial class SiteMaster : MasterPage
             
             if (!Profile.IsAnonymous)
             {
+                chooseLanguage();
+
                 ((Label)loginView.FindControl("Label6")).Text = rm.GetString("Master_Welcome", ci);
                 ((Label)loginView2.FindControl("Label2")).Text = rm.GetString("Master_Pedidos", ci);
                 ((Label)loginView2.FindControl("Label3")).Text = rm.GetString("Master_Editar", ci);
                 ((Label)loginView2.FindControl("Label4")).Text = rm.GetString("Master_Gerir", ci);
                 ((Label)loginView2.FindControl("Label5")).Text = rm.GetString("Master_Download", ci);
 
-                chooseLanguage();
+                
 
                 HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
                 
@@ -102,7 +104,7 @@ public partial class SiteMaster : MasterPage
     private void chooseLanguage()
     {
 
-        if (Profile.Language != null || !Profile.Language.Equals(""))
+        if (Profile.Language != null && !Profile.Language.Equals(""))
         {
 
             if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
@@ -118,7 +120,6 @@ public partial class SiteMaster : MasterPage
         else
         {
             ci = new CultureInfo("en-US");
-            Profile.Language = "English";
         }
 
     }

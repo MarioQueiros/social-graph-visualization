@@ -159,6 +159,45 @@
   <data name="Editar_Sexo_Label" xml:space="preserve">
     <value>Sou</value>
   </data>
+  <data name="Inicio_Aceitar" xml:space="preserve">
+    <value>Aceitar Pedido</value>
+  </data>
+  <data name="Inicio_Amigo" xml:space="preserve">
+    <value>Amigo</value>
+  </data>
+  <data name="Inicio_Ano" xml:space="preserve">
+    <value>ano</value>
+  </data>
+  <data name="Inicio_Contacto" xml:space="preserve">
+    <value>Contacto</value>
+  </data>
+  <data name="Inicio_DataNasc" xml:space="preserve">
+    <value>Data de Nascimento</value>
+  </data>
+  <data name="Inicio_Enviado" xml:space="preserve">
+    <value>Pedido Enviado</value>
+  </data>
+  <data name="Inicio_Idade" xml:space="preserve">
+    <value>Idade</value>
+  </data>
+  <data name="Inicio_Info" xml:space="preserve">
+    <value>Sem informação disponível</value>
+  </data>
+  <data name="Inicio_Lingua" xml:space="preserve">
+    <value>Língua</value>
+  </data>
+  <data name="Inicio_Pedido" xml:space="preserve">
+    <value>Enviar Pedido de Amizade</value>
+  </data>
+  <data name="Inicio_Regiao" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="Inicio_Rejeitado" xml:space="preserve">
+    <value>Pedido Rejeitado</value>
+  </data>
+  <data name="Inicio_Sexo" xml:space="preserve">
+    <value>Sexo</value>
+  </data>
   <data name="Master_Download" xml:space="preserve">
     <value>Download da App 3D</value>
   </data>

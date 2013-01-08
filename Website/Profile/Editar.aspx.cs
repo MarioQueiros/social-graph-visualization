@@ -57,6 +57,8 @@ public partial class Profile_Editar : System.Web.UI.Page
         Button4.Text = rm.GetString("Editar_Button", ci);
         Button5.Text = rm.GetString("Editar_Button", ci);
 
+        translateValues();
+
         fillSexo();
         if (!(Profile.Sexo == null || Profile.Sexo.Equals("")))
         {
@@ -94,7 +96,7 @@ public partial class Profile_Editar : System.Web.UI.Page
     private void chooseLanguage()
     {
 
-        if (Profile.Language != null || !Profile.Language.Equals(""))
+        if (Profile.Language != null && !Profile.Language.Equals(""))
         {
 
             if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
@@ -226,9 +228,17 @@ public partial class Profile_Editar : System.Web.UI.Page
     protected void setLinguagem_click(object sender, EventArgs e)
     {
         Profile.Language = DropDownList2.SelectedValue;
-        
 
-        if(Profile.Language.Equals("Inglês") || Profile.Language.Equals("English")){
+
+        translateValues();
+
+        LoadLabels();
+    }
+
+    private void translateValues()
+    {
+        if (Profile.Language.Equals("Inglês") || Profile.Language.Equals("English"))
+        {
             if (Profile.Language.Equals("Inglês"))
             {
                 Profile.Language = "English";
@@ -249,7 +259,9 @@ public partial class Profile_Editar : System.Web.UI.Page
             {
                 Profile.Sexo = "Tell you later";
             }
-        }else if(Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese")){
+        }
+        else if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
+        {
             if (Profile.Language.Equals("Portuguese"))
             {
                 Profile.Language = "Português";
@@ -271,8 +283,6 @@ public partial class Profile_Editar : System.Web.UI.Page
                 Profile.Sexo = "Digo depois";
             }
         }
-
-        LoadLabels();
     }
 
 }

@@ -24,13 +24,11 @@
         <asp:ListItem Value="5">5</asp:ListItem>
     </asp:DropDownList>
 
-    <asp:DropDownList ID="tagsRelacao" runat="server" CssClass="listProfile" AutoPostBack="false" Visible="false">
+    <asp:DropDownList ID="tagsRelacao" runat="server" CssClass="tagsProfile" AutoPostBack="false" Visible="false">
         
     </asp:DropDownList>
 
     <br />
-
-    <asp:Label ID="Label19" runat="server" Text="ola" Visible="true"></asp:Label>
 
     <asp:Label ID="Label9" runat="server" Text="" Visible="false"></asp:Label>
     <asp:Label ID="Label1" runat="server" Text="" Visible="false"></asp:Label>
@@ -100,6 +98,18 @@
         }
         .listProfile {
             width: 50px;
+            height: 40px;
+            padding: 5px;
+            text-align:center;
+            color: #333333;
+            background-color: white;
+            border-color: gray;
+            border-style:solid;
+            border-width: 2px;
+            font-variant:small-caps;
+            font-weight:bold;
+        }
+        .tagsProfile {
             height: 40px;
             padding: 5px;
             text-align:center;

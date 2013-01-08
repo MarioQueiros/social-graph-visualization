@@ -13,6 +13,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        
         btt.Visible = false;
         btt1.Visible = false;
         dropi.Visible = false;
@@ -21,13 +22,16 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         {
             try
             {
+                FillTagsCombo(Request.QueryString["user"]);
                 forca = Convert.ToInt32(Request.QueryString["forca"]);
-
-                bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]));
+                /*******************************/
+                //alterar para aceitar tags!!!!!
+                //bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]));
+                /*
                 if (!a)
                 {
                     Graphs4Social_AR.Ligacao.RejeitarPedido(Profile.UserName, Request.QueryString["user"]);
-                }
+                }*/
 
                 Label1.Visible = true;
 
@@ -201,6 +205,57 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 btt1.Visible = false;
                 dropi.Visible = false;
 
+            }
+        }
+    }
+
+    private void FillTagsCombo(string username)
+    {
+
+        IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+        string sexo = "";
+
+        foreach (string elemento in lis)
+        {
+
+            if (elemento.Contains("Sexo:"))
+            {
+                sexo = elemento.Split(':')[1];
+                break;
+            }
+
+        }
+        IList<Tag> listatagsM = null;
+        IList<Tag> listatagsF = null;
+
+        if (sexo.Contains("Masculino") || sexo.Contains("Male"))
+        {
+            listatagsM = Tag.LoadAllMenTagRelacao();
+            foreach (Tag tag in listatagsM)
+            {
+                tagsRelacao.Items.Add(tag.Nome);
+            }
+        }
+        else if (sexo.Contains("Feminino") || sexo.Contains("Female"))
+        {
+            listatagsF = Tag.LoadAllWomenTagRelacao();
+            foreach (Tag tag in listatagsF)
+            {
+                tagsRelacao.Items.Add(tag.Nome);
+            }
+        }
+        else
+        {
+            listatagsM = Tag.LoadAllMenTagRelacao();
+            listatagsF = Tag.LoadAllWomenTagRelacao();
+            foreach (Tag tag in listatagsF)
+            {
+                tagsRelacao.Items.Add(tag.Nome);
+            }
+            foreach (Tag tag in listatagsM)
+            {
+                tagsRelacao.Items.Add(tag.Nome);
             }
         }
     }

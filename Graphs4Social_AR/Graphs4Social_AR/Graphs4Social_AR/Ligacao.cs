@@ -255,8 +255,8 @@ namespace Graphs4Social_AR
         //
         // Pedidos de amizade ( Ligações estado = 0 ) por username
         //
-        public static bool PedidoAmizade(string username1, string username2, int forca){
-            Ligacao ligacao = AddLigacao(username1, username2, "",forca);
+        public static bool PedidoAmizade(string username1, string username2, int forca, string tag){
+            Ligacao ligacao = AddLigacao(username1, username2, tag, forca);
 
             if (ligacao != null)
             {
@@ -264,7 +264,7 @@ namespace Graphs4Social_AR
                 ligacao.Estado = 0;
                 ligacao.Save();
 
-                ligacao = AddLigacao(username2, username1, "",-1);
+                ligacao = AddLigacao(username2, username1, "", -1);
 
                 if (ligacao != null)
                 {
@@ -280,9 +280,9 @@ namespace Graphs4Social_AR
         //
         // Aceitar um pedido de amizade
         //
-        public static bool AceitarPedido(string username1, string username2, int forca)
+        public static bool AceitarPedido(string username1, string username2, int forca, string tag)
         {
-            Ligacao ligacao = AddLigacao(username1, username2, "", forca);
+            Ligacao ligacao = AddLigacao(username1, username2, tag, forca);
 
             if (ligacao != null)
             {

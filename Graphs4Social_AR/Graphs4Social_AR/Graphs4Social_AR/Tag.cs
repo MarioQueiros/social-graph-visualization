@@ -394,8 +394,8 @@ namespace Graphs4Social_AR
                 if (novaEntrada)
                 {
 
-                    sql.CommandText = "INSERT INTO TagRelacao(NOME,ESTADO,ELIMINADO,TIPO) "
-                        + "VALUES(@NOME,@ESTADO,@ELIMINADO,@TIPO)";
+                    sql.CommandText = "INSERT INTO TagRelacao(NOME,ESTADO,ELIMINADO) "
+                        + "VALUES(@NOME,@ESTADO,@ELIMINADO)";
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.Int);
@@ -406,10 +406,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
-                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
-                    param.Value = Tipo;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
@@ -430,7 +427,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO, TIPO=@TIPO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -442,10 +439,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
-                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
-                    param.Value = Tipo;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
@@ -485,8 +479,8 @@ namespace Graphs4Social_AR
                 if (novaEntrada)
                 {
 
-                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO,TIPO) "
-                        + "VALUES(@NOME,@ESTADO,@ELIMINADO,@TIPO)";
+                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO) "
+                        + "VALUES(@NOME,@ESTADO,@ELIMINADO)";
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
@@ -497,9 +491,6 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
-                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
-                    param.Value = Tipo;
 
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -521,7 +512,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO, TIPO=@TIPO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -533,10 +524,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
-                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
-                    param.Value = Tipo;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não

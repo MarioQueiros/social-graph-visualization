@@ -50,7 +50,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     IList<Tag> listatagsM=null;
                     IList<Tag> listatagsF=null;
 
-                    if (sexo.Contains("Masculino") || sexo.Contains("Man") || sexo.Contains("Men"))
+                    if (sexo.Contains("Masculino") || sexo.Contains("Male"))
                     {
                         listatagsM = Tag.LoadAllMenTagRelacao();
                         foreach (Tag tag in listatagsM)
@@ -58,7 +58,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                             tagsRelacao.Items.Add(tag.Nome);
                         }
                     }
-                    else if (sexo.Contains("Feminino") || sexo.Contains("Women") || sexo.Contains("Woman"))
+                    else if (sexo.Contains("Feminino") || sexo.Contains("Female"))
                     {
                         listatagsF = Tag.LoadAllWomenTagRelacao();
                         foreach (Tag tag in listatagsF)
@@ -391,13 +391,15 @@ public partial class Profile_Inicio : System.Web.UI.Page
     protected void Button1_Click(object sender, EventArgs e)
     {
         forca = Convert.ToInt32(DropDownList1.SelectedValue);
+        string tag = tagsRelacao.SelectedValue;
         if (Button1.Text.Equals("Aceitar Pedido"))
         {
-            Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], forca);
+            Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], forca, tag);
         }
         else
         {
-            Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca);
+            Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca, tag);
+            
         }
     }
 }

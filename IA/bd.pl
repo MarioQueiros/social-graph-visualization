@@ -161,6 +161,9 @@ add(X,[A|L],[A|L1]):- add(X,L,L1).
 notmember(X,L):-(member(X,L), !, fail);true.
 
 
+deletelist([], _, []).                  
+deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
+deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 
 
 %Branch and bound
@@ -187,17 +190,34 @@ largura([[Ult|T]|Outros],Dest,Perc):-findall([Z,Ult|T],proximo_no(Ult,T,Z),Lista
 
 proximo_no(X,T,Z) :- ligado(X,Z), not member(Z,T). 
 
-deletelist([], _, []).                  
-deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
-deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 
 %grauMedio separacao (s/ cut/complexidade)
-grauMedio(O,D,R):-user(O),user(D),findall(X,camCurto(O,D,X),L),somaCaminho(L,C),length(L,T),R is C/T.
+grauMedio(R):-findall(X,user(X),LU),assert(lUsers(LU)),grauMedio(LU,V,C),limpaDb,R is V/C.
 
-somaCaminho([C|CR],R):-somaCaminho(CR,R1),length(C,R2),R is R1+R2.
-somaCaminho([],0).
+limpaDb:-retractall(verificado(_,_)),retractall(lUsers(_)).
 
-run1 :-member(X, [abc,def,ghi,jkl]),write(X).
+%passos, contagem caminhos		
+grauMedio([U|UR],V,C):-somaCaminhos(U,P,NC),grauMedio(UR,VA,RA),V is VA + P, C is RA + NC.
+grauMedio([],0).
+
+%passos, n caminhos
+somaCaminhos(U,P,NC):-lUsers(LU),contaPassos(U,LU,P,NC).
+
+contaPassos(U,[U|UP],P,NC):-!,contaPassos(U,UP,P,NC).
+contaPassos(U,[UA|UP],P,NC):-verificado(U,UA),!,contaPassos(U,UP,P,NC).
+
+contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
+							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.
+contaPassos(_,[],0,0).
+
+
+
+
+%contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
+%contaPassos([],0).
+
+runTamanhoNivel2(U):-tamanho2(U,X),write(X).
+runTamanhoNivel3(U):-tamanho3(U,X),write(X).
 	
 run2 :-
 	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),

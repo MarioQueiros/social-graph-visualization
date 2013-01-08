@@ -93,25 +93,130 @@
                 <legend>
                     <asp:Label ID="Label7" runat="server" Text=""></asp:Label></legend>
                 <asp:PlaceHolder runat="server" ID="PlaceHolder5" Visible="True">
-                <table class="tablesEditar">
-                    <tr style="width: 500px;">
-                        <td style="width: 250px; float: left;">
-                            
+                    <table class="tablesEditar">
+                        <tr style="width: 500px;">
+                            <td style="width: 250px; float: left;">
+
 
                                 <asp:DropDownList ID="DropDownList2" runat="server"></asp:DropDownList>
-                        </td>
+                            </td>
+                            <td style="width: 250px; vertical-align: middle;">
+                                <asp:Button ID="Button5" Height="30px" runat="server" Text="" ValidationGroup="SetLinguagem" OnClick="setLinguagem_click" />
+                            </td>
+                        </tr>
+                    </table>
+                </asp:PlaceHolder>
+            </fieldset>
+        </section>
+        <br />
+        <section id="setAvatar">
+            <fieldset>
+                <legend>
+                    <asp:Label ID="Label10" runat="server" Text=""></asp:Label></legend>
+                <asp:PlaceHolder runat="server" ID="PlaceHolder10" Visible="True">
+                    <table class="tablesEditar">
+                        <tr style="width: 500px;">
+                            <td style="width: 250px; float: left;">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/anonymous.png" onClick="avatarClick(1);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r1" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/Atlas_RobotPortal.png" onclick="avatarClick(2);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r2" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/bugsbunny.png" onclick="avatarClick(3);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r3" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/DarthVader.png" onclick="avatarClick(4);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r4" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/girl.png" onclick="avatarClick(5);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r5" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/nuku_Girl.png" onclick="avatarClick(6);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r6" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/P-Body_RobotPortal.png" onclick="avatarClick(7);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r7" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table class="tableavatar">
+                                                <tr>
+                                                    <td>
+                                                        <image class="avatar" src="../Images/Spiderman.png" onClick="avatarClick(8);" />
+                                                        <input name="avatar" runat="server" type="radio" id="r8" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                        </tr>
+                    </table>
+
+                    </td>
+                    </tr>
+                    <tr>
                         <td style="width: 250px; vertical-align: middle;">
-                            <asp:Button ID="Button5" Height="30px" runat="server" Text="" ValidationGroup="SetLinguagem" OnClick="setLinguagem_click" />
+                            <asp:Button ID="Button6" Height="30px" runat="server" Text="" ValidationGroup="SetAvatar" OnClick="setAvatar_Click" />
                         </td>
                     </tr>
-                </table>
+                    </table>
                 </asp:PlaceHolder>
             </fieldset>
         </section>
         <br />
         <section id="FacebookLogin">
             <fieldset>
-                <legend><asp:Label ID="Label8" runat="server" Text=""></asp:Label></legend>
+                <legend>
+                    <asp:Label ID="Label8" runat="server" Text=""></asp:Label></legend>
                 <!--<asp:PlaceHolder runat="server" ID="PlaceHolder6" Visible="True">
                 <br />
                 <div id="fb-root"></div>
@@ -131,7 +236,8 @@
         <br />
         <section id="LinkedInLogin">
             <fieldset>
-                <legend><asp:Label ID="Label9" runat="server" Text=""></asp:Label></legend>
+                <legend>
+                    <asp:Label ID="Label9" runat="server" Text=""></asp:Label></legend>
                 <!--<asp:PlaceHolder runat="server" ID="PlaceHolder7" Visible="True">
 
                 <script type="in/Login">
@@ -144,6 +250,12 @@
             </fieldset>
         </section>
     </div>
+    <script type="text/javascript">
+        
+        function avatarClick(num) {
+            document.getElementById('MainContent_r' + num).checked = true;
+        }
 
+    </script>
 
 </asp:Content>

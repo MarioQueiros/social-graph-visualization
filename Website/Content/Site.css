@@ -667,3 +667,25 @@ tr.pager td {
         }
 }
 /* END: Mobile Styles */
+
+
+/* Table Avatar */
+
+.tableavatar td {
+    border: 1px solid #FFF;
+    margin: auto;
+    text-align:center;
+    padding-left:30px;
+    padding-top: 10px;
+}
+
+.tableavatar td:hover {
+   border: 1px solid #666;
+}
+
+.avatar{
+    width:131px;
+    height:128px;
+}
+
+/* End Table Avatar*/

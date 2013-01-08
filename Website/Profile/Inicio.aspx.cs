@@ -257,7 +257,6 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
         }else{
             Label18.Text = "0 "+rm.GetString("Inicio_Amigo", ci)+"s";
-        {
         }
     }
 

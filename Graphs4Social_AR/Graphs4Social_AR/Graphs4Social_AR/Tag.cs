@@ -33,6 +33,14 @@ namespace Graphs4Social_AR
         private bool _gravado = false;
         private bool _eliminado = false;
 
+        // Campo Tipo
+        //
+        //      1 - Mulher (Lingua Portuguesa)
+        //      2 - Homem (Lingua Portuguesa)
+        //      3 - Mulher (Lingua Inglesa)
+        //      4 - Homem (Lingua Inglesa)
+        private int _tipo;
+
         // Construtor vazio não pode existir, temos sempre que referir o tipo de tag que queremos
         //      True - TagRelacao
         //      False - Tag
@@ -48,6 +56,7 @@ namespace Graphs4Social_AR
             if (Relacao)
             {
                 myID = (int)row["ID_REL"];
+                this._tipo = (int)row["TIPO"];
             }
             else
             {
@@ -55,7 +64,7 @@ namespace Graphs4Social_AR
             }
 
             this._eliminado = ((int)row["ELIMINADO"] == 1) ? true : false;
-
+            this._nome = (string)row["NOME"];
         }
 
 
@@ -93,6 +102,12 @@ namespace Graphs4Social_AR
             set { _eliminado = value; }
         }
 
+        public int Tipo
+        {
+            get { return _tipo; }
+            set { _tipo = value; }
+        }
+
 
         // To String
         //
@@ -101,7 +116,7 @@ namespace Graphs4Social_AR
         public override string ToString()
         {
             return Relacao + " " + Nome + " "
-                + Estado + " " + Gravado + " " + Eliminado;
+                + Estado + " " + Gravado + " " + Eliminado + " " + Tipo;
         }
 
 
@@ -278,7 +293,7 @@ namespace Graphs4Social_AR
             {
                 if ((int)row["ID_TAG"] != idTag)
                 {
-                    tag = new Tag(row, false);
+                    tag = new Tag(row, true);
                     lista.Add(tag);
 
                     idTag = (int)row["ID_TAG"];
@@ -289,6 +304,57 @@ namespace Graphs4Social_AR
 
         }
 
+
+        public static IList<Tag> LoadAllMenTagRelacao()
+        {
+
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE TIPO = '2'");
+
+            IList<Tag> lista = new List<Tag>();
+
+            Tag tag = null;
+            int idTag = -1;
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                if ((int)row["ID_REL"] != idTag)
+                {
+                    tag = new Tag(row, true);
+                    lista.Add(tag);
+
+                    idTag = (int)row["ID_REL"];
+                }
+            }
+
+            return lista;
+
+        }
+
+
+        public static IList<Tag> LoadAllWomenTagRelacao()
+        {
+
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE TIPO = '1'");
+
+            IList<Tag> lista = new List<Tag>();
+
+            Tag tag = null;
+            int idTag = -1;
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                if ((int)row["ID_REL"] != idTag)
+                {
+                    tag = new Tag(row, true);
+                    lista.Add(tag);
+
+                    idTag = (int)row["ID_REL"];
+                }
+            }
+
+            return lista;
+
+        }
 
 
 
@@ -328,8 +394,8 @@ namespace Graphs4Social_AR
                 if (novaEntrada)
                 {
 
-                    sql.CommandText = "INSERT INTO TagRelacao(NOME,ESTADO,ELIMINADO) "
-                        + "VALUES(@NOME,@ESTADO,@ELIMINADO)";
+                    sql.CommandText = "INSERT INTO TagRelacao(NOME,ESTADO,ELIMINADO,TIPO) "
+                        + "VALUES(@NOME,@ESTADO,@ELIMINADO,@TIPO)";
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.Int);
@@ -340,6 +406,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
+                    param.Value = Tipo;
 
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -361,7 +430,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO, TIPO=@TIPO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -373,6 +442,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
+                    param.Value = Tipo;
 
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -413,8 +485,8 @@ namespace Graphs4Social_AR
                 if (novaEntrada)
                 {
 
-                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO) "
-                        + "VALUES(@NOME,@ESTADO,@ELIMINADO)";
+                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO,TIPO) "
+                        + "VALUES(@NOME,@ESTADO,@ELIMINADO,@TIPO)";
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
@@ -425,6 +497,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
+                    param.Value = Tipo;
 
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -446,7 +521,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO, TIPO=@TIPO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -458,6 +533,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@TIPO", SqlDbType.Int);
+                    param.Value = Tipo;
 
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 

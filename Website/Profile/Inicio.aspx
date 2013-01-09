@@ -11,7 +11,7 @@
                 <hgroup id="tituloPerfil" class="title" runat="server">
                 </hgroup>
             </td>
-            <td>
+            <td style="text-align: right; width:150px;">
                 <select id="dropestadohumor" class="tagsProfile" onchange="alterar();">
                     <option value="Bored">Bored</option>
                     <option value="Pleased">Pleased</option>
@@ -20,11 +20,12 @@
                     <option value="Smiley">Smiley</option>
                     <option value="Teards">Teards</option>
                     <option value="Upset">Upset</option>
-                </select>
+                </select><br /><br />
                 <input id="Hidden1" name="Hidden1" type="Hidden" runat="server" value="" />
-                <img src="<%= fillEstadoHumor() %>" id="imgestadohumor" />
 
-                <asp:Button ID="subEstadoHumor" runat="server" Text="" OnClick="subEstadoHumor_Click" CssClass="btProfile" />
+                <img src="<%= fillEstadoHumor() %>" id="imgestadohumor" />
+                <br /><br />
+                <asp:Button ID="subEstadoHumor" runat="server" Text="" OnClick="subEstadoHumor_Click" CssClass="btSave" />
             </td>
         </tr>
     </table>
@@ -157,33 +158,96 @@
             {
                 case 'Bored':
                     document.getElementById("dropestadohumor").selectedindex = 1;
+					document.getElementById("imgestadohumor").src="../Images/Bored.png";
 					break;
                 case 'Pleased':
                     document.getElementById("dropestadohumor").selectedindex = 2;
+					document.getElementById("imgestadohumor").src="../Images/Pleased.png";
                     break;
                 case 'Sad':
                     document.getElementById("dropestadohumor").selectedindex = 3;
+					document.getElementById("imgestadohumor").src="../Images/Sad.png";
                     break;
                 case 'Sleepy':
                     document.getElementById("dropestadohumor").selectedindex = 4;
+					document.getElementById("imgestadohumor").src="../Images/Sleepy.png";
                     break;
                 case 'Smiley':
                     document.getElementById("dropestadohumor").selectedindex = 5;
+					document.getElementById("imgestadohumor").src="../Images/Smiley.png";
                     break;
                 case 'Teards':
                     document.getElementById("dropestadohumor").selectedindex = 6;
+					document.getElementById("imgestadohumor").src="../Images/Teards.png";
                     break;
                 case 'Upset':
                     document.getElementById("dropestadohumor").selectedindex = 7;
+					document.getElementById("imgestadohumor").src="../Images/Upset.png";
+                    break;
+            }
+            document.getElementById("dropestadohumor").value = aux[0];
+        }
+
+        function setEstado() {
+			var str = "<%= setEstadoHumor() %>";
+            var aux =  str.split(".");
+            switch (aux[0])
+            {
+                case 'Bored':
+                    document.getElementById("dropestadohumor").selectedindex = 1;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Bored.png";
+					break;
+                case 'Pleased':
+                    document.getElementById("dropestadohumor").selectedindex = 2;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Pleased.png";
+                    break;
+                case 'Sad':
+                    document.getElementById("dropestadohumor").selectedindex = 3;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Sad.png";
+                    break;
+                case 'Sleepy':
+                    document.getElementById("dropestadohumor").selectedindex = 4;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Sleepy.png";
+                    break;
+                case 'Smiley':
+                    document.getElementById("dropestadohumor").selectedindex = 5;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Smiley.png";
+                    break;
+                case 'Teards':
+                    document.getElementById("dropestadohumor").selectedindex = 6;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Teards.png";
+                    break;
+                case 'Upset':
+                    document.getElementById("dropestadohumor").selectedindex = 7;
+					document.getElementById("dropestadohumor").disabled = "true";
+					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					document.getElementById("imgestadohumor").src="../Images/Upset.png";
                     break;
             }
             document.getElementById("dropestadohumor").value = aux[0];
         }
 		
         function pageLoad() {
-            mudarEstado();
+            var aux = "<%= checkUsername() %>";
+            var flag = aux.toLowerCase();
+            if (flag == "true") {
+                mudarEstado();
+            } else {
+                setEstado();
+            }   
         }
-
     </script>
 
     <style>
@@ -274,6 +338,25 @@
             border-color: gray;
             border-style: solid;
             border-width: 2px;
+            font-variant: small-caps;
+            font-weight: bold;
+        }
+
+        #imgestadohumor {
+            width: 100px;
+            height: 100px;
+        }
+
+        .btSave {
+            height: 40px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			padding-left:15px;
+			padding-right:15px;
+            color: #333333;
+            background-color: white;
+            border-color: gray;
+            border-style: solid;
             font-variant: small-caps;
             font-weight: bold;
         }

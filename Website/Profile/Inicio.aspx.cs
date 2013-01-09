@@ -67,6 +67,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
             {
                 if (!Profile.UserName.Equals(username))
                 {
+                    
                     Ligacao lig = null;
                     try
                     {
@@ -212,7 +213,30 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected string mudarEstadoHumor()
     {
-        return Profile.EstadoHumor;
+        if (Profile.EstadoHumor != "")
+            return Profile.EstadoHumor;
+        else
+            return "Smiley.png";
+    }
+
+    protected string setEstadoHumor()
+    {
+        string username = Request.QueryString["user"];
+
+        IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+        foreach (string elemento in profile)
+        {
+
+            if (elemento.Contains("EstadoHumor:"))
+            {
+                
+                return elemento.Split(':')[1];
+            }
+
+        }
+
+        return "Smiley";
     }
 
     protected void FillTabelaDeAmigos(string username)
@@ -534,6 +558,20 @@ public partial class Profile_Inicio : System.Web.UI.Page
             return rm.GetString("Editar_Indeciso", ci);
     }
 
+    protected bool checkUsername()
+    {
+        string username = Request.QueryString["user"];
+        if(username!=null)
+        {
+            if (!Profile.UserName.Equals(username))
+            {
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected string fillEstadoHumor()
     {

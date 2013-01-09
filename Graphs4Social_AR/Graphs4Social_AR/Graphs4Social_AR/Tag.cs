@@ -33,6 +33,14 @@ namespace Graphs4Social_AR
         private bool _gravado = false;
         private bool _eliminado = false;
 
+        // Campo Tipo
+        //
+        //      1 - Mulher (Lingua Portuguesa)
+        //      2 - Homem (Lingua Portuguesa)
+        //      3 - Mulher (Lingua Inglesa)
+        //      4 - Homem (Lingua Inglesa)
+        private int _tipo;
+
         // Construtor vazio não pode existir, temos sempre que referir o tipo de tag que queremos
         //      True - TagRelacao
         //      False - Tag
@@ -48,6 +56,7 @@ namespace Graphs4Social_AR
             if (Relacao)
             {
                 myID = (int)row["ID_REL"];
+                this._tipo = (int)row["TIPO"];
             }
             else
             {
@@ -55,7 +64,7 @@ namespace Graphs4Social_AR
             }
 
             this._eliminado = ((int)row["ELIMINADO"] == 1) ? true : false;
-
+            this._nome = (string)row["NOME"];
         }
 
 
@@ -93,6 +102,12 @@ namespace Graphs4Social_AR
             set { _eliminado = value; }
         }
 
+        public int Tipo
+        {
+            get { return _tipo; }
+            set { _tipo = value; }
+        }
+
 
         // To String
         //
@@ -101,7 +116,7 @@ namespace Graphs4Social_AR
         public override string ToString()
         {
             return Relacao + " " + Nome + " "
-                + Estado + " " + Gravado + " " + Eliminado;
+                + Estado + " " + Gravado + " " + Eliminado + " " + Tipo;
         }
 
 
@@ -278,7 +293,7 @@ namespace Graphs4Social_AR
             {
                 if ((int)row["ID_TAG"] != idTag)
                 {
-                    tag = new Tag(row, false);
+                    tag = new Tag(row, true);
                     lista.Add(tag);
 
                     idTag = (int)row["ID_TAG"];
@@ -289,6 +304,57 @@ namespace Graphs4Social_AR
 
         }
 
+
+        public static IList<Tag> LoadAllMenTagRelacao()
+        {
+
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE TIPO = '2'");
+
+            IList<Tag> lista = new List<Tag>();
+
+            Tag tag = null;
+            int idTag = -1;
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                if ((int)row["ID_REL"] != idTag)
+                {
+                    tag = new Tag(row, true);
+                    lista.Add(tag);
+
+                    idTag = (int)row["ID_REL"];
+                }
+            }
+
+            return lista;
+
+        }
+
+
+        public static IList<Tag> LoadAllWomenTagRelacao()
+        {
+
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE TIPO = '1'");
+
+            IList<Tag> lista = new List<Tag>();
+
+            Tag tag = null;
+            int idTag = -1;
+
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                if ((int)row["ID_REL"] != idTag)
+                {
+                    tag = new Tag(row, true);
+                    lista.Add(tag);
+
+                    idTag = (int)row["ID_REL"];
+                }
+            }
+
+            return lista;
+
+        }
 
 
 
@@ -314,7 +380,7 @@ namespace Graphs4Social_AR
                 // Se for o caso o Save é um update, mais provavel do Estado da Tag
 
 
-                DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM TagRelacao WHERE "
+                DataSet dataSetLigacao = ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE "
                     + "NOME = '" + Nome + "'");
 
 
@@ -340,7 +406,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
@@ -350,7 +416,7 @@ namespace Graphs4Social_AR
                         Gravado = true;
 
                         // Vai buscar a tabela o Id atribuido por increment a Nova Entrada
-                        myID = (int)ExecuteTransactedQuery("SELECT * FROM TagRelacao WHERE "
+                        myID = (int)ExecuteQuery(GetConnection(false), "SELECT * FROM TagRelacao WHERE "
                                                             + "NOME = '" + Nome + "'")
                                                             .Tables[0].Rows[0]["ID_REL"];
                     }
@@ -361,7 +427,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO AND ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -373,7 +439,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
@@ -399,7 +465,7 @@ namespace Graphs4Social_AR
                 // Se for o caso o Save é um update, mais provavel do Estado da Tag
 
 
-                DataSet dataSetLigacao = ExecuteTransactedQuery("SELECT * FROM Tag WHERE "
+                DataSet dataSetLigacao = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag WHERE "
                     + "NOME = '" + Nome + "'");
 
 
@@ -435,7 +501,7 @@ namespace Graphs4Social_AR
                         Gravado = true;
 
                         // Vai buscar a tabela o Id atribuido por increment a Nova Entrada
-                        myID = (int)ExecuteTransactedQuery("SELECT * FROM Tag WHERE "
+                        myID = (int)ExecuteQuery(GetConnection(false),"SELECT * FROM Tag WHERE "
                                                             + "NOME = '" + Nome + "'")
                                                             .Tables[0].Rows[0]["ID_TAG"];
                     }
@@ -446,7 +512,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO AND ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -458,7 +524,7 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-
+                    
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não

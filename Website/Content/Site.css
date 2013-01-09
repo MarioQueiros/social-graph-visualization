@@ -42,10 +42,11 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 
 /* ~~this fixed width container surrounds the other divs~~ */
 .container {
-	width: 1000px;
+	width: 1050px;
 
-    overflow:auto;
+    
     height:100%;
+    overflow:hidden;
 
 	background: #FFF;
 	margin: 0 auto;
@@ -69,6 +70,31 @@ a:hover, a:active, a:focus { /* this group of selectors will give a keyboard nav
 	margin: 0 auto;
 }
 
+.warning {
+    position: absolute;
+    background: #FFF;
+    height:50px;
+    width:250px;
+    z-index:2000;
+    top: 45px;
+    margin-left: 63%;
+    border-width:1px;
+	border-style:solid;
+	border-color:#666666;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-radius: 5px;
+    opacity:0.9;
+}
+
+.warningLabel {
+    margin-left:40px;
+    position:inherit;
+    top:15px;
+}
+
 /* ~~ the header is not given a width. It will extend the full width of your layout. It contains an image placeholder that should be replaced with your own linked logo ~~ */
 header {
 	background:#191970;
@@ -79,7 +105,7 @@ header {
 	-webkit-box-shadow: inset 0 0 5px#000, 0 0 5px 5px#888;
 	box-shadow: inset 0 0 5px #000, 0 0 5px 5px #888;
 	text-align:left;
-    z-index:100;
+    z-index:3000;
 }
 
 .headerAlign{
@@ -88,7 +114,6 @@ header {
 	width: 1000px;
 	height: inherit;
 	margin: 0 auto;
-	
 }
 
 .headerRight {
@@ -105,12 +130,6 @@ header {
     float:left;
 }
 
-.search img{
-	
-	height: 25px;
-	width: 25px;
-	
-}
 
 
 .search input{
@@ -159,14 +178,16 @@ header {
 */
 .content {
 	padding: 10px;
-	width: 780px;
+	width: 800px;
 	float: left;
+    margin-left: 15px;
 	
 	-moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
 	behavior: url(/css/border-radius.htc);
     border-radius: 5px;
+    font-variant:small-caps;
 }
 
 .profile{
@@ -249,8 +270,14 @@ ul.nav a:hover, ul.nav a:active, ul.nav a:focus { /* this changes the background
 	background: #CDD7E4;
 }
 
-/* ~~ The footer ~~ */
 .footer {
+    margin: 0 auto;
+}
+
+/* ~~ The footer ~~ */
+.footerDiv {
+    
+    font-variant:small-caps;
 	padding-left:14%;
 	padding-right:14%;
 	position: relative;/* this gives IE6 hasLayout to properly clear */
@@ -302,6 +329,19 @@ ul.nav a:hover, ul.nav a:active, ul.nav a:focus { /* this changes the background
         display: inline;
         list-style: none;
     }
+
+#editarProfile {
+    width: 500px;
+    margin-left: 150px;
+}
+
+#editarProfile tablesEditar {
+    width: 500px;
+}
+
+
+
+
 
 /* login page */
 #loginForm {
@@ -627,3 +667,25 @@ tr.pager td {
         }
 }
 /* END: Mobile Styles */
+
+
+/* Table Avatar */
+
+.tableavatar td {
+    border: 1px solid #FFF;
+    margin: auto;
+    text-align:center;
+    padding-left:30px;
+    padding-top: 10px;
+}
+
+.tableavatar td:hover {
+   border: 1px solid #666;
+}
+
+.avatar{
+    width:131px;
+    height:128px;
+}
+
+/* End Table Avatar*/

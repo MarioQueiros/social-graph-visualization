@@ -142,7 +142,7 @@
     <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 
     
-
+    <script>
         function alterar() {
             var aux = document.getElementById("dropestadohumor").value;
             

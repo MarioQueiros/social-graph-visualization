@@ -198,9 +198,9 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 }
             }
             if (flag)
-            tituloPerfil.InnerText = Graphs4Social_AR.User.LoadByUserName(username).Username;
+            
             {
-
+                tituloPerfil.InnerText = Graphs4Social_AR.User.LoadByUserName(username).Username;
                 FillProfileLabels(username);
 
                 FillTabelaDeAmigos(username);

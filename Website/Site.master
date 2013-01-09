@@ -26,6 +26,10 @@
                 inline: true
             });
         });
+
+        $(function () {
+            $("#profiletab").tabs();
+        }); 
     </script>
 
 </head>

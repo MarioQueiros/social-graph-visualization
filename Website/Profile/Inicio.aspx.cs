@@ -48,6 +48,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
         {
             chooseLanguage();
             string username = Request.QueryString["user"];
+            Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
+            Label20.Text = rm.GetString("Inicio_Tags", ci);
 
             if (username == null)
             {
@@ -70,14 +72,24 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
                     string sexo="";
 
-                    foreach(string elemento in lis){
+                    if (lis != null)
+                    {
+                        foreach (string elemento in lis)
+                        {
 
-                        if (elemento.Contains("Sexo:")){
-                            sexo = elemento.Split(':')[1];
-                            break;
+                            if (elemento.Contains("Sexo:"))
+                            {
+                                sexo = elemento.Split(':')[1];
+                                break;
+                            }
+
                         }
-
                     }
+                    else
+                    {
+                        sexo = rm.GetString("Editar_Indeciso", ci);
+                    }
+
                     IList<Tag> listatagsM=null;
                     IList<Tag> listatagsF=null;
 
@@ -170,7 +182,6 @@ public partial class Profile_Inicio : System.Web.UI.Page
     {
 
 
-        Label17.Text = rm.GetString("Inicio_Amigo", ci)+"s - ";
         IList<Graphs4Social_AR.User> amigos = Graphs4Social_AR.User.LoadAllAmigosUser(username);
 
         int total = amigos.Count;
@@ -180,9 +191,9 @@ public partial class Profile_Inicio : System.Web.UI.Page
         {
             Label18.Text = Convert.ToString(total);
             if (total == 1)
-                Label18.Text += " "+rm.GetString("Inicio_Amigo", ci);
+                Label18.Text += " " + rm.GetString("Inicio_Amigo", ci);
             else
-                Label18.Text += " "+rm.GetString("Inicio_Amigo", ci)+"s";
+                Label18.Text += " " + rm.GetString("Inicio_Amigo", ci) + "s";
 
 
 
@@ -217,7 +228,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     }
 
                 }
-                if(img.ImageUrl.Equals("")){
+                if (img.ImageUrl.Equals(""))
+                {
                     img.ImageUrl = "~/Images/404-image.png";
                 }
                 cell1.Controls.Add(img);
@@ -255,8 +267,14 @@ public partial class Profile_Inicio : System.Web.UI.Page
             }
 
 
-        }else{
-            Label18.Text = "0 "+rm.GetString("Inicio_Amigo", ci)+"s";
+        }
+        else
+        {
+            Label18.Text = "0 " + rm.GetString("Inicio_Amigo", ci) + "s";
+            Image2.Visible = true;
+            Image2.ImageUrl = "~/Images/foreveralone.png";
+            Image3.Visible = true;
+            Image3.ImageUrl = "~/Images/foreveralonetext.png";
         }
     }
 
@@ -381,16 +399,20 @@ public partial class Profile_Inicio : System.Web.UI.Page
             {
                 FillImagemPerfil(Image1, sexo);
             }
-            else if (sexo.Equals(""))
+            else if (sexo.Equals("") && Profile.UserName.Equals(username))
             {
-                FillImagemPerfil(Image1, rm.GetString("Editar_Indeciso",ci));
+                FillImagemPerfil(Image1, rm.GetString("Editar_Indeciso", ci));
 
                 Label4.Visible = true;
                 Label12.Visible = true;
 
-                Label12.Text = rm.GetString("Inicio_Sexo",ci)+" : ";
+                Label12.Text = rm.GetString("Inicio_Sexo", ci) + " : ";
                 Label4.Text = rm.GetString("Editar_Indeciso", ci);
-                sexo = Label4.Text;
+                Profile.Sexo = Label4.Text;
+            }
+            else
+            {
+                FillImagemPerfil(Image1, "404-image.png");
             }
         }
 
@@ -427,6 +449,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
+        
         forca = Convert.ToInt32(DropDownList1.SelectedValue);
         string tag = tagsRelacao.SelectedValue;
         if (Button1.Text.Equals("Aceitar Pedido"))
@@ -436,8 +459,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
         else
         {
             Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca, tag);
-            
         }
+        
     }
 
     private string translateValues(string value)

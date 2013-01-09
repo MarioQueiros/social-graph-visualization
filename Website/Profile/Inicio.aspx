@@ -73,18 +73,79 @@
     </asp:HyperLink>
 
     <br />
-    <hr />
-    <br />
+    
+    <div id="profiletab">
+        <ul>
+            <li><a href="#tabs-1"><asp:Label ID="Label19" runat="server" Text=""></asp:Label></a></li>
+            <li><a href="#tabs-2"><asp:Label ID="Label20" runat="server" Text=""></asp:Label></a></li>
+        </ul>
+        <div id="tabs-1">
+            <asp:Label ID="Label18" runat="server" Text=""></asp:Label>
 
-    <asp:Label ID="Label17" runat="server" Text=""></asp:Label>
-    <asp:Label ID="Label18" runat="server" Text=""></asp:Label>
+            <br />
+            <br />
+            <table id="tabelaDeAmigos" runat="server"></table>
 
-    <br />
-    <br />
+            <table>
+                <tr>
+                    <td>
+                        <asp:Image ID="Image2" runat="server" Visible="false" ImageAlign="Middle" />
+                    </td>
+                    <td>
+                        <asp:Image ID="Image3" runat="server" Visible="false" ImageAlign="Middle" /></td>
+                </tr>
+            </table>
+        </div>
+        <div id="tabs-2">
+            <asp:Label ID="Label17" runat="server" Text="Label"></asp:Label>
 
-    <table id="tabelaDeAmigos" runat="server"></table>
+            
+
+
+        </div>
+    </div>
+
+                <div id="tagcloud">
+                    <a href="#" rel="0.1">Lorem</a>
+                    <a href="#" rel="2">ipsum</a>
+                    <a href="#" rel="9">dolor</a>
+                </div>
+
+    
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<script src="Scripts/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+        $(function () {
+            $("#tagcloud a").tagcloud({
+                size: {
+                    start: 14,
+                    end: 18,
+                    unit: 'px'
+                },
+                color: {
+                    start: '#cde',
+                    end: '#f52'
+                }
+            })
+        });</script>
 
     <style>
+        #tagcloud a {
+            text-decoration: none;
+        }
+
+            #tagcloud a:hover {
+                text-decoration: underline;
+            }
+
+        #tagcloud {
+            margin: 25px auto;
+            font: 75% Arial, "MS Trebuchet", sans-serif;
+        }
+
         .btProfile {
             width: 200px;
             height: 40px;
@@ -92,9 +153,9 @@
             color: #333333;
             background-color: white;
             border-color: gray;
-            border-style:solid;
-            font-variant:small-caps;
-            font-weight:bold;
+            border-style: solid;
+            font-variant: small-caps;
+            font-weight: bold;
         }
         .listProfile {
             width: 50px;
@@ -122,4 +183,6 @@
             font-weight:bold;
         }
     </style>
+
+    
 </asp:Content>

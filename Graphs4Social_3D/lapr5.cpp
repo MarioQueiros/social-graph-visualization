@@ -10,14 +10,12 @@
 #include <GL/glaux.h>
 #include <AL/alut.h>
 using namespace std;
-#define NUM_BUFFERS 3
-#define BUFFER_SIZE 4096
 #define graus(X) (double)((X)*180/M_PI)
 #define rad(X)   (double)((X)*M_PI/180)
 #define NO		1
 #define ARCO	10000
-// luzes e materiais
 
+// luzes e materiais
 const GLfloat mat_ambient[][4] = {
 	{0.33, 0.22, 0.03, 1.0},			// brass
 	{0.0, 0.0, 0.0},					// red plastic
@@ -65,8 +63,7 @@ inline tipo_material operator++(tipo_material &rs, int ) {
 typedef	GLdouble Vertice[3];
 typedef	GLdouble Vector[4];
 
-GLfloat k = 1;
-GLint  height = 512; 
+GLint height = 512; 
 GLint width = 640;
 GLint check = 1;
 
@@ -74,8 +71,6 @@ typedef struct {
 	ALuint buffer, source;
 	ALboolean tecla_s;
 } Audio;
-
-Audio audio;
 
 typedef struct Eye
 {
@@ -149,6 +144,7 @@ typedef struct Modelo {
 	GLUquadric *quad;
 }Modelo;
 
+Audio audio;
 Estado estado;
 Modelo modelo;
 
@@ -227,6 +223,7 @@ void imprime_ajuda(void)
 {
 	printf("Desenho de um labirinto a partir de um grafo \n\n");
 	printf("h,H - Ajuda \n");
+	printf("s,S - Parar/Reproduzir Som \n");
 	printf("i,I - Repor os valores iniciais \n");
 	printf("ESC - Sair \n");
 
@@ -242,7 +239,7 @@ void imprime_ajuda(void)
 
 	printf("\n**** Iluminacao ***** \n");
 	printf("l,L - Luz fixa em relacao a cena/viewport \n");
-	printf("k,K - Alerna luz de camera com luz global \n");
+	printf("k,K - Alterna luz de camera com luz global \n");
 	printf("c,C - Liga/Desliga Cull Face \n");
 
 	printf("\n****** Camera ******* \n");
@@ -1011,8 +1008,8 @@ void Timer(int value)
 			estado.camera.velv = 0;
 			k = colisaoLivre();
 
-			nx = estado.camera.eye.x + k *cos(estado.camera.dir_long);
-			ny = estado.camera.eye.y + k  * sin(estado.camera.dir_long);
+			nx = estado.camera.eye.x + k * cos(estado.camera.dir_long);
+			ny = estado.camera.eye.y + k * sin(estado.camera.dir_long);
 
 			estado.camera.eye.x = nx;
 			estado.camera.eye.y = ny; 

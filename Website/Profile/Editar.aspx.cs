@@ -41,6 +41,7 @@ public partial class Profile_Editar : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+
             LoadLabels();
 
         }
@@ -89,14 +90,8 @@ public partial class Profile_Editar : System.Web.UI.Page
 
         Label10.Text = rm.GetString("Editar_Avatar", ci);
 
-
         fillAvatar();
         
-
-        /*************/
-        //avatar
-        /*************/
-
         Label8.Text = rm.GetString("Editar_Facebook", ci);
         Label9.Text = rm.GetString("Editar_Linkedin", ci);
 

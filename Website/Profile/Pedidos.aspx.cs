@@ -18,21 +18,15 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         btt1.Visible = false;
         dropi.Visible = false;
         int forca = -1;
-        if (Request.QueryString["user"] != null && Request.QueryString["forca"] != null)
+        if (Request.QueryString["user"] != null && Request.QueryString["forca"] != null && Request.QueryString["tag"] !=null)
         {
             try
             {
                 FillTagsCombo(Request.QueryString["user"]);
                 forca = Convert.ToInt32(Request.QueryString["forca"]);
-                /*******************************/
-                //alterar para aceitar tags!!!!!
-                //bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]));
-                /*
-                if (!a)
-                {
-                    Graphs4Social_AR.Ligacao.RejeitarPedido(Profile.UserName, Request.QueryString["user"]);
-                }*/
-
+                
+                bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]), Request.QueryString["tag"]);
+                
                 Label1.Visible = true;
 
                 IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(Request.QueryString["user"]);
@@ -84,7 +78,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         }
         else
         {
-
+            FillTagsCombo("Default");
             if (!IsPostBack)
             {
 

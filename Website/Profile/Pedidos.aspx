@@ -23,7 +23,7 @@
 
                         var nome = s1.split("=");
 
-                        window.location = "Pedidos.aspx?user=" + nome[1] + "&forca=" + $("#dropdown option:selected").text();
+                        window.location = "Pedidos.aspx?user=" + nome[1] + "&forca=" + $("#dropdown option:selected").text() + "&tag=" + document.getElementById('<%=tagsdrop.ClientID%>').value;
                     },
                     "Cancelar": function () {
                         $(this).dialog("close");

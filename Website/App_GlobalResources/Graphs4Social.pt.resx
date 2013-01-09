@@ -201,6 +201,9 @@
   <data name="Inicio_Sexo" xml:space="preserve">
     <value>Sexo</value>
   </data>
+  <data name="Inicio_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
   <data name="Master_Download" xml:space="preserve">
     <value>Download da App 3D</value>
   </data>

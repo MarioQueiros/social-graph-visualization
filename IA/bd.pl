@@ -192,13 +192,13 @@ proximo_no(X,T,Z) :- ligado(X,Z), not member(Z,T).
 
 
 %grauMedio separacao (s/ cut/complexidade)
-grauMedio(R):-findall(X,user(X),LU),assert(lUsers(LU)),grauMedio(LU,V,C),limpaDb,R is V/C.
+grauMedio(R):-limpaDb,findall(X,user(X),LU),assert(lUsers(LU)),grauMedio(LU,V,C),limpaDb,R is V/C.
 
 limpaDb:-retractall(verificado(_,_)),retractall(lUsers(_)).
 
 %passos, contagem caminhos		
 grauMedio([U|UR],V,C):-somaCaminhos(U,P,NC),grauMedio(UR,VA,RA),V is VA + P, C is RA + NC.
-grauMedio([],0).
+grauMedio([],0,0).
 
 %passos, n caminhos
 somaCaminhos(U,P,NC):-lUsers(LU),contaPassos(U,LU,P,NC).
@@ -209,9 +209,6 @@ contaPassos(U,[UA|UP],P,NC):-verificado(U,UA),!,contaPassos(U,UP,P,NC).
 contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
 							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.
 contaPassos(_,[],0,0).
-
-
-
 
 %contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
 %contaPassos([],0).

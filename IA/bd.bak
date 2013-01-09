@@ -201,10 +201,10 @@ grauMedio([U|UR],V,C):-somaCaminhos(U,P,NC),grauMedio(UR,VA,RA),V is VA + P, C i
 grauMedio([],0).
 
 %passos, n caminhos
-somaCaminho(U,P,NC):-lUsers(LU),contaPassos(U,LU,P,NC).
+somaCaminhos(U,P,NC):-lUsers(LU),contaPassos(U,LU,P,NC).
 
-
-contaPassos(U,[UA|UP],P,NC):-verificado(U,UA),contaPassos(U,UP,P,NC).
+contaPassos(U,[U|UP],P,NC):-!,contaPassos(U,UP,P,NC).
+contaPassos(U,[UA|UP],P,NC):-verificado(U,UA),!,contaPassos(U,UP,P,NC).
 
 contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
 							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.

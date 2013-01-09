@@ -117,10 +117,109 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Editar_Avatar" xml:space="preserve">
+    <value>Escolha o seu avatar</value>
+  </data>
+  <data name="Editar_Button" xml:space="preserve">
+    <value>Gravar</value>
+  </data>
+  <data name="Editar_DataNascimentoTexto" xml:space="preserve">
+    <value>Insira a sua data de nascimento</value>
+  </data>
+  <data name="Editar_Digote" xml:space="preserve">
+    <value>Digo depois</value>
+  </data>
+  <data name="Editar_Facebook" xml:space="preserve">
+    <value>Login com Facebook</value>
+  </data>
+  <data name="Editar_Feminino" xml:space="preserve">
+    <value>Feminino</value>
+  </data>
+  <data name="Editar_IdiomaEnUS" xml:space="preserve">
+    <value>Inglês</value>
+  </data>
+  <data name="Editar_IdiomaPt" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="Editar_IdiomaTexto" xml:space="preserve">
+    <value>Insira o seu idioma</value>
+  </data>
+  <data name="Editar_Indeciso" xml:space="preserve">
+    <value>Indeciso</value>
+  </data>
+  <data name="Editar_Linkedin" xml:space="preserve">
+    <value>Login com LinkedIn</value>
+  </data>
+  <data name="Editar_Masculino" xml:space="preserve">
+    <value>Masculino</value>
+  </data>
+  <data name="Editar_NumeroTelefoneTexto" xml:space="preserve">
+    <value>Insira o seu número de telefone</value>
+  </data>
+  <data name="Editar_RegiaoTexto" xml:space="preserve">
+    <value>Insira a sua região</value>
+  </data>
   <data name="Editar_Sexo_Label" xml:space="preserve">
     <value>Sou</value>
   </data>
-  <data name="MyKey2" xml:space="preserve">
-    <value>asd</value>
+  <data name="Inicio_Aceitar" xml:space="preserve">
+    <value>Aceitar Pedido</value>
+  </data>
+  <data name="Inicio_Amigo" xml:space="preserve">
+    <value>Amigo</value>
+  </data>
+  <data name="Inicio_Ano" xml:space="preserve">
+    <value>ano</value>
+  </data>
+  <data name="Inicio_Contacto" xml:space="preserve">
+    <value>Contacto</value>
+  </data>
+  <data name="Inicio_DataNasc" xml:space="preserve">
+    <value>Data de Nascimento</value>
+  </data>
+  <data name="Inicio_Enviado" xml:space="preserve">
+    <value>Pedido Enviado</value>
+  </data>
+  <data name="Inicio_Idade" xml:space="preserve">
+    <value>Idade</value>
+  </data>
+  <data name="Inicio_Info" xml:space="preserve">
+    <value>Sem informação disponível</value>
+  </data>
+  <data name="Inicio_Lingua" xml:space="preserve">
+    <value>Língua</value>
+  </data>
+  <data name="Inicio_Pedido" xml:space="preserve">
+    <value>Enviar Pedido de Amizade</value>
+  </data>
+  <data name="Inicio_Regiao" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="Inicio_Rejeitado" xml:space="preserve">
+    <value>Pedido Rejeitado</value>
+  </data>
+  <data name="Inicio_Sexo" xml:space="preserve">
+    <value>Sexo</value>
+  </data>
+  <data name="Inicio_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Master_Download" xml:space="preserve">
+    <value>Download da App 3D</value>
+  </data>
+  <data name="Master_Editar" xml:space="preserve">
+    <value>Editar Perfil</value>
+  </data>
+  <data name="Master_Gerir" xml:space="preserve">
+    <value>Gerir Conta</value>
+  </data>
+  <data name="Master_Pedidos" xml:space="preserve">
+    <value>Pedidos de Amizade</value>
+  </data>
+  <data name="Master_Warning" xml:space="preserve">
+    <value>Utilizador não encontrado</value>
+  </data>
+  <data name="Master_Welcome" xml:space="preserve">
+    <value>Viva, </value>
   </data>
 </root>

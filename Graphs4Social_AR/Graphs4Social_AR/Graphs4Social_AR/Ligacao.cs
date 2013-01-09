@@ -249,17 +249,14 @@ namespace Graphs4Social_AR
                 ligacao.ForcaDeLigacao = forca;
                 
             }
-
-            ligacao.Save();
-
             return ligacao;
         }
         //
         //
         // Pedidos de amizade ( Ligações estado = 0 ) por username
         //
-        public static bool PedidoAmizade(string username1, string username2, int forca){
-            Ligacao ligacao = AddLigacao(username1, username2, "",forca);
+        public static bool PedidoAmizade(string username1, string username2, int forca, string tag){
+            Ligacao ligacao = AddLigacao(username1, username2, tag, forca);
 
             if (ligacao != null)
             {
@@ -267,7 +264,7 @@ namespace Graphs4Social_AR
                 ligacao.Estado = 0;
                 ligacao.Save();
 
-                ligacao = AddLigacao(username2, username1, "",-1);
+                ligacao = AddLigacao(username2, username1, "", -1);
 
                 if (ligacao != null)
                 {
@@ -283,9 +280,9 @@ namespace Graphs4Social_AR
         //
         // Aceitar um pedido de amizade
         //
-        public static bool AceitarPedido(string username1, string username2, int forca)
+        public static bool AceitarPedido(string username1, string username2, int forca, string tag)
         {
-            Ligacao ligacao = AddLigacao(username1, username2, "", forca);
+            Ligacao ligacao = AddLigacao(username1, username2, tag, forca);
 
             if (ligacao != null)
             {
@@ -627,11 +624,11 @@ namespace Graphs4Social_AR
 
                 if (IdTagRelacao <= 0)
                 {
-                    sql.CommandText = "UPDATE Ligacao SET FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
+                    sql.CommandText = "UPDATE Ligacao SET FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO, ESTADO=@ESTADO WHERE ID_LIG=@ID_LIG";
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE Ligacao SET ID_REL=@ID_REL, FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO WHERE ID_LIG=@ID_LIG";
+                    sql.CommandText = "UPDATE Ligacao SET ID_REL=@ID_REL, FORCALIGACAO=@FORCA, ELIMINADO=@ELIMINADO, ESTADO=@ESTADO WHERE ID_LIG=@ID_LIG";
                     param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
                     param.Value = IdTagRelacao;
                 }

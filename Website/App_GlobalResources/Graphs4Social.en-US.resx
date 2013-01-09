@@ -186,6 +186,9 @@
   <data name="Inicio_Lingua" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="Inicio_NoTags" xml:space="preserve">
+    <value>No Tags Selected</value>
+  </data>
   <data name="Inicio_Pedido" xml:space="preserve">
     <value>Send Friendship Request</value>
   </data>

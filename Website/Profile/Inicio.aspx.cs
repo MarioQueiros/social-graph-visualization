@@ -9,6 +9,7 @@ using System.Web.UI.HtmlControls;
 using Graphs4Social_AR;
 using System.Resources;
 using System.Globalization;
+using TagCloud;
 
 public partial class Profile_Inicio : System.Web.UI.Page
 {
@@ -44,6 +45,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+       
         if (!IsPostBack)
         {
             chooseLanguage();
@@ -90,34 +92,34 @@ public partial class Profile_Inicio : System.Web.UI.Page
                         sexo = rm.GetString("Editar_Indeciso", ci);
                     }
 
-                    IList<Tag> listatagsM=null;
-                    IList<Tag> listatagsF=null;
+                    IList<Graphs4Social_AR.Tag> listatagsM=null;
+                    IList<Graphs4Social_AR.Tag> listatagsF=null;
 
                     if (sexo.Contains("Masculino") || sexo.Contains("Male"))
                     {
-                        listatagsM = Tag.LoadAllMenTagRelacao();
-                        foreach (Tag tag in listatagsM)
+                        listatagsM = Graphs4Social_AR.Tag.LoadAllMenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsM)
                         {
                             tagsRelacao.Items.Add(tag.Nome);
                         }
                     }
                     else if (sexo.Contains("Feminino") || sexo.Contains("Female"))
                     {
-                        listatagsF = Tag.LoadAllWomenTagRelacao();
-                        foreach (Tag tag in listatagsF)
+                        listatagsF = Graphs4Social_AR.Tag.LoadAllWomenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsF)
                         {
                             tagsRelacao.Items.Add(tag.Nome);
                         }
                     }
                     else
                     {
-                        listatagsM = Tag.LoadAllMenTagRelacao();
-                        listatagsF = Tag.LoadAllWomenTagRelacao();
-                        foreach (Tag tag in listatagsF)
+                        listatagsM = Graphs4Social_AR.Tag.LoadAllMenTagRelacao();
+                        listatagsF = Graphs4Social_AR.Tag.LoadAllWomenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsF)
                         {
                             tagsRelacao.Items.Add(tag.Nome);
                         }
-                        foreach (Tag tag in listatagsM)
+                        foreach (Graphs4Social_AR.Tag tag in listatagsM)
                         {
                             tagsRelacao.Items.Add(tag.Nome);
                         }
@@ -166,7 +168,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 }
             }
 
-            tituloPerfil.InnerText = username;
+            tituloPerfil.InnerText = Graphs4Social_AR.User.LoadByUserName(username).Username;
 
             FillProfileLabels(username);
 
@@ -461,6 +463,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
             Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca, tag);
         }
         
+        Response.Redirect("~/Profile/Inicio.aspx?user="+Request.QueryString["user"],true);
     }
 
     private string translateValues(string value)
@@ -496,5 +499,50 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 return rm.GetString("Editar_Indeciso", ci);
         
         
+    }
+
+    protected IDictionary<string, int> LoadTags()
+    {
+        IDictionary<string, int> tags = new Dictionary<string,int>();
+        IList <Graphs4Social_AR.Tag> list = new List <Graphs4Social_AR.Tag>();
+        IList <Graphs4Social_AR.Tag> listall = Graphs4Social_AR.Tag.LoadAllTag();
+
+        int numTags = listall.Count;
+
+        int numTotal = 0;
+
+        if (numTags > 0)
+        {
+            foreach (Graphs4Social_AR.Tag tag in listall)
+            {
+
+                numTotal += tag.Quantidade;
+
+            }
+
+            if (Request.QueryString["user"] != null)
+                list = Graphs4Social_AR.Tag.LoadAllByUsername(Request.QueryString["user"]);
+            else
+                list = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
+
+            if (list.Count > 0)
+            {
+                foreach (Graphs4Social_AR.Tag tag in list)
+                {
+
+                    tags.Add(tag.Nome, (1-(tag.Quantidade/numTotal))*100);
+
+                }
+            }
+            else
+            {
+                tags.Add(rm.GetString("Inicio_NoTags", ci), 100);
+            }
+        }
+        else
+        {
+            tags.Add(rm.GetString("Inicio_NoTags", ci), 100);
+        }
+        return tags;
     }
 }

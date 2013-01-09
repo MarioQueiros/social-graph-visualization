@@ -189,6 +189,9 @@
   <data name="Inicio_Lingua" xml:space="preserve">
     <value>Língua</value>
   </data>
+  <data name="Inicio_NoTags" xml:space="preserve">
+    <value>Sem Tags Seleccionadas</value>
+  </data>
   <data name="Inicio_Pedido" xml:space="preserve">
     <value>Enviar Pedido de Amizade</value>
   </data>

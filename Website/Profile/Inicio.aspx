@@ -29,6 +29,7 @@
     </asp:DropDownList>
 
     <br />
+    <br />
 
     <asp:Label ID="Label9" runat="server" Text="" Visible="false"></asp:Label>
     <asp:Label ID="Label1" runat="server" Text="" Visible="false"></asp:Label>
@@ -80,6 +81,7 @@
             <li><a href="#tabs-2"><asp:Label ID="Label20" runat="server" Text=""></asp:Label></a></li>
         </ul>
         <div id="tabs-1">
+            <br />
             <asp:Label ID="Label18" runat="server" Text=""></asp:Label>
 
             <br />
@@ -97,54 +99,83 @@
             </table>
         </div>
         <div id="tabs-2">
-            <asp:Label ID="Label17" runat="server" Text="Label"></asp:Label>
-
-            
+            <br />
+            <br />
+            <%= new TagCloud.TagCloud( 
+                    LoadTags(),
+                new TagCloud.TagCloudGenerationRules
+                {
+                    Order = TagCloud.TagCloudOrder.Alphabetical,
+                    TagCssClassPrefix = "tagGraphs",
+                    WeightClassPartitioning = new System.Collections.ObjectModel.ReadOnlyCollection<int>(new[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10})
+                    })
+        
+            %>
 
 
         </div>
     </div>
 
-                <div id="tagcloud">
-                    <a href="#" rel="0.1">Lorem</a>
-                    <a href="#" rel="2">ipsum</a>
-                    <a href="#" rel="9">dolor</a>
-                </div>
-
     
+
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
     <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-	<script src="Scripts/jquery.tagcloud.js" type="text/javascript" charset="utf-8"></script>
 
-    <script>
-        $(function () {
-            $("#tagcloud a").tagcloud({
-                size: {
-                    start: 14,
-                    end: 18,
-                    unit: 'px'
-                },
-                color: {
-                    start: '#cde',
-                    end: '#f52'
-                }
-            })
-        });</script>
+    
 
     <style>
-        #tagcloud a {
-            text-decoration: none;
+        
+        .tagGraphs10 {
+            font-size: 31px;
+            color:#15376a;
         }
 
-            #tagcloud a:hover {
-                text-decoration: underline;
-            }
-
-        #tagcloud {
-            margin: 25px auto;
-            font: 75% Arial, "MS Trebuchet", sans-serif;
+        .tagGraphs9 {
+            font-size: 29px;
+            color:#18407b;
         }
+
+        .tagGraphs8 {
+            font-size: 27px;
+            color:#1f529d;
+        }
+
+        .tagGraphs7 {
+            font-size: 25px;
+            color:#225aae;
+        }
+
+        .tagGraphs6 {
+            font-size: 23px;
+            color:#2868c7;
+        }
+
+        .tagGraphs5 {
+            font-size: 21px;
+            color:#3f7dd8;
+        }
+
+        .tagGraphs4 {
+            font-size: 19px;
+            color:#5088dc;
+        }
+
+        .tagGraphs3 {
+            font-size: 17px;
+            color:#6194df;
+        }
+
+        .tagGraphs2 {
+            font-size: 15px;
+            color:#729fe2;
+        }
+
+        .tagGraphs1 {
+            font-size: 13px;
+            color:#9dbceb;
+        }
+
 
         .btProfile {
             width: 200px;

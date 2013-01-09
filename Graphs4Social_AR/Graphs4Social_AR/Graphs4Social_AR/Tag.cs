@@ -41,6 +41,14 @@ namespace Graphs4Social_AR
         //      4 - Homem (Lingua Inglesa)
         private int _tipo;
 
+        // Campo Quantidade
+        //
+        //  Utilizado apenas para as tags comuns
+        //  
+        //  Utilizado para identificar a força das tags na rede social
+        //  Começa a 0 caso a Tag for nova
+        private int _quantidade=0;
+
         // Construtor vazio não pode existir, temos sempre que referir o tipo de tag que queremos
         //      True - TagRelacao
         //      False - Tag
@@ -61,6 +69,7 @@ namespace Graphs4Social_AR
             else
             {
                 myID = (int)row["ID_TAG"];
+                this._quantidade = (int)row["QUANTIDADE"];
             }
 
             this._eliminado = ((int)row["ELIMINADO"] == 1) ? true : false;
@@ -106,6 +115,11 @@ namespace Graphs4Social_AR
         {
             get { return _tipo; }
             set { _tipo = value; }
+        }
+        public int Quantidade
+        {
+            get { return _quantidade; }
+            set { _quantidade = value; }
         }
 
 
@@ -153,8 +167,18 @@ namespace Graphs4Social_AR
 
             return false;
         }
-
-
+        //
+        //
+        // Acrescentar ou retirar uma ocorrência a uma Tag
+        public void Ocorrencia(int val)
+        {
+            Quantidade = Quantidade + (val);
+            if (Quantidade >= 0)
+                Save();
+            else
+                Quantidade = 0;
+        }
+        
 
 
 
@@ -218,7 +242,7 @@ namespace Graphs4Social_AR
 
             return lista;
         }
-
+       
 
         // Load das Tags das Ligações
         public static Tag LoadTagRelacaoById(int idTagRelacao)
@@ -281,8 +305,8 @@ namespace Graphs4Social_AR
         {
 
 
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag/User WHERE UserId = '"
-                + User.LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM [Tag/User] WHERE UserId = '"
+                + User.LoadByUserName(username).UniqueIdentifierUserId + "'");
 
             IList<Tag> lista = new List<Tag>();
 
@@ -293,8 +317,10 @@ namespace Graphs4Social_AR
             {
                 if ((int)row["ID_TAG"] != idTag)
                 {
-                    tag = new Tag(row, true);
-                    lista.Add(tag);
+
+                    tag = Tag.LoadTagById((int)row["ID_TAG"]);
+                    if(!tag.Eliminado)
+                        lista.Add(tag);
 
                     idTag = (int)row["ID_TAG"];
                 }
@@ -427,12 +453,15 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE FROM TagRelacao SET QUANTIDADE=@QUANT, ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
                     param.Value = myID;
+
+                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;
@@ -512,12 +541,15 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, QUANTIDADE=@QUANT, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
                     param.Value = myID;
+
+                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;

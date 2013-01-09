@@ -1,12 +1,15 @@
 ﻿  lapr5.cpp
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraNorte' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(447): warning C4101: 'nof' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraEste' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraOeste' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(445): warning C4101: 'larguraSul' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(812): warning C4018: '<' : signed/unsigned mismatch
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(779): warning C4101: 'j' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(900): warning C4018: '<' : signed/unsigned mismatch
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(864): warning C4101: 'j' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(898): warning C4101: 'names' : unreferenced local variable
-  Lapr5.vcxproj -> C:\Users\leniker\Desktop\LAPR V\Graphs4Social_3D\Debug\Lapr5.exe
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(488): warning C4101: 'larguraNorte' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(490): warning C4101: 'nof' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(488): warning C4101: 'larguraEste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(488): warning C4101: 'larguraOeste' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(488): warning C4101: 'larguraSul' : unreferenced local variable
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(788): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(791): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(852): error C2065: 'DIMENSAO_CAMARA' : undeclared identifier
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(852): error C2039: 'vel_total' : is not a member of 'Camera'
+          c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(88) : see declaration of 'Camera'
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(897): warning C4018: '<' : signed/unsigned mismatch
+c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(975): warning C4018: '<' : signed/unsigned mismatch

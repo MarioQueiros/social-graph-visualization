@@ -8,14 +8,14 @@
 #include <iostream>
 #include "grafos.h"
 #include <GL/glaux.h>
+#include <AL/alut.h>
 using namespace std;
-
 #define graus(X) (double)((X)*180/M_PI)
 #define rad(X)   (double)((X)*M_PI/180)
 #define NO		1
 #define ARCO	10000
-// luzes e materiais
 
+// luzes e materiais
 const GLfloat mat_ambient[][4] = {
 	{0.33, 0.22, 0.03, 1.0},			// brass
 	{0.0, 0.0, 0.0},					// red plastic
@@ -63,10 +63,21 @@ inline tipo_material operator++(tipo_material &rs, int ) {
 typedef	GLdouble Vertice[3];
 typedef	GLdouble Vector[4];
 
-GLfloat k = 1;
-GLint  height = 512; 
+GLint height = 512; 
 GLint width = 640;
 GLint check = 1;
+
+typedef struct {
+	ALuint buffer, source;
+	ALboolean tecla_s;
+} Audio;
+
+typedef struct Eye
+{
+	GLfloat x;
+	GLdouble y;
+	GLdouble z;
+}Eye;
 
 typedef struct Camera
 {
@@ -77,8 +88,22 @@ typedef struct Camera
 	Vertice center;
 	GLfloat velv;
 	GLfloat velh;
+	GLfloat vel;
 	GLfloat distância_solo;
+	Eye eye;
 }Camera;
+
+typedef struct pos_t{
+	GLfloat    x,y,z;
+}pos_t;
+
+
+typedef struct camera_t{
+	pos_t    eye;  
+	GLfloat  dir_long;  // longitude olhar (esq-dir)
+	GLfloat  dir_lat;   // latitude olhar	(cima-baixo)
+	GLfloat  fov;
+}camera_t;
 
 typedef struct teclas_t
 {
@@ -88,6 +113,7 @@ typedef struct teclas_t
 typedef struct Estado
 {
 	Camera		camera;
+	camera_t    Camera;
 	int			xMouse,yMouse;
 	GLboolean	light;
 	GLboolean	apresentaNormais;
@@ -100,6 +126,8 @@ typedef struct Estado
 	GLboolean	vooRasante;
 	GLfloat     zmin;
 	GLfloat     zmax;
+	GLint       topSubwindow,navigateSubwindow;
+	GLuint      vista[NUM_JANELAS];
 }Estado;
 
 typedef struct Modelo {
@@ -116,6 +144,7 @@ typedef struct Modelo {
 	GLUquadric *quad;
 }Modelo;
 
+Audio audio;
 Estado estado;
 Modelo modelo;
 
@@ -136,8 +165,10 @@ void initEstado()
 	estado.apresentaNormais=GL_FALSE;
 	estado.lightViewer=2;
 	estado.k = 1;
+	estado.timer=100;	
 	estado.camera.velh = VELOCIDADE_HORIZONTAL;
-	estado.camera.velv = VELOCIDADE_VERTICAL;
+	estado.camera.velv = 0;
+	estado.camera.vel=sqrt(pow(estado.camera.velh,2)+pow(estado.camera.velv,2));
 }
 
 void initModelo()
@@ -180,10 +211,19 @@ void myInit()
 	leGrafo();
 }
 
+void InitAudio()
+{
+	audio.buffer = alutCreateBufferFromFile("David_Guetta_Baby_When_The_Light.wav");
+	alGenSources(1, &audio.source);
+	alSourcei (audio.source, AL_BUFFER, audio.buffer);
+	audio.tecla_s = AL_TRUE;
+}
+
 void imprime_ajuda(void)
 {
 	printf("Desenho de um labirinto a partir de um grafo \n\n");
 	printf("h,H - Ajuda \n");
+	printf("s,S - Parar/Reproduzir Som \n");
 	printf("i,I - Repor os valores iniciais \n");
 	printf("ESC - Sair \n");
 
@@ -199,7 +239,7 @@ void imprime_ajuda(void)
 
 	printf("\n**** Iluminacao ***** \n");
 	printf("l,L - Luz fixa em relacao a cena/viewport \n");
-	printf("k,K - Alerna luz de camera com luz global \n");
+	printf("k,K - Alterna luz de camera com luz global \n");
 	printf("c,C - Liga/Desliga Cull Face \n");
 
 	printf("\n****** Camera ******* \n");
@@ -450,11 +490,15 @@ void desenhaNo(int no)
 	desenhaEsfera(nos[no].x,nos[no].y,nos[no].z,nos[no].largura);
 	estado.camera.distância_solo  = nos[0].z * 35;
 
-	if(check == 1 || estado.vooRasante || check == -99)
+	if(check == 1 || check == -99)
 	{
-		estado.camera.center[0] = nos[0].y * nos[0].z; 
+		/*estado.camera.center[0] = nos[0].y * nos[0].z; 
 		estado.camera.center[1] = nos[0].x;
-		estado.camera.center[2] = nos[0].z * 35;
+		estado.camera.center[2] = nos[0].z * 35;*/
+
+		estado.camera.eye.x = nos[0].y * nos[0].z;
+		estado.camera.eye.y = nos[0].x;
+		estado.camera.eye.z = nos[0].z * 35;
 
 		check++;
 	}
@@ -693,20 +737,19 @@ void desenhaEixos()
 
 void setCamera()
 {
-	Vertice eye;
-
-	eye[0]=estado.camera.center[0] + estado.camera.dist * cos(estado.camera.dir_long) * cos(estado.camera.dir_lat);
-	eye[1]=estado.camera.center[1] + estado.camera.dist * sin(estado.camera.dir_long) * cos(estado.camera.dir_lat);
-	eye[2]=estado.camera.center[2] + estado.camera.dist  *sin(estado.camera.dir_lat);
+	estado.camera.center[0] = estado.camera.eye.x + estado.camera.dist * cos(estado.camera.dir_long) * cos(estado.camera.dir_lat);
+	estado.camera.center[1] = estado.camera.eye.y + estado.camera.dist * sin(estado.camera.dir_long) * cos(estado.camera.dir_lat);
+	estado.camera.center[2] = estado.camera.eye.z + estado.camera.dist * sin(estado.camera.dir_lat);
 
 	putLights((GLfloat*)white_light);
-	gluLookAt(eye[0],eye[1],eye[2],estado.camera.center[0],estado.camera.center[1],estado.camera.center[2],0,0,1);
+	gluLookAt(estado.camera.eye.x,estado.camera.eye.y,estado.camera.eye.z,estado.camera.center[0],estado.camera.center[1],estado.camera.center[2],0,0,1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(graus(-M_PI/2.0),1,0,0);
 	glRotatef(graus(M_PI/2.0-estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
+
 }
 
 void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
@@ -737,28 +780,24 @@ void display(void)
 		//desenhaPlanoDrag(estado.eixoTranslaccao);
 	}
 
+	char msg[100];
 	if(estado.vooRasante){
-		char* msg = "Voo Rasante";
-		GLfloat mat_w[] = {1.0, 1.0, 1.0};
-		glPushMatrix();
-		glLoadIdentity();
-		gluLookAt(0,0, 5, 0, 0, 0, 0, 1, 0);
-		glColor3fv(mat_w);
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_w);
-		drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
-		glPopMatrix();
+		strcpy(msg, "Voo Rasante");
 	}
-	else{
-		char* msg = "Voo Livre";
-		GLfloat mat_w[] = {1.0, 1.0, 1.0};
-		glPushMatrix();
-		glLoadIdentity();
-		gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
-		glColor3fv(mat_w);
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_w);
-		drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
-		glPopMatrix();
+	else {
+		strcpy(msg, "Voo Livre");
 	}
+
+	GLfloat mat_w[] = {1.0, 1.0, 1.0};
+	glPushMatrix();
+	glLoadIdentity();
+	gluLookAt(0,0, 5, 0, 0, 0, 0, 1, 0);
+	glColor3fv(mat_w);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_w);
+	drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
+	glPopMatrix();
+
+
 	glFlush();
 	glutSwapBuffers();
 }
@@ -774,36 +813,38 @@ void setProjection(int x, int y, GLboolean picking)
 	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
 }
 
-int colisaoLivre()
+float colisaoLivre()
 {
 	unsigned int i, j;
 	int n, objid=0;
-	double zmin2 = 10.0, zmax2 = 10.0;
+	double zmin = 10.0, zmax = 10.0;
 	GLuint buffer[100], *ptr;
 	GLfloat vel = estado.camera.velh + estado.camera.velv;
-	GLdouble newx, newy, newz;
+	GLdouble newx=0, newy=0, newz=0;
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
+
+	estado.camera.vel = sqrt(pow(estado.camera.velh,2) + pow(estado.camera.velv,2));
 
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
 	glPushName(0);
-
+	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix(); // guarda a projecção
 	glLoadIdentity();
 	glOrtho(-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0,
-		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + vel*4);
+		-DIMEMSAO_CAMARA / 2.0, DIMEMSAO_CAMARA / 2.0, 0.0, DIMEMSAO_CAMARA / 2.0 + estado.camera.vel);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(graus(-M_PI / 2.0 - atan2(estado.camera.velv, estado.camera.velh)),1,0,0);
 	glRotatef(graus(M_PI / 2.0 - estado.camera.dir_long),0,0,1);
-	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
+	glTranslatef(-estado.camera.eye.x,-estado.camera.eye.y,-estado.camera.eye.z);
 
 	desenhaLabirinto();
-
+	glPopMatrix();
 	n = glRenderMode(GL_RENDER);
 	if (n > 0)
 	{
@@ -813,23 +854,12 @@ int colisaoLivre()
 		{
 			names = *ptr;
 
-			/*printf (" number of names for hit = %d\n", names); ptr++;
-			printf(" z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
-			printf(" z2 is %g\n", (float) *ptr/0x7fffffff); ptr++;
-			printf (" the name is ");
-			for (j = 0; j < names; j++)
-			{ 
-			// for each name 
-			printf ("%d ", *ptr); ptr++;
-			}
-			printf ("\n");*/
-
-			if (zmin2 > (double) ptr[1] / UINT_MAX) {
-				zmin2 = (double) ptr[1] / UINT_MAX;
+			if (zmin > (double) ptr[1] / UINT_MAX) {
+				zmin = (double) ptr[1] / UINT_MAX;
 				objid = ptr[3];
 			}
-			if (zmax2 < (double) ptr[1] / UINT_MAX) {
-				zmax2 = (double) ptr[1] / UINT_MAX;
+			if (zmax < (double) ptr[1] / UINT_MAX) {
+				zmax = (double) ptr[1] / UINT_MAX;
 			}
 			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
 
@@ -837,15 +867,16 @@ int colisaoLivre()
 			glGetDoublev(GL_PROJECTION_MATRIX, proj);
 			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
 
-			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) zmin / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
 
-			GLfloat d = sqrt(pow(newx- estado.camera.center[0],2) + pow(newy-estado.camera.center[1],2) + pow(newz - estado.camera.center[2],2));
+			GLfloat d = sqrt(pow(newx- estado.camera.eye.x,2) + pow(newy-estado.camera.eye.y,2) + pow(newz - estado.camera.eye.z,2));
 
-			float limit = std::numeric_limits<float>::infinity();
+			float inf = 1e-50;
+			estado.k = (d - DIMEMSAO_CAMARA/2.0 - inf) / estado.camera.vel;
 
-			k = (d - DIMEMSAO_CAMARA/2.0 - limit) / vel;
-
-			//estado.camera.center[0] -= d;
+			if(estado.k < 0){
+				estado.k = 0;
+			}
 		}
 	}
 	else{
@@ -856,25 +887,25 @@ int colisaoLivre()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 
-	return objid;
+	return estado.k;
 }
 
 int colisaoRasante()
 {
 	unsigned int i, j;
 	int n, objid=0;
-	double zmin2 = 10.0, zmax2 = 10.0;
+	double zmin = 10.0, zmax = 10.0;
 	estado.zmin =  (estado.zmin + 1) * 35;
-	estado.zmax =  (estado.zmax + 1) * 35;
+	estado.zmax =  (estado.zmax + 1) * 35; 
 	GLuint buffer[100], *ptr;
-	GLfloat vel = estado.camera.velh + estado.camera.velv;
+
 	GLdouble newx, newy, newz;
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
 	GLint farP = 0, nearP = 0; 
+	nearP = estado.zmax - 1;
+	farP  = estado.zmin + 1;
 
-	nearP = -(estado.zmin - 1);
-	farP  = -(estado.zmax + 1);
 
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
@@ -885,7 +916,7 @@ int colisaoRasante()
 	glPushMatrix(); // guarda a projecção
 	glLoadIdentity();
 	glOrtho(estado.camera.center[0] - estado.camera.velh, estado.camera.center[0] + estado.camera.velh, 
-		estado.camera.center[1] - estado.camera.velh, estado.camera.center[1] + estado.camera.velh, nearP, farP);
+		estado.camera.center[1] - estado.camera.velh, estado.camera.center[1] + estado.camera.velh, -nearP, -farP);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -906,28 +937,27 @@ int colisaoRasante()
 			printf (" the name is ");
 			for (j = 0; j < names; j++)
 			{ 
-				// for each name
-				printf ("%d ", *ptr); ptr++;
+			// for each name
+			printf ("%d ", *ptr); ptr++;
 			}
 			printf ("\n");*/
 
-			if (zmin2 > (double) ptr[1] / UINT_MAX) {
-			zmin2 = (double) ptr[1] / UINT_MAX;
-			objid = ptr[3];
+			if (zmin > (double) ptr[1] / UINT_MAX) {
+				zmin = (double) ptr[1] / UINT_MAX;
+				objid = ptr[3];
 			}
 
-			if (zmax2 < (double) ptr[1] / UINT_MAX) {
-			zmax2 = (double) ptr[1] / UINT_MAX;
+			if (zmax < (double) ptr[1] / UINT_MAX) {
+				zmax = (double) ptr[1] / UINT_MAX;
 			}
 
 			glGetIntegerv(GL_VIEWPORT, vp);
 			glGetDoublev(GL_PROJECTION_MATRIX, proj);
 			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
 
-			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) buffer[2] / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) zmin / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
 			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
 		}
-		//estado.camera.center[2] = newz + DISTANCIA_SOLO;
 	}
 
 	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
@@ -937,56 +967,100 @@ int colisaoRasante()
 	return objid;
 }
 
+void redisplayAll(void)
+{
+	glutSetWindow(1);
+	glutPostRedisplay();
+	glutSetWindow(estado.navigateSubwindow);
+	glutPostRedisplay();
+}
+
 void Timer(int value)
 {
 	GLuint curr = glutGet(GLUT_ELAPSED_TIME);
-	GLfloat vel = estado.camera.velh + estado.camera.velv;
-
+	float k;
 	glutTimerFunc(estado.timer, Timer, 0);
+	float nx,ny,nz;
+	ALint state;
+
+	alGetSourcei(audio.source, AL_SOURCE_STATE, &state);
+	if (audio.tecla_s)
+	{
+		//play
+		if (state != AL_PLAYING){
+			alutSleep (1);
+			alSourcePlay(audio.source);
+		}
+	}
+	else{
+		//to stop
+		if (state == AL_PLAYING){
+			alSourceStop(audio.source);
+		}
+	}	
+
 	// ir p/ frente
 	if(estado.teclas.up){
 		// se voo livre
 		if(!estado.vooRasante)
 		{
-			estado.eixoTranslaccao=colisaoLivre();
-			if(!estado.eixoTranslaccao)
-			{
-				estado.camera.center[0] = estado.camera.center[0] + estado.k*estado.camera.velh * cos(estado.camera.dir_long);
-				estado.camera.center[1] = estado.camera.center[1] + estado.k*estado.camera.velh * sin(estado.camera.dir_long);
-				estado.camera.center[2] = estado.camera.center[2];
-			}
+			estado.camera.velh = VELOCIDADE_HORIZONTAL;
+			estado.camera.velv = 0;
+			k = colisaoLivre();
+
+			nx = estado.camera.eye.x + k * cos(estado.camera.dir_long);
+			ny = estado.camera.eye.y + k * sin(estado.camera.dir_long);
+
+			estado.camera.eye.x = nx;
+			estado.camera.eye.y = ny; 
+
+			estado.camera.velh = 0;
 		}else{
 			// se voo rasante
-			estado.eixoTranslaccao=colisaoRasante();
-			if(estado.eixoTranslaccao)
+			int rasante=colisaoRasante();
+			if(rasante!=0)
 			{
-				estado.camera.center[0] = estado.camera.center[0] + estado.camera.velh * cos(estado.camera.dir_long);
-				estado.camera.center[1] = estado.camera.center[1] + estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.velh = VELOCIDADE_HORIZONTAL;
+				nx = estado.camera.eye.x + estado.camera.velh * cos(estado.camera.dir_long);
+				ny = estado.camera.eye.y + estado.camera.velh * sin(estado.camera.dir_long);
+
+				estado.camera.eye.x = nx;
+				estado.camera.eye.y = ny; 
+
 				//estado.camera.center[2] = estado.camera.center[2] + DISTANCIA_SOLO;
-				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
 	// ir p/ tras
 	if(estado.teclas.down){
 		// se voo livre
-		if(!estado.vooRasante){
-			estado.eixoTranslaccao=colisaoLivre();
-			if(!estado.eixoTranslaccao)
-			{
-				estado.camera.center[0] = estado.camera.center[0] - estado.k*estado.camera.velh * cos(estado.camera.dir_long);
-				estado.camera.center[1] = estado.camera.center[1] - estado.k*estado.camera.velh * sin(estado.camera.dir_long);
-				estado.camera.center[2] = estado.camera.center[2];
-			}
+		if(!estado.vooRasante)
+		{
+			estado.camera.velh = VELOCIDADE_HORIZONTAL;
+			estado.camera.velv = 0;
+			k = colisaoLivre();
+
+			nx = estado.camera.eye.x - k  * cos(estado.camera.dir_long);
+			ny = estado.camera.eye.y - k * sin(estado.camera.dir_long);
+
+			estado.camera.eye.x = nx;
+			estado.camera.eye.y = ny; 
+
+			estado.camera.velh = 0;
 		}else{
 			// se voo rasante
-			estado.eixoTranslaccao=colisaoRasante();
-			if(estado.eixoTranslaccao)
+			int rasante=colisaoRasante();
+			if(rasante!=0)
 			{
-				estado.camera.center[0] = estado.camera.center[0] - estado.camera.velh * cos(estado.camera.dir_long);
-				estado.camera.center[1] = estado.camera.center[1] - estado.camera.velh * sin(estado.camera.dir_long);
+				estado.camera.velh = VELOCIDADE_HORIZONTAL;
+
+				nx = estado.camera.eye.x - estado.camera.velh * cos(estado.camera.dir_long);
+				ny = estado.camera.eye.y - estado.camera.velh * sin(estado.camera.dir_long);
+
+				estado.camera.eye.x = nx;
+				estado.camera.eye.y = ny; 
+
 				//estado.camera.center[2] = estado.camera.center[2] - DISTANCIA_SOLO;
-				estado.camera.center[2] = estado.camera.center[2];
 			}
 		}
 	}
@@ -1005,26 +1079,30 @@ void Timer(int value)
 	{
 		if(estado.teclas.q){
 			// subir camara
-			estado.eixoTranslaccao=colisaoLivre();
-			if(estado.eixoTranslaccao)
-			{
-			}else{
-				estado.camera.center[2]++;
-			}
+			estado.camera.velh = 0;
+			estado.camera.velv = VELOCIDADE_VERTICAL;
+			k = colisaoLivre();
+
+			nz = estado.camera.eye.z + k * estado.camera.velv * sin(estado.camera.dir_lat);
+			estado.camera.eye.z = nz;
+
+			estado.camera.velv = 0;
 		}
 
 		if(estado.teclas.a){
 			// descer camara
-			estado.eixoTranslaccao=colisaoLivre();
-			if(estado.eixoTranslaccao)
-			{
-			}else{
-				if(estado.camera.center[2]>=2)
-					estado.camera.center[2]--;
+			estado.camera.velh = 0;
+			estado.camera.velv = VELOCIDADE_VERTICAL;
+			k = colisaoLivre();
+
+			if(estado.camera.center[2]>=4){
+				nz = estado.camera.eye.z - k * estado.camera.velv * sin(estado.camera.dir_lat);
+				estado.camera.eye.z = nz;
 			}
+			estado.camera.velv = 0;
 		}
 	}
-	glutPostRedisplay ();
+	redisplayAll();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -1084,6 +1162,7 @@ void keyboard(unsigned char key, int x, int y)
 			initEstado();
 			initModelo();
 			estado.camera.center[2] = estado.camera.distância_solo;
+			check = -99;
 			estado.vooRasante = GL_TRUE;
 		}
 		else{
@@ -1105,6 +1184,14 @@ void keyboard(unsigned char key, int x, int y)
 	case 'a':
 	case 'A':
 		estado.teclas.a = GL_TRUE;
+		break;
+	case 's':
+	case 'S':
+		if(!audio.tecla_s){
+			audio.tecla_s = AL_TRUE;
+		}else{
+			audio.tecla_s = AL_FALSE;
+		}
 		break;
 	}
 }
@@ -1189,13 +1276,15 @@ void SpecialKeyUp(int key, int x, int y)
 }
 
 void myReshape(int w, int h)
-{	
+{		
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	setProjection(0,0,GL_FALSE);
 	glMatrixMode(GL_MODELVIEW);
 	width = w;
 	height = h;
+	glutSetWindow (estado.navigateSubwindow);
+	glutPositionWindow (10, height-200);
 }
 
 void motionRotate(int x, int y)
@@ -1323,6 +1412,78 @@ int picking(int x, int y)
 	return objid;
 }
 
+void desenhaAngVisao(camera_t *cam)
+{
+	material(azul);
+	glEnable(GL_BLEND);
+	glDepthMask(GL_FALSE);
+
+	glPushMatrix();
+	glTranslatef(estado.camera.center[0],estado.camera.center[1],estado.camera.center[2]+20);
+
+	glRotatef(graus(estado.camera.dir_long)-40,0,0,1);
+
+	glBegin(GL_TRIANGLES);
+	glVertex2f(12,50);
+	glVertex2f(50,12);
+	glVertex2f(0,0);
+	glEnd();
+
+	glPopMatrix();
+
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+}
+
+void setTopSubwindowCamera(camera_t *cam)
+{
+	cam->eye.x=estado.camera.center[0];
+	cam->eye.z=estado.camera.center[1];
+	if(estado.vista[JANELA_TOP])
+		gluLookAt(estado.camera.center[0],CHAO_DIMENSAO*.4,estado.camera.center[1],estado.camera.center[0],estado.camera.center[2],estado.camera.center[1],0,0,1);
+	else
+		gluLookAt(estado.camera.center[0],CHAO_DIMENSAO*4,estado.camera.center[1],estado.camera.center[0],estado.camera.center[2],estado.camera.center[1],0,0,1);
+
+	//gluLookAt(0,0,400,0,0.2,0,0,0,1);
+}
+
+void displayTopSubwindow()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	//gluLookAt(obj.pos.x,obj.pos.y,obj.pos.z,0,0,-1);
+
+	gluLookAt(estado.camera.center[0],0,CHAO_DIMENSAO*4.5,estado.camera.center[0],0,estado.camera.center[1],0,1,0);
+	putLights((GLfloat*)white_light);
+
+	//glCallList(modelo.mini_mapa[JANELA_TOP]);
+
+	material(slate);
+	desenhaSolo();
+
+	desenhaLabirinto();
+
+	//desenhaNo1(5);
+	desenhaAngVisao(&estado.Camera);
+
+	//glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
+	glFlush();
+	glutSwapBuffers();
+}
+
+void redisplayTopSubwindow(int width, int height)
+{
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//gluOrtho2D(0, width, height, 0);
+	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,500);
+	glMatrixMode(GL_MODELVIEW);
+
+}
+
 void mouse(int btn, int state, int x, int y)
 {
 	switch(btn) {
@@ -1365,6 +1526,8 @@ void mouse(int btn, int state, int x, int y)
 
 void main(int argc, char **argv)
 {
+	alutInit (&argc, argv);
+	InitAudio();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(width, height);  
@@ -1378,8 +1541,13 @@ void main(int argc, char **argv)
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
 	myInit();
-
 	imprime_ajuda();
+
+	// criar a sub window topSubwindow
+	estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
+	myInit();
+	glutReshapeFunc(redisplayTopSubwindow);
+	glutDisplayFunc(displayTopSubwindow);
 
 	glutMainLoop();
 }

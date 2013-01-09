@@ -8,10 +8,14 @@
 #define ESTE_OESTE	1
 #define PLANO		2
 
-#define VELOCIDADE_VERTICAL 2
-#define VELOCIDADE_HORIZONTAL 2
+#define VELOCIDADE_VERTICAL 4
+#define VELOCIDADE_HORIZONTAL 4
 #define DIMEMSAO_CAMARA 4
 #define DISTANCIA_SOLO 2
+#define JANELA_TOP      0
+#define NUM_JANELAS     2
+#define	CHAO_DIMENSAO	100
+#define	OBJECTO_ALTURA	0.8
 
 typedef struct No{
 	float x,y,z,largura;

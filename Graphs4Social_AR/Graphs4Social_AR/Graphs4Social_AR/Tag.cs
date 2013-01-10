@@ -178,9 +178,101 @@ namespace Graphs4Social_AR
             else
                 Quantidade = 0;
         }
-        
+        //
+        //
+        // 
+        public static void RefreshTagsUser(IList<string> tagsAnteriores, IList<string> tagsActuais, string username)
+        {
+            IList<int> idAdd = new List<int>();
+            IList<int> idRem = new List<int>();
+
+            foreach (string tagN in tagsActuais)
+            {
+
+                Tag tag = Tag.LoadTagByNome(tagN);
+                if (tagsAnteriores.Contains(tagN))
+                {
+                    tagsAnteriores.Remove(tagN);
+                    tagsActuais.Remove(tagN);
+                }
+                else
+                {
+                    tag.Ocorrencia(1);
+                    idAdd.Add(tag.ID);
+                }
+            
+            }
+
+            foreach (string tagR in tagsAnteriores)
+            {
+
+                Tag tag = Tag.LoadTagByNome(tagR);
+                tag.Ocorrencia(-1);
+                idRem.Add(tag.ID);
+
+            }
+
+            string userId = User.LoadByUserName(username).UniqueIdentifierUserId;
+
+            AdicionarTagsUser(userId, idAdd);
+            RemoverTagsUser(userId, idRem);
+        }
 
 
+        // Modificações Tabela N para N
+        //
+        //
+        //
+        public static void AdicionarTagsUser(string userId, IList<int> idsTags)
+        {
+            BeginTransaction();
+
+            foreach (int id in idsTags)
+            {
+
+                SqlCommand sql = new SqlCommand();
+                sql.CommandText = "INSERT INTO [Tag/User](UserId,ID_TAG) VALUES(@UserID,@ID_TAG)";
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@UserID", SqlDbType.UniqueIdentifier);
+                param.Value = new Guid(userId);
+
+                param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = id;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+
+            }
+
+            CommitTransaction();
+        }
+        //
+        //
+        public static void RemoverTagsUser(string userId, IList<int> idsTags)
+        {
+            BeginTransaction();
+
+            foreach (int id in idsTags)
+            {
+
+                SqlCommand sql = new SqlCommand();
+                sql.CommandText = "DELETE FROM [Tag/User] WHERE UserId=@UserID AND ID_TAG=@ID_TAG";
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@UserID", SqlDbType.UniqueIdentifier);
+                param.Value = new Guid(userId);
+
+                param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = id;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+
+            }
+
+            CommitTransaction();
+        }
 
 
         // Loads
@@ -453,7 +545,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET QUANTIDADE=@QUANT, ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE TagRelacao SET QUANTIDADE=@QUANT, ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -541,7 +633,7 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, QUANTIDADE=@QUANT, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE Tag SET ESTADO=@ESTADO, QUANTIDADE=@QUANT, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
@@ -591,7 +683,7 @@ namespace Graphs4Social_AR
             {
                 BeginTransaction();
 
-                sql.CommandText = "UPDATE FROM TagRelacao SET ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                sql.CommandText = "UPDATE TagRelacao SET ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                 sql.Transaction = CurrentTransaction;
 
@@ -622,7 +714,7 @@ namespace Graphs4Social_AR
 
                 BeginTransaction();
 
-                sql.CommandText = "UPDATE FROM Tag SET ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                sql.CommandText = "UPDATE Tag SET ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                 sql.Transaction = CurrentTransaction;
 

@@ -86,9 +86,9 @@ public partial class SiteMaster : MasterPage
 
 
 
-            HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
+            /*HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
 
-            hl.HRef += "?user=" + Profile.UserName;
+            hl.HRef += "?user=" + Profile.UserName;*/
 
             Label1.Text = rm.GetString("Master_Warning", ci);
 
@@ -126,20 +126,20 @@ public partial class SiteMaster : MasterPage
     public void search(){
         if (!Page.IsPostBack)
         {
-            string aux = this.pesquisarText.Value;
+            /*string aux = ((TextBox)loginView3.FindControl("pesquisarText")).Text;
 
             Label24.Text = aux;
 
             Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(aux);
             if (user != null)
             {
-                pesquisarLink.NavigateUrl = "~/Profile/Inicio.aspx?user=" + aux;
+                ((HyperLink)loginView3.FindControl("pesquisarLink")).NavigateUrl = "~/Profile/Inicio.aspx?user=" + aux;
                 warningDiv.Visible = false;
             }
             else if (!aux.Equals("Pesquisar..."))
             {
                 warningDiv.Visible = true;
-            }
+            }*/
         }
     }
     

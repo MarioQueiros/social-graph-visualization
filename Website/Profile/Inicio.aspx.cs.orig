@@ -17,8 +17,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
     protected string estadohumorStr;
 
     private static string baseName = "Resources.Graphs4Social";
-    private static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
-    private CultureInfo ci;
+    protected static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
+    protected CultureInfo ci;
 
 
     private void chooseLanguage()
@@ -30,7 +30,6 @@ public partial class Profile_Inicio : System.Web.UI.Page
             if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
             {
                 ci = new CultureInfo("pt");
-
             }
             else
             {
@@ -52,10 +51,10 @@ public partial class Profile_Inicio : System.Web.UI.Page
             chooseLanguage();
             string username = Request.QueryString["user"];
 
+            Label17.Text = rm.GetString("Inicio_Estado", ci);
             subEstadoHumor.Text = rm.GetString("Editar_Button", ci);
             Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
             Label20.Text = rm.GetString("Inicio_Tags", ci);
-            
 
             if (username == null)
             {
@@ -66,8 +65,11 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 // Ver apos enviar pedido
             else
             {
+                username = Graphs4Social_AR.User.LoadByUserName(username).Username;
+
                 if (!Profile.UserName.Equals(username))
                 {
+                    Label17.Text = rm.GetString("Inicio_EstadoOutro1", ci) + username + rm.GetString("Inicio_EstadoOutro2", ci);
                     Ligacao lig = null;
                     try
                     {
@@ -200,7 +202,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
             if (flag)
             
             {
-                tituloPerfil.InnerText = Graphs4Social_AR.User.LoadByUserName(username).Username;
+                tituloPerfil.InnerText = username;
                 FillProfileLabels(username);
 
                 FillTabelaDeAmigos(username);
@@ -213,7 +215,30 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected string mudarEstadoHumor()
     {
-        return Profile.EstadoHumor;
+        if (Profile.EstadoHumor != "")
+            return Profile.EstadoHumor;
+        else
+            return "Smiley.png";
+    }
+
+    protected string setEstadoHumor()
+    {
+        string username = Request.QueryString["user"];
+
+        IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+        foreach (string elemento in profile)
+        {
+
+            if (elemento.Contains("EstadoHumor:"))
+            {
+                
+                return elemento.Split(':')[1];
+            }
+
+        }
+
+        return "Smiley";
     }
 
     protected void FillTabelaDeAmigos(string username)
@@ -535,6 +560,20 @@ public partial class Profile_Inicio : System.Web.UI.Page
             return rm.GetString("Editar_Indeciso", ci);
     }
 
+    protected bool checkUsername()
+    {
+        string username = Request.QueryString["user"];
+        if(username!=null)
+        {
+            if (!Profile.UserName.Equals(username))
+            {
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return false;
+    }
 
     protected string fillEstadoHumor()
     {

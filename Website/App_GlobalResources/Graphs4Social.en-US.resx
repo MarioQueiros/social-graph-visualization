@@ -231,4 +231,40 @@
   <data name="Pedido_Erro" xml:space="preserve">
     <value>An error ocurred, try again later</value>
   </data>
+  <data name="Default_Text" xml:space="preserve">
+    <value>Get to know your social network in a 3D way with our website and a 3D Windows-based application</value>
+  </data>
+  <data name="Default_Title" xml:space="preserve">
+    <value>Graphs4Social - Much more than a Social Network</value>
+  </data>
+  <data name="Estado_Aborrecido" xml:space="preserve">
+    <value>Bored</value>
+  </data>
+  <data name="Estado_Alegre" xml:space="preserve">
+    <value>Smiley</value>
+  </data>
+  <data name="Estado_Baixo" xml:space="preserve">
+    <value>Upset</value>
+  </data>
+  <data name="Estado_Chorar" xml:space="preserve">
+    <value>Teards</value>
+  </data>
+  <data name="Estado_Entusiasmado" xml:space="preserve">
+    <value>Pleased</value>
+  </data>
+  <data name="Estado_Sonolento" xml:space="preserve">
+    <value>Sleepy</value>
+  </data>
+  <data name="Estado_Triste" xml:space="preserve">
+    <value>Sad</value>
+  </data>
+  <data name="Inicio_Estado" xml:space="preserve">
+    <value>How are you today?</value>
+  </data>
+  <data name="Inicio_EstadoOutro1" xml:space="preserve">
+    <value>How </value>
+  </data>
+  <data name="Inicio_EstadoOutro2" xml:space="preserve">
+    <value> is today</value>
+  </data>
 </root>

@@ -278,6 +278,8 @@ public partial class Profile_Editar : System.Web.UI.Page
         translateValues();
 
         LoadLabels();
+
+        Response.Redirect("~/Profile/Editar.aspx", true);
     }
 
     private void translateValues()

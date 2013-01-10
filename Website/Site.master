@@ -59,14 +59,15 @@
                     <a href="~/" runat="server">Graphs4Social</a>
                     <div class="headerRight">
                         <div class="search">
+                            <asp:LoginView ID="loginView3" runat="server" ViewStateMode="Disabled">
+                                <AnonymousTemplate></AnonymousTemplate>
+                                <LoggedInTemplate>
+                                    <asp:TextBox ID="pesquisarText" CssClass="pesquisarText" runat="server"></asp:TextBox>
 
-                            <input type="text" runat="server" id="pesquisarText" class="pesquisarText" value="Pesquisar..." onfocus="if (this.value == 'Pesquisar...') { this.value = '';this.style.color='#000';}" onblur="inputBlur()" /> 
-
-
-
-                            <asp:HyperLink ID="pesquisarLink" runat="server" ImageUrl="~/Images/search.png" >
-                                </asp:HyperLink>
-                        
+                                    <asp:HyperLink ID="pesquisarLink" runat="server" ImageUrl="~/Images/search.png"></asp:HyperLink>
+                                </LoggedInTemplate>
+                                
+                            </asp:LoginView>
                         </div>
 
                         <section class="login">
@@ -147,24 +148,13 @@
             </div>
         </footer>
     </form>
-    <script type="text/javascript">
-        function inputBlur() {
-            if (this.value == '') 
-            { 
-                this.value = 'Pesquisar...';
-                this.style.color = '#999';
-                <% warningDiv.Visible = true;%>
-            }
-            else if (this.value == 'Pesquisar...') {
-                this.style.color = '#999';
-                <% warningDiv.Visible = false;%>
-            }
-            else {
-                <% search(); %>
-
-            }
-        }
     
-    </script>
+    <style>
+
+        .username {
+            text-decoration:none;
+        }
+
+    </style>
 </body>
 </html>

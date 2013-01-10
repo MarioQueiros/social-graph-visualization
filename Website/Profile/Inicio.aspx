@@ -11,24 +11,40 @@
                 <hgroup id="tituloPerfil" class="title" runat="server">
                 </hgroup>
             </td>
-            <td style="text-align: right; width:150px;">
-                <select id="dropestadohumor" class="tagsProfile" onchange="alterar();">
-                    <option value="Bored">Bored</option>
-                    <option value="Pleased">Pleased</option>
-                    <option value="Sad">Sad</option>
-                    <option value="Sleepy">Sleepy</option>
-                    <option value="Smiley">Smiley</option>
-                    <option value="Teards">Teards</option>
-                    <option value="Upset">Upset</option>
-                </select><br /><br />
-                <input id="Hidden1" name="Hidden1" type="Hidden" runat="server" value="" />
-
-                <img src="<%= fillEstadoHumor() %>" id="imgestadohumor" />
-                <br /><br />
-                <asp:Button ID="subEstadoHumor" runat="server" Text="" OnClick="subEstadoHumor_Click" CssClass="btSave" />
+            <td style="width: 150px;">
+                <fieldset>
+                    <legend><asp:Label ID="Label17" runat="server" Text=""></asp:Label></legend>
+                    <table style="height: 200px; width: 150px; text-align: center; vertical-align: text-top;">
+                        <tr>
+                            <td style="padding-left:15px">
+                                <img src="<%= fillEstadoHumor() %>" id="imgestadohumor" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table style="text-align: center; vertical-align: text-top; width: 150px;">
+                                    <tr>
+                                        <td style="padding-left:45px;">
+                                            <input id="Hidden1" name="Hidden1" type="Hidden" runat="server" value="" />
+                                            <select id="dropestadohumor" class="tagsProfile" onchange="alterar();">
+                                                <option value="Bored"><%= rm.GetString("Estado_Aborrecido", ci) %></option>
+                                                <option value="Pleased"><%= rm.GetString("Estado_Entusiasmado", ci) %></option>
+                                                <option value="Sad"><%= rm.GetString("Estado_Triste", ci) %></option>
+                                                <option value="Sleepy"><%= rm.GetString("Estado_Sonolento", ci) %></option>
+                                                <option value="Smiley"><%= rm.GetString("Estado_Alegre", ci) %></option>
+                                                <option value="Teards"><%= rm.GetString("Estado_Chorar", ci) %></option>
+                                                <option value="Upset"><%= rm.GetString("Estado_Baixo", ci) %></option>
+                                            </select></td>
+                                        <td id="buttonTD">
+                                            <asp:Button ID="subEstadoHumor" runat="server" Text="" OnClick="subEstadoHumor_Click" CssClass="btSave" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
             </td>
         </tr>
-    </table>
+        </table>
     <br />
     <asp:Button ID="Button1" runat="server" Text="" Visible="false" OnClick="Button1_Click" CssClass="btProfile" />
 
@@ -196,43 +212,50 @@
                 case 'Bored':
                     document.getElementById("dropestadohumor").selectedindex = 1;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Bored.png";
 					break;
                 case 'Pleased':
                     document.getElementById("dropestadohumor").selectedindex = 2;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Pleased.png";
                     break;
                 case 'Sad':
                     document.getElementById("dropestadohumor").selectedindex = 3;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Sad.png";
                     break;
                 case 'Sleepy':
                     document.getElementById("dropestadohumor").selectedindex = 4;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Sleepy.png";
                     break;
                 case 'Smiley':
                     document.getElementById("dropestadohumor").selectedindex = 5;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Smiley.png";
                     break;
                 case 'Teards':
                     document.getElementById("dropestadohumor").selectedindex = 6;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Teards.png";
                     break;
                 case 'Upset':
                     document.getElementById("dropestadohumor").selectedindex = 7;
 					document.getElementById("dropestadohumor").disabled = "true";
-					document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+					//document.getElementById("<%= subEstadoHumor.ClientID %>").style.visibility = "hidden";
+                    document.getElementById("buttonTD").parentNode.removeChild(document.getElementById("buttonTD"));
 					document.getElementById("imgestadohumor").src="../Images/Upset.png";
                     break;
             }

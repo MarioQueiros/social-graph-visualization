@@ -17,8 +17,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
     protected string estadohumorStr;
 
     private static string baseName = "Resources.Graphs4Social";
-    private static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
-    private CultureInfo ci;
+    protected static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
+    protected CultureInfo ci;
 
 
     private void chooseLanguage()
@@ -51,10 +51,10 @@ public partial class Profile_Inicio : System.Web.UI.Page
             chooseLanguage();
             string username = Request.QueryString["user"];
 
+            Label17.Text = rm.GetString("Inicio_Estado", ci);
             subEstadoHumor.Text = rm.GetString("Editar_Button", ci);
             Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
             Label20.Text = rm.GetString("Inicio_Tags", ci);
-            
 
             if (username == null)
             {
@@ -65,9 +65,11 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 // Ver apos enviar pedido
             else
             {
+                username = Graphs4Social_AR.User.LoadByUserName(username).Username;
+
                 if (!Profile.UserName.Equals(username))
                 {
-                    
+                    Label17.Text = rm.GetString("Inicio_EstadoOutro1", ci) + username + rm.GetString("Inicio_EstadoOutro2", ci);
                     Ligacao lig = null;
                     try
                     {
@@ -76,7 +78,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         flag = false;
-                        Response.Redirect("404.aspx");
+                        Response.Redirect("../404.aspx");
                     }
 
                     if (flag)
@@ -200,7 +202,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
             if (flag)
             
             {
-                tituloPerfil.InnerText = Graphs4Social_AR.User.LoadByUserName(username).Username;
+                tituloPerfil.InnerText = username;
                 FillProfileLabels(username);
 
                 FillTabelaDeAmigos(username);

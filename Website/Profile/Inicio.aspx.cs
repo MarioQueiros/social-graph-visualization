@@ -76,7 +76,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         flag = false;
-                        Response.Redirect("404.aspx");
+                        Response.Redirect("../404.aspx");
                     }
 
                     if (flag)

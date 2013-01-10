@@ -1,0 +1,6 @@
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\bin\Debug\WebConsumer.exe.config
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\bin\Debug\WebConsumer.exe
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\bin\Debug\WebConsumer.pdb
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\obj\Debug\WebConsumer.csprojResolveAssemblyReference.cache
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\obj\Debug\WebConsumer.exe
+C:\Users\Administrador\Documents\LaprV\IA\WebConsumer\WebConsumer\WebConsumer\obj\Debug\WebConsumer.pdb

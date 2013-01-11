@@ -66,6 +66,9 @@ typedef	GLdouble Vector[4];
 GLint height = 512; 
 GLint width = 640;
 GLint check = 1;
+string username;
+string pass;
+int state = 1;
 
 typedef struct {
 	ALuint buffer, source;
@@ -93,10 +96,14 @@ typedef struct Camera
 	Eye eye;
 }Camera;
 
+typedef struct posMouse{
+	GLint posMouseX;
+	GLint posMouseY;
+} posMouse;
+
 typedef struct pos_t{
 	GLfloat    x,y,z;
 }pos_t;
-
 
 typedef struct camera_t{
 	pos_t    eye;  
@@ -112,6 +119,7 @@ typedef struct teclas_t
 
 typedef struct Estado
 {
+	posMouse	posMouse;
 	Camera		camera;
 	camera_t    Camera;
 	int			xMouse,yMouse;
@@ -119,10 +127,11 @@ typedef struct Estado
 	GLboolean	apresentaNormais;
 	GLint		lightViewer;
 	GLint		eixoTranslaccao;
+	GLint		tooltip;
 	GLdouble	eixo[3];
 	teclas_t    teclas;
 	GLint       timer;
-	GLint		k;
+	GLdouble	k;
 	GLboolean	vooRasante;
 	GLfloat     zmin;
 	GLfloat     zmax;
@@ -165,7 +174,7 @@ void initEstado()
 	estado.apresentaNormais=GL_FALSE;
 	estado.lightViewer=2;
 	estado.k = 1;
-	estado.timer=100;	
+	estado.timer = 20;	
 	estado.camera.velh = VELOCIDADE_HORIZONTAL;
 	estado.camera.velv = 0;
 	estado.camera.vel=sqrt(pow(estado.camera.velh,2)+pow(estado.camera.velv,2));
@@ -209,6 +218,29 @@ void myInit()
 	gluQuadricNormals(modelo.quad, GLU_OUTSIDE);
 
 	leGrafo();
+}
+
+void Init()
+{
+	GLfloat LuzAmbiente[]={0.5,0.5,0.5, 0.0};
+
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+
+	glEnable(GL_SMOOTH); /*enable smooth shading */
+	glEnable(GL_LIGHTING); /* enable lighting */
+	glEnable(GL_DEPTH_TEST); /* enable z buffer */
+	glEnable(GL_NORMALIZE);
+
+	glDepthFunc(GL_LESS);
+
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LuzAmbiente); 
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, estado.lightViewer); 
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE); 
+
+	initModelo();
+	modelo.quad=gluNewQuadric();
+	gluQuadricDrawStyle(modelo.quad, GLU_FILL);
+	gluQuadricNormals(modelo.quad, GLU_OUTSIDE);
 }
 
 void InitAudio()
@@ -456,16 +488,13 @@ void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio)
 	GLdouble cross[3];
 	GLfloat valAng=0;
 	GLint n=32;
-	GLfloat nAng=2*M_PI/n;
 	material(red_plastic);
 
 	glPushMatrix();
 	glNormal3f(0,0,1);
 	glTranslatef(xi,yi,zi+10); //meter mais para cima
-	for(int i=0;i<n;i++){
-		glutSolidSphere(raio, 32, 32);
-		valAng+=nAng;
-	}
+
+	glutSolidSphere(raio, 16, 16);
 
 	glPopMatrix();
 	if(estado.apresentaNormais) {
@@ -647,13 +676,15 @@ void desenhaLabirinto()
 	glScalef(5,5,5);
 
 	for(int i=0; i<numNos; i++){
-		glLoadName(NO + i);
+		glPushName(NO + i);
 		desenhaNo(i);
+		glPopName();
 	}
 	material(red_plastic);
 	for(int i=0; i<numArcos; i++){
-		glLoadName(ARCO + i);
+		glPushName(ARCO + i);
 		desenhaArco(arcos[i]);
+		glPopName();
 	}
 	glPopMatrix();
 }
@@ -749,7 +780,6 @@ void setCamera()
 	glRotatef(graus(-M_PI/2.0),1,0,0);
 	glRotatef(graus(M_PI/2.0-estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
-
 }
 
 void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
@@ -770,15 +800,20 @@ void display(void)
 	material(slate);
 	desenhaSolo();
 
-	desenhaEixos();
+	//desenhaEixos();
 
 	desenhaLabirinto();
 
-	if(estado.eixoTranslaccao) {
-		// desenha plano de translacção
-		//cout << "Translate... " << estado.eixoTranslaccao << endl; 
-		//desenhaPlanoDrag(estado.eixoTranslaccao);
-	}
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
 
 	char msg[100];
 	if(estado.vooRasante){
@@ -797,7 +832,105 @@ void display(void)
 	drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
 	glPopMatrix();
 
+	glFlush();
+	glutSwapBuffers();
+}
 
+void Reshape2(int width, int height)
+{
+	// glViewport(botom, left, width, height)
+	// define parte da janela a ser utilizada pelo OpenGL
+
+	glViewport(0, 0, (GLint) width, (GLint) height);
+
+
+	// Matriz Projeccao
+	// Matriz onde se define como o mundo e apresentado na janela
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// gluOrtho2D(left,right,bottom,top); 
+	// projeccao ortogonal 2D, com profundidade (Z) entre -1 e 1
+	gluOrtho2D(0, width, 0, height);
+
+	// Matriz Modelview
+	// Matriz onde sÃ£o realizadas as tranformacoes dos modelos desenhados
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void bitmapString(char *str, double x, double y)
+{
+	int i,n;
+
+	// fonte pode ser:
+	// GLUT_BITMAP_8_BY_13
+	// GLUT_BITMAP_9_BY_15
+	// GLUT_BITMAP_TIMES_ROMAN_10
+	// GLUT_BITMAP_TIMES_ROMAN_24
+	// GLUT_BITMAP_HELVETICA_10
+	// GLUT_BITMAP_HELVETICA_12
+	// GLUT_BITMAP_HELVETICA_18
+	//
+	// int glutBitmapWidth  	(	void *font , int character);
+	// devolve a largura de um carÃ¡cter
+	//
+	// int glutBitmapLength 	(	void *font , const unsigned char *string );
+	// devolve a largura de uma string (soma da largura de todos os caracteres)
+
+	n = (int)strlen(str);
+	glRasterPos2d(x,y);
+	for (i=0;i<n;i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,(int)str[i]);
+}
+
+void desenhaTextBox( int wi, int wf, int hi, int hf)
+{
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(wi,hi);
+	glVertex2f(wf, hi);
+	glVertex2f(wf, hf);
+	glVertex2f(wi, hf);
+	glEnd();
+}
+
+char *convertstringtochar(string str)
+{
+	char * ch= new char[str.length()+1];
+	strcpy (ch,str.c_str());
+	return ch;
+}
+
+void Draw(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	glLoadIdentity();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_COLOR_MATERIAL);
+
+	glPushMatrix();
+
+	glColor3f(0.7,0.7,0.7);
+	bitmapString("User:",10, height/1.5);
+	if(state==1){
+		glColor3f(1.0,0.0,0.0);
+	}else{
+		glColor3f(0.7,0.7,0.7);
+	}
+	desenhaTextBox(150,350, height/1.4, height/1.5);
+	glColor3f(0.7,0.7,0.7);
+	bitmapString(convertstringtochar(username),160, height/1.45);
+
+	glColor3f(0.7,0.7,0.7);
+	bitmapString("Password:", 10, height/1.7);
+
+	glColor3f(0.7,0.7,0.7);
+	desenhaTextBox(150,350, height/1.6, height/1.7);
+
+	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
 }
@@ -813,24 +946,34 @@ void setProjection(int x, int y, GLboolean picking)
 	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
 }
 
-float colisaoLivre()
+void setProjectionLogin(int x, int y, GLboolean picking)
 {
-	unsigned int i, j;
-	int n, objid=0;
-	double zmin = 10.0, zmax = 10.0;
-	GLuint buffer[100], *ptr;
-	GLfloat vel = estado.camera.velh + estado.camera.velv;
+	glLoadIdentity();
+	if (picking) { // se está no modo picking, lê viewport e define zona de picking
+		GLint vport[4];
+		glGetIntegerv(GL_VIEWPORT, vport);
+		gluPickMatrix(x, glutGet(GLUT_WINDOW_HEIGHT)  - y, 4, 4, vport); // Inverte o y do rato para corresponder à jana
+	}
+	gluOrtho2D(0,glutGet(GLUT_WINDOW_WIDTH),0,glutGet(GLUT_WINDOW_HEIGHT));
+}
+
+GLdouble colisaoLivre()
+{
+	int i, j, names;
+	GLint n, objid=0;
+	GLfloat zmin = 10.0, zmax = 10.0;
+	GLuint buffer[500], *ptr;
 	GLdouble newx=0, newy=0, newz=0;
 	GLint vp[4];
 	GLdouble proj[16], mv[16];
 
 	estado.camera.vel = sqrt(pow(estado.camera.velh,2) + pow(estado.camera.velv,2));
 
-	glSelectBuffer(100, buffer);
+	glSelectBuffer(500, buffer);
 	glRenderMode(GL_SELECT);
 	glInitNames();
 	glPushName(0);
-	glPushMatrix();
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix(); // guarda a projecção
 	glLoadIdentity();
@@ -844,43 +987,36 @@ float colisaoLivre()
 	glTranslatef(-estado.camera.eye.x,-estado.camera.eye.y,-estado.camera.eye.z);
 
 	desenhaLabirinto();
-	glPopMatrix();
+
 	n = glRenderMode(GL_RENDER);
-	if (n > 0)
-	{
-		GLuint names;
-		ptr = (GLuint *) buffer;
-		for (i = 0; i < n; i++)
-		{
-			names = *ptr;
-
-			if (zmin > (double) ptr[1] / UINT_MAX) {
-				zmin = (double) ptr[1] / UINT_MAX;
-				objid = ptr[3];
-			}
-			if (zmax < (double) ptr[1] / UINT_MAX) {
-				zmax = (double) ptr[1] / UINT_MAX;
-			}
-			ptr += 3 + ptr[0]; // ptr[0] contem o número de nomes (normalmente 1); 3 corresponde a numnomes, zmin e zmax
-
-			glGetIntegerv(GL_VIEWPORT, vp);
-			glGetDoublev(GL_PROJECTION_MATRIX, proj);
-			glGetDoublev(GL_MODELVIEW_MATRIX, mv);
-
-			gluUnProject(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), (double) zmin / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
-
-			GLfloat d = sqrt(pow(newx- estado.camera.eye.x,2) + pow(newy-estado.camera.eye.y,2) + pow(newz - estado.camera.eye.z,2));
-
-			float inf = 1e-50;
-			estado.k = (d - DIMEMSAO_CAMARA/2.0 - inf) / estado.camera.vel;
-
-			if(estado.k < 0){
-				estado.k = 0;
-			}
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < n; i++) { /*  for each hit  */
+		names = (int) *ptr;
+		ptr++;
+		if(zmin > (float)*ptr/UINT_MAX){
+			zmin = (float)*ptr/UINT_MAX;
 		}
+		ptr++;
+		ptr++;
+		for (j = 0; j < names; j++) { /*  for each name */
+			ptr++;
+		}	
 	}
-	else{
-		estado.k = 1;
+
+	if(n!=0){
+		glGetIntegerv(GL_VIEWPORT,vp);
+		glGetDoublev(GL_PROJECTION_MATRIX,proj);
+		glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+		gluUnProject(glutGet(GLUT_WINDOW_WIDTH)/2.0, glutGet(GLUT_WINDOW_HEIGHT)/2.0, (double) zmin / UINT_MAX, mv, proj, vp, &newx, &newy, &newz);
+
+		GLdouble d = sqrt(pow(newx-estado.camera.eye.x,2) + pow(newy-estado.camera.eye.y,2) + pow(newz-estado.camera.eye.z,2));
+
+		GLfloat inf = 1e-50;
+
+		estado.k = (d-DIMEMSAO_CAMARA / 2.0 - inf)/estado.camera.vel;
+		if(estado.k<0) estado.k=0;
+	}else{
+		estado.k=1;
 	}
 
 	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
@@ -892,7 +1028,7 @@ float colisaoLivre()
 
 int colisaoRasante()
 {
-	unsigned int i, j;
+	int i;
 	int n, objid=0;
 	double zmin = 10.0, zmax = 10.0;
 	estado.zmin =  (estado.zmin + 1) * 35;
@@ -905,7 +1041,6 @@ int colisaoRasante()
 	GLint farP = 0, nearP = 0; 
 	nearP = estado.zmax - 1;
 	farP  = estado.zmin + 1;
-
 
 	glSelectBuffer(100, buffer);
 	glRenderMode(GL_SELECT);
@@ -978,7 +1113,7 @@ void redisplayAll(void)
 void Timer(int value)
 {
 	GLuint curr = glutGet(GLUT_ELAPSED_TIME);
-	float k;
+	GLdouble k=0;
 	glutTimerFunc(estado.timer, Timer, 0);
 	float nx,ny,nz;
 	ALint state;
@@ -986,14 +1121,14 @@ void Timer(int value)
 	alGetSourcei(audio.source, AL_SOURCE_STATE, &state);
 	if (audio.tecla_s)
 	{
-		//play
+		//reproduzir som
 		if (state != AL_PLAYING){
 			alutSleep (1);
 			alSourcePlay(audio.source);
 		}
 	}
 	else{
-		//to stop
+		//parar reprodução
 		if (state == AL_PLAYING){
 			alSourceStop(audio.source);
 		}
@@ -1015,6 +1150,7 @@ void Timer(int value)
 			estado.camera.eye.y = ny; 
 
 			estado.camera.velh = 0;
+			estado.k = 1;
 		}else{
 			// se voo rasante
 			int rasante=colisaoRasante();
@@ -1040,7 +1176,7 @@ void Timer(int value)
 			estado.camera.velv = 0;
 			k = colisaoLivre();
 
-			nx = estado.camera.eye.x - k  * cos(estado.camera.dir_long);
+			nx = estado.camera.eye.x - k * cos(estado.camera.dir_long);
 			ny = estado.camera.eye.y - k * sin(estado.camera.dir_long);
 
 			estado.camera.eye.x = nx;
@@ -1193,6 +1329,9 @@ void keyboard(unsigned char key, int x, int y)
 			audio.tecla_s = AL_FALSE;
 		}
 		break;
+	default:
+		username +=key;
+		break;
 	}
 }
 
@@ -1206,6 +1345,32 @@ void keyboardUp(unsigned char key, int x, int y)
 	case 'a':
 	case 'A':
 		estado.teclas.a = GL_FALSE;
+		break;
+	}
+}
+
+void loginKey(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+	case 27 :
+		exit(0);
+		break;
+	default:
+		username +=key;
+		break;
+	}
+	glutPostRedisplay();
+}
+
+void specialLogin(int key, int x, int y)
+{
+	switch(key){
+	case GLUT_KEY_UP :
+		state = 1;
+		break;
+	case GLUT_KEY_DOWN :
+		state=2;
 		break;
 	}
 }
@@ -1276,6 +1441,19 @@ void SpecialKeyUp(int key, int x, int y)
 }
 
 void myReshape(int w, int h)
+{	
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	setProjection(0,0,GL_FALSE);
+	glMatrixMode(GL_MODELVIEW);
+	width = w;
+	height = h;
+	glutSetWindow (estado.navigateSubwindow);
+	glutPositionWindow (10, height-200);
+}
+
+void Reshape(int w, int h)
 {		
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
@@ -1283,8 +1461,6 @@ void myReshape(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 	width = w;
 	height = h;
-	glutSetWindow (estado.navigateSubwindow);
-	glutPositionWindow (10, height-200);
 }
 
 void motionRotate(int x, int y)
@@ -1369,6 +1545,56 @@ void motionDrag(int x, int y)
 	glutPostRedisplay();
 }
 
+void Square (int x, int y,int w,int h)
+{
+	//material(azul);
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glLoadIdentity();
+	glViewport(x,y,250,250);
+	//glViewport(tooltip.posX,tooltip.posY,tooltip.dimX,tooltip.dimY);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-tooltip.dimX,tooltip.dimX,-tooltip.dimY,tooltip.dimY,0,100);
+	glOrtho(-250,250,-250,250,0,100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_POLYGON);
+		glVertex2f(0,0);
+		glVertex2f(-250,0);
+		glVertex2f(-250,-250);
+		glVertex2f(0,-250);
+	glEnd();
+	glPopMatrix();
+
+	//glDepthMask(GL_TRUE);
+	//glDisable(GL_BLEND);
+  /*
+  glPushMatrix();
+
+  glTranslatef(estado.camera.center[0],estado.camera.center[1],estado.camera.center[2]);
+
+  glBegin (GL_QUADS);
+	  //glTexCoord2i(0, 0); 
+	  glVertex3f ( u[0] + v[0],  u[1] + v[1],  u[2] + v[2]);
+	  //glTexCoord2i(1, 0); 
+	  glVertex3f (-u[0] + v[0], -u[1] + v[1], -u[2] + v[2]);
+	  //glTexCoord2i(1, 1); 
+	  glVertex3f (-u[0] - v[0], -u[1] - v[1], -u[2] - v[2]);
+	  //glTexCoord2i(0, 1); 
+	  glVertex3f ( u[0] - v[0],  u[1] - v[1],  u[2] - v[2]);
+  glEnd ();
+
+  glPopMatrix();
+  */ 
+}
+
 int picking(int x, int y)
 {
 	int i, n, objid=0;
@@ -1410,6 +1636,87 @@ int picking(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 
 	return objid;
+}
+
+void processHits(GLint hits, GLuint buffer[])
+{
+	int i;
+	unsigned int j;
+	GLuint names, *ptr;
+
+	printf("hits = %d\n", hits);
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < hits; i++) {  /* for each hit  */
+		names = *ptr;
+		printf(" number of names for hit = %d\n", names);
+		ptr++;
+		printf("  z1 is %g;", (float) *ptr/0xffffffff);
+		ptr++;
+		printf(" z2 is %g\n", (float) *ptr/0xffffffff);
+		ptr++;
+		printf("   the name is ");
+		for (j = 0; j < names; j++) {  /* for each name */
+			printf("%d ", *ptr);
+			ptr++;
+		}
+		printf("\n");
+	}
+}
+
+int pickingToolTip(int x, int y)
+{
+	int i, n, objid=0;
+	double zmin = 10.0;
+	GLint width,height;
+	GLuint selectBuf[BUFSIZE];
+	//GLint viewport[4];
+
+	glSelectBuffer(BUFSIZE, selectBuf);
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	//glPushName((GLuint) ~0);
+	//glGetIntegerv(GL_VIEWPORT, viewport);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix(); // guarda a projecção
+	glLoadIdentity();
+	setProjection(x,y,GL_TRUE);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	setCamera();
+	//desenhar so os nos
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
+	
+	//desenhaLabirinto();
+
+	n = glRenderMode(GL_RENDER);
+
+	if(n>0){
+		width = glutGet(GLUT_WINDOW_WIDTH);
+		height = glutGet(GLUT_WINDOW_HEIGHT);
+		//estado.posMouse.posMouseX=x;
+		//estado.posMouse.posMouseY=y;
+		Square(x,glutGet(GLUT_WINDOW_HEIGHT)-y,width,height);
+	}
+
+	//processHits (n, selectBuf);
+	
+	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	myReshape(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
+	return n;
 }
 
 void desenhaAngVisao(camera_t *cam)
@@ -1481,7 +1788,6 @@ void redisplayTopSubwindow(int width, int height)
 	//gluOrtho2D(0, width, height, 0);
 	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,500);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void mouse(int btn, int state, int x, int y)
@@ -1524,6 +1830,14 @@ void mouse(int btn, int state, int x, int y)
 	}
 }
 
+void mouseToolTip(int x, int y){
+
+	estado.tooltip=pickingToolTip(x,y);
+
+	cout << estado.tooltip << endl;
+
+}
+
 void main(int argc, char **argv)
 {
 	alutInit (&argc, argv);
@@ -1540,6 +1854,9 @@ void main(int argc, char **argv)
 	glutSpecialFunc(Special);
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
+
+	glutPassiveMotionFunc(mouseToolTip);
+
 	myInit();
 	imprime_ajuda();
 
@@ -1551,3 +1868,23 @@ void main(int argc, char **argv)
 
 	glutMainLoop();
 }
+
+/*
+void main(int argc, char **argv)
+{
+glutInit(&argc, argv);
+glutInitWindowPosition(0, 0);
+glutInitWindowSize(width,height);
+glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
+if (glutCreateWindow("Graphs4Social") == GL_FALSE)
+exit(1);
+// callbacks de janelas/desenho
+glutTimerFunc(estado.timer,Timer,0);
+glutReshapeFunc(Reshape2);
+glutDisplayFunc(Draw);
+glutKeyboardFunc(loginKey);
+glutSpecialFunc(specialLogin);
+// COMECAR...
+myInit();
+glutMainLoop();
+}*/

@@ -72,33 +72,32 @@ public partial class SiteMaster : MasterPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
+
+
+        if (!Profile.IsAnonymous)
         {
-            
-            if (!Profile.IsAnonymous)
-            {
-                chooseLanguage();
+            chooseLanguage();
 
-                ((Label)loginView.FindControl("Label6")).Text = rm.GetString("Master_Welcome", ci);
-                ((Label)loginView2.FindControl("Label2")).Text = rm.GetString("Master_Pedidos", ci);
-                ((Label)loginView2.FindControl("Label3")).Text = rm.GetString("Master_Editar", ci);
-                ((Label)loginView2.FindControl("Label4")).Text = rm.GetString("Master_Gerir", ci);
-                ((Label)loginView2.FindControl("Label5")).Text = rm.GetString("Master_Download", ci);
+            ((Label)loginView.FindControl("Label6")).Text = rm.GetString("Master_Welcome", ci);
+            ((Label)loginView2.FindControl("Label2")).Text = rm.GetString("Master_Pedidos", ci);
+            ((Label)loginView2.FindControl("Label3")).Text = rm.GetString("Master_Editar", ci);
+            ((Label)loginView2.FindControl("Label4")).Text = rm.GetString("Master_Gerir", ci);
+            ((Label)loginView2.FindControl("Label5")).Text = rm.GetString("Master_Download", ci);
 
-                
 
-                HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
-                
-                hl.HRef += "?user=" + Profile.UserName;
 
-                Label1.Text = rm.GetString("Master_Warning",ci);
+            /*HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
 
-                Label1.ForeColor = Color.Red;
+            hl.HRef += "?user=" + Profile.UserName;*/
 
-                
-            }
+            Label1.Text = rm.GetString("Master_Warning", ci);
+
+            Label1.ForeColor = Color.Red;
+
 
         }
+
+        
     }
 
     private void chooseLanguage()
@@ -127,20 +126,20 @@ public partial class SiteMaster : MasterPage
     public void search(){
         if (!Page.IsPostBack)
         {
-            string aux = this.pesquisarText.Value;
+            /*string aux = ((TextBox)loginView3.FindControl("pesquisarText")).Text;
 
             Label24.Text = aux;
 
             Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(aux);
             if (user != null)
             {
-                pesquisarLink.NavigateUrl = "~/Profile/Inicio.aspx?user=" + aux;
+                ((HyperLink)loginView3.FindControl("pesquisarLink")).NavigateUrl = "~/Profile/Inicio.aspx?user=" + aux;
                 warningDiv.Visible = false;
             }
             else if (!aux.Equals("Pesquisar..."))
             {
                 warningDiv.Visible = true;
-            }
+            }*/
         }
     }
     

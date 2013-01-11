@@ -15,22 +15,22 @@ tag(comida,[mario,bruno,hugo,sara]).
 
 traduzir(blues,chelsea).
 
-lig(pedro,bruno,5,[amigo]).
-lig(bruno,pedro,1,[ursologia]).
-lig(bruno,catia,2,[ese]).
-lig(catia,bruno,5,[isep]).
-lig(tiago,catia,2,[ese]).
-lig(catia,tiago,5,[isep]).
-lig(hugo,catia,5,[ese]).
-lig(catia,hugo,5,[isep]).
-lig(bruno,mario,2,[contador]).
-lig(mario,bruno,5,[cavendish]).
-lig(hugo,mario,3,[myva]).
-lig(mario,hugo,5,[myva]).
-lig(carlos,mario,2,[testeMaven]).
-lig(mario,carlos,1,[testeMaven]).
-lig(sara,catia,3,[testeSug]).
-lig(catia,sara,2,[testeSug]).
+lig(pedro,bruno,5).
+lig(bruno,pedro,1).
+lig(bruno,catia,2).
+lig(catia,bruno,5).
+lig(tiago,catia,2).
+lig(catia,tiago,5).
+lig(hugo,catia,5).
+lig(catia,hugo,5).
+lig(bruno,mario,2).
+lig(mario,bruno,5).
+lig(hugo,mario,3).
+lig(mario,hugo,5).
+lig(carlos,mario,2).
+lig(mario,carlos,1).
+lig(sara,catia,3).
+lig(catia,sara,2).
 
 %Verificar 
 minimoMaven(3).
@@ -38,7 +38,7 @@ percentagemMaven(1.25).
 
 
 %ligado(A,B):-lig(A,B,_,_), write('ligado').
-ligado(A,B):-lig(A,B,_,_).
+ligado(A,B):-lig(A,B,_).
 
 %ligacoes(User,Resposta) nivel 2
 ligacoes(U,L):-findall(X,ligado(U,X),L).
@@ -176,7 +176,7 @@ go1([(_,[D|_])|R],D,Perc):- !, go1(R,D,Perc).
 go1([(C,[Ult|T])|O],D,Perc):- findall((NC,[Z,Ult|T]),	(proximo_no(Ult,T,Z,C1),NC is C+C1),L),
  	append(O,L,NPerc),sort(NPerc,NPerc1),go1(NPerc1,D,Perc). 
 
-proximo_no(X,T,Z,C):- lig(X,Z,C,_), not member(Z,T). 
+proximo_no(X,T,Z,C):- lig(X,Z,C), not member(Z,T). 
 
 
 
@@ -204,11 +204,17 @@ grauMedio([],0,0).
 somaCaminhos(U,P,NC):-lUsers(LU),contaPassos(U,LU,P,NC).
 
 contaPassos(U,[U|UP],P,NC):-!,contaPassos(U,UP,P,NC).
-contaPassos(U,[UA|UP],P,NC):-verificado(U,UA),!,contaPassos(U,UP,P,NC).
+contaPassos(U,[UA|UP],P,NC):-verificado(UA,U),!,contaPassos(U,UP,P,NC).
 
 contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
 							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.
 contaPassos(_,[],0,0).
+
+string_to_list(S,L):-
+    cat([S,`. `],S2, _ ),
+    eread(L) <~ S2.
+
+
 
 %contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
 %contaPassos([],0).
@@ -219,3 +225,6 @@ runTamanhoNivel3(U):-tamanho3(U,X),write(X).
 run2 :-
 	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
 	ligado(X,_),!,nl,write('Existe').
+
+
+

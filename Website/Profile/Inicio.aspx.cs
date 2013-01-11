@@ -9,14 +9,16 @@ using System.Web.UI.HtmlControls;
 using Graphs4Social_AR;
 using System.Resources;
 using System.Globalization;
+using TagCloud;
 
 public partial class Profile_Inicio : System.Web.UI.Page
 {
     protected int forca = 1;
+    protected string estadohumorStr;
 
     private static string baseName = "Resources.Graphs4Social";
-    private static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
-    private CultureInfo ci;
+    protected static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
+    protected CultureInfo ci;
 
 
     private void chooseLanguage()
@@ -28,7 +30,6 @@ public partial class Profile_Inicio : System.Web.UI.Page
             if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
             {
                 ci = new CultureInfo("pt");
-
             }
             else
             {
@@ -44,10 +45,14 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        bool flag = true;
         if (!IsPostBack)
         {
             chooseLanguage();
             string username = Request.QueryString["user"];
+
+            Label17.Text = rm.GetString("Inicio_Estado", ci);
+            subEstadoHumor.Text = rm.GetString("Editar_Button", ci);
             Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
             Label20.Text = rm.GetString("Inicio_Tags", ci);
 
@@ -58,124 +63,182 @@ public partial class Profile_Inicio : System.Web.UI.Page
             }
 
                 // Ver apos enviar pedido
-            else{
+            else
+            {
+                username = Graphs4Social_AR.User.LoadByUserName(username).Username;
+
                 if (!Profile.UserName.Equals(username))
                 {
-                    Ligacao lig = Ligacao.LoadByUserNames(Profile.UserName, username);
-                    Button1.Visible = true;
-                    
-                    DropDownList1.Visible = true;
-
-                    tagsRelacao.Visible = true;
-                    
-                    IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username);
-
-                    string sexo="";
-
-                    if (lis != null)
+                    Label17.Text = rm.GetString("Inicio_EstadoOutro1", ci) + username + rm.GetString("Inicio_EstadoOutro2", ci);
+                    Ligacao lig = null;
+                    try
                     {
-                        foreach (string elemento in lis)
-                        {
+                        lig = Ligacao.LoadByUserNames(Profile.UserName, username);
+                    }
+                    catch (Exception ex)
+                    {
+                        flag = false;
+                        Response.Redirect("../404.aspx");
+                    }
 
-                            if (elemento.Contains("Sexo:"))
+                    if (flag)
+                    {
+                        Button1.Visible = true;
+
+                        DropDownList1.Visible = true;
+
+                        tagsRelacao.Visible = true;
+
+                        IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+                        string sexo = "";
+
+                        if (lis != null)
+                        {
+                            foreach (string elemento in lis)
                             {
-                                sexo = elemento.Split(':')[1];
-                                break;
+
+                                if (elemento.Contains("Sexo:"))
+                                {
+                                    sexo = elemento.Split(':')[1];
+                                    break;
+                                }
+
                             }
-
                         }
-                    }
-                    else
-                    {
-                        sexo = rm.GetString("Editar_Indeciso", ci);
-                    }
-
-                    IList<Tag> listatagsM=null;
-                    IList<Tag> listatagsF=null;
-
-                    if (sexo.Contains("Masculino") || sexo.Contains("Male"))
-                    {
-                        listatagsM = Tag.LoadAllMenTagRelacao();
-                        foreach (Tag tag in listatagsM)
+                        else
                         {
-                            tagsRelacao.Items.Add(tag.Nome);
+                            sexo = rm.GetString("Editar_Indeciso", ci);
                         }
-                    }
-                    else if (sexo.Contains("Feminino") || sexo.Contains("Female"))
-                    {
-                        listatagsF = Tag.LoadAllWomenTagRelacao();
-                        foreach (Tag tag in listatagsF)
+
+                    IList<Graphs4Social_AR.Tag> listatagsM=null;
+                    IList<Graphs4Social_AR.Tag> listatagsF=null;
+
+                        if (sexo.Contains("Masculino") || sexo.Contains("Male"))
                         {
-                            tagsRelacao.Items.Add(tag.Nome);
+                        listatagsM = Graphs4Social_AR.Tag.LoadAllMenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsM)
+                            {
+                                tagsRelacao.Items.Add(tag.Nome);
+                            }
                         }
-                    }
-                    else
-                    {
-                        listatagsM = Tag.LoadAllMenTagRelacao();
-                        listatagsF = Tag.LoadAllWomenTagRelacao();
-                        foreach (Tag tag in listatagsF)
+                        else if (sexo.Contains("Feminino") || sexo.Contains("Female"))
                         {
-                            tagsRelacao.Items.Add(tag.Nome);
+                        listatagsF = Graphs4Social_AR.Tag.LoadAllWomenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsF)
+                            {
+                                tagsRelacao.Items.Add(tag.Nome);
+                            }
                         }
-                        foreach (Tag tag in listatagsM)
+                        else
                         {
-                            tagsRelacao.Items.Add(tag.Nome);
+                        listatagsM = Graphs4Social_AR.Tag.LoadAllMenTagRelacao();
+                        listatagsF = Graphs4Social_AR.Tag.LoadAllWomenTagRelacao();
+                        foreach (Graphs4Social_AR.Tag tag in listatagsF)
+                            {
+                                tagsRelacao.Items.Add(tag.Nome);
+                            }
+                        foreach (Graphs4Social_AR.Tag tag in listatagsM)
+                            {
+                                tagsRelacao.Items.Add(tag.Nome);
+                            }
                         }
-                    }
 
 
-                    if (lig == null)
-                    {
-
-                        Button1.Text = rm.GetString("Inicio_Pedido", ci);
-
-                    }
-                    else
-                    {
-                        if (lig.Estado == -1)
+                        if (lig == null)
                         {
 
-                            Button1.Text = rm.GetString("Inicio_Rejeitado", ci);
-                            Button1.Enabled = true;
+                            Button1.Text = rm.GetString("Inicio_Pedido", ci);
 
                         }
-                        else if (lig.Estado == 0)
+                        else
                         {
-                            if (lig.ForcaDeLigacao == -1)
+                            if (lig.Estado == -1)
                             {
 
-                                Button1.Text = rm.GetString("Inicio_Aceitar", ci);
+                                Button1.Text = rm.GetString("Inicio_Rejeitado", ci);
                                 Button1.Enabled = true;
 
                             }
-                            else if (lig.ForcaDeLigacao > 0)
+                            else if (lig.Estado == 0)
                             {
-                                Button1.Text = rm.GetString("Inicio_Enviado", ci);
-                                Button1.Enabled = false;
+                                if (lig.ForcaDeLigacao == -1)
+                                {
+
+                                    Button1.Text = rm.GetString("Inicio_Aceitar", ci);
+                                    Button1.Enabled = true;
+
+                                }
+                                else if (lig.ForcaDeLigacao > 0)
+                                {
+                                    Button1.Text = rm.GetString("Inicio_Enviado", ci);
+                                    Button1.Enabled = false;
+
+                                    DropDownList1.Enabled = false;
+                                    Ligacao l = Ligacao.LoadByUserNames(Profile.UserName, username);
+                                    DropDownList1.SelectedValue = l.ForcaDeLigacao.ToString();
+
+                                    tagsRelacao.Enabled = false;
+                                    tagsRelacao.SelectedValue = l.TagRelacao.Nome;
+                                }
                             }
-                        }
-                        else if (lig.Estado == 1)
-                        {
+                            else if (lig.Estado == 1)
+                            {
 
-                            Button1.Text = rm.GetString("Inicio_Amigo", ci);
-                            Button1.Enabled = false;
-                            DropDownList1.Enabled = false;
-                        }
+                                Button1.Text = rm.GetString("Inicio_Amigo", ci);
+                                Button1.Enabled = false;
+                                DropDownList1.Enabled = false;
+                                Ligacao l = Ligacao.LoadByUserNames(username, Profile.UserName);
+                                DropDownList1.SelectedValue = l.ForcaDeLigacao.ToString();
 
+                                tagsRelacao.Enabled = false;
+                                tagsRelacao.SelectedValue = l.TagRelacao.Nome;
+                            }
+
+                        }
                     }
                 }
             }
+            if (flag)
+            
+            {
+                tituloPerfil.InnerText = username;
+                FillProfileLabels(username);
 
-            tituloPerfil.InnerText = username;
-
-            FillProfileLabels(username);
-
-            FillTabelaDeAmigos(username);
-
+                FillTabelaDeAmigos(username);
+            }
 
 
         }
 
+    }
+
+    protected string mudarEstadoHumor()
+    {
+        if (Profile.EstadoHumor != "")
+            return Profile.EstadoHumor;
+        else
+            return "Smiley.png";
+    }
+
+    protected string setEstadoHumor()
+    {
+        string username = Request.QueryString["user"];
+
+        IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+        foreach (string elemento in profile)
+        {
+
+            if (elemento.Contains("EstadoHumor:"))
+            {
+                
+                return elemento.Split(':')[1];
+            }
+
+        }
+
+        return "Smiley";
     }
 
     protected void FillTabelaDeAmigos(string username)
@@ -293,7 +356,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     Label2.Visible = true;
                     Label10.Visible = true;
 
-                    Label10.Text = rm.GetString("Inicio_Regiao", ci)+" : ";
+                    Label10.Text = rm.GetString("Inicio_Regiao", ci) + " : ";
                     Label2.Text = elemento.Split(':')[1];
                 }
                 else if (elemento.Contains("Contacto:"))
@@ -363,7 +426,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
                     if (ano.Equals("1"))
                         Label1.Text = ano + " " + rm.GetString("Inicio_Ano", ci);
                     else
-                        Label1.Text = ano + " " + rm.GetString("Inicio_Ano", ci)+"s";
+                        Label1.Text = ano + " " + rm.GetString("Inicio_Ano", ci) + "s";
 
                     Label3.Text = data[2] + "/" + data[1] + "/" + data[0];
                 }
@@ -420,7 +483,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void FillImagemPerfil(System.Web.UI.WebControls.Image img, string elemento)
     {
-        if (elemento.Equals("Masculino")||elemento.Equals("Male"))
+        if (elemento.Equals("Masculino") || elemento.Equals("Male"))
         {
             img.ImageUrl = "~/Images/Masculino.png";
         }
@@ -449,7 +512,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
-        
+
         forca = Convert.ToInt32(DropDownList1.SelectedValue);
         string tag = tagsRelacao.SelectedValue;
         if (Button1.Text.Equals("Aceitar Pedido"))
@@ -460,41 +523,109 @@ public partial class Profile_Inicio : System.Web.UI.Page
         {
             Ligacao.PedidoAmizade(Profile.UserName, Request.QueryString["user"], forca, tag);
         }
-        
+
+        Response.Redirect("~/Profile/Inicio.aspx?user="+Request.QueryString["user"],true);
     }
 
     private string translateValues(string value)
     {
 
         if (value.Equals("Portuguese") || value.Equals("Português"))
+        {
+            return rm.GetString("Editar_IdiomaPt", ci);
+        }
+        if (value.Equals("English") || value.Equals("Inglês"))
+        {
+
+            return rm.GetString("Editar_IdiomaEnUS", ci);
+
+        }
+        if (value.Equals("Male") || value.Equals("Masculino"))
+        {
+            return rm.GetString("Editar_Masculino", ci);
+        }
+        else if (value.Equals("Female") || value.Equals("Feminino"))
+        {
+            return rm.GetString("Editar_Feminino", ci);
+        }
+        else if (value.Equals("Undecided") || value.Equals("Indeciso"))
+        {
+            return rm.GetString("Editar_Indeciso", ci);
+        }
+        else if (value.Equals("Tell you later") || value.Equals("Digo depois"))
+        {
+            return rm.GetString("Editar_Digote", ci);
+        }
+        else
+            return rm.GetString("Editar_Indeciso", ci);
+    }
+
+    protected bool checkUsername()
+    {
+        string username = Request.QueryString["user"];
+        if(username!=null)
+        {
+            if (!Profile.UserName.Equals(username))
             {
-                return rm.GetString("Editar_IdiomaPt", ci);
+                return false;
+            }else{
+                return true;
             }
-            if (value.Equals("English") || value.Equals("Inglês"))
+        }
+        return false;
+    }
+
+    protected string fillEstadoHumor()
+    {
+        return "../Images/"+Profile.EstadoHumor;
+    }
+    protected void subEstadoHumor_Click(object sender, EventArgs e)
+    {
+        Profile.EstadoHumor = Hidden1.Value;
+    }
+
+    protected IDictionary<string, int> LoadTags()
+    {
+        IDictionary<string, int> tags = new Dictionary<string,int>();
+        IList <Graphs4Social_AR.Tag> list = new List <Graphs4Social_AR.Tag>();
+        IList <Graphs4Social_AR.Tag> listall = Graphs4Social_AR.Tag.LoadAllTag();
+
+        int numTags = listall.Count;
+
+        int numTotal = 0;
+
+        if (numTags > 0)
+        {
+            foreach (Graphs4Social_AR.Tag tag in listall)
             {
 
-                return rm.GetString("Editar_IdiomaEnUS", ci);
+                numTotal += tag.Quantidade;
 
             }
-            if (value.Equals("Male") || value.Equals("Masculino"))
+
+            if (Request.QueryString["user"] != null)
+                list = Graphs4Social_AR.Tag.LoadAllByUsername(Request.QueryString["user"]);
+            else
+                list = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
+
+            if (list.Count > 0)
             {
-                return rm.GetString("Editar_Masculino", ci);
-            }
-            else if (value.Equals("Female") || value.Equals("Feminino"))
-            {
-                return rm.GetString("Editar_Feminino", ci);
-            }
-            else if (value.Equals("Undecided") || value.Equals("Indeciso"))
-            {
-                return rm.GetString("Editar_Indeciso", ci);
-            }
-            else if (value.Equals("Tell you later") || value.Equals("Digo depois"))
-            {
-                return rm.GetString("Editar_Digote", ci);
+                foreach (Graphs4Social_AR.Tag tag in list)
+                {
+
+                    tags.Add(tag.Nome, (1-(tag.Quantidade/numTotal))*100);
+
+                }
             }
             else
-                return rm.GetString("Editar_Indeciso", ci);
-        
-        
+            {
+                tags.Add(rm.GetString("Inicio_NoTags", ci), 100);
+            }
+        }
+        else
+        {
+            tags.Add(rm.GetString("Inicio_NoTags", ci), 100);
+        }
+        return tags;
     }
 }

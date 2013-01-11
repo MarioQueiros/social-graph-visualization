@@ -41,6 +41,14 @@ namespace Graphs4Social_AR
         //      4 - Homem (Lingua Inglesa)
         private int _tipo;
 
+        // Campo Quantidade
+        //
+        //  Utilizado apenas para as tags comuns
+        //  
+        //  Utilizado para identificar a força das tags na rede social
+        //  Começa a 0 caso a Tag for nova
+        private int _quantidade=0;
+
         // Construtor vazio não pode existir, temos sempre que referir o tipo de tag que queremos
         //      True - TagRelacao
         //      False - Tag
@@ -61,6 +69,7 @@ namespace Graphs4Social_AR
             else
             {
                 myID = (int)row["ID_TAG"];
+                this._quantidade = (int)row["QUANTIDADE"];
             }
 
             this._eliminado = ((int)row["ELIMINADO"] == 1) ? true : false;
@@ -106,6 +115,11 @@ namespace Graphs4Social_AR
         {
             get { return _tipo; }
             set { _tipo = value; }
+        }
+        public int Quantidade
+        {
+            get { return _quantidade; }
+            set { _quantidade = value; }
         }
 
 
@@ -153,10 +167,112 @@ namespace Graphs4Social_AR
 
             return false;
         }
+        //
+        //
+        // Acrescentar ou retirar uma ocorrência a uma Tag
+        public void Ocorrencia(int val)
+        {
+            Quantidade = Quantidade + (val);
+            if (Quantidade >= 0)
+                Save();
+            else
+                Quantidade = 0;
+        }
+        //
+        //
+        // 
+        public static void RefreshTagsUser(IList<string> tagsAnteriores, IList<string> tagsActuais, string username)
+        {
+            IList<int> idAdd = new List<int>();
+            IList<int> idRem = new List<int>();
+
+            foreach (string tagN in tagsActuais)
+            {
+
+                Tag tag = Tag.LoadTagByNome(tagN);
+                if (tagsAnteriores.Contains(tagN))
+                {
+                    tagsAnteriores.Remove(tagN);
+                    tagsActuais.Remove(tagN);
+                }
+                else
+                {
+                    tag.Ocorrencia(1);
+                    idAdd.Add(tag.ID);
+                }
+            
+            }
+
+            foreach (string tagR in tagsAnteriores)
+            {
+
+                Tag tag = Tag.LoadTagByNome(tagR);
+                tag.Ocorrencia(-1);
+                idRem.Add(tag.ID);
+
+            }
+
+            string userId = User.LoadByUserName(username).UniqueIdentifierUserId;
+
+            AdicionarTagsUser(userId, idAdd);
+            RemoverTagsUser(userId, idRem);
+        }
 
 
+        // Modificações Tabela N para N
+        //
+        //
+        //
+        public static void AdicionarTagsUser(string userId, IList<int> idsTags)
+        {
+            BeginTransaction();
+
+            foreach (int id in idsTags)
+            {
+
+                SqlCommand sql = new SqlCommand();
+                sql.CommandText = "INSERT INTO [Tag/User](UserId,ID_TAG) VALUES(@UserID,@ID_TAG)";
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@UserID", SqlDbType.UniqueIdentifier);
+                param.Value = new Guid(userId);
+
+                param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = id;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
 
+            }
+
+            CommitTransaction();
+        }
+        //
+        //
+        public static void RemoverTagsUser(string userId, IList<int> idsTags)
+        {
+            BeginTransaction();
+
+            foreach (int id in idsTags)
+            {
+
+                SqlCommand sql = new SqlCommand();
+                sql.CommandText = "DELETE FROM [Tag/User] WHERE UserId=@UserID AND ID_TAG=@ID_TAG";
+                sql.Transaction = CurrentTransaction;
+
+                IDataParameter param = sql.Parameters.Add("@UserID", SqlDbType.UniqueIdentifier);
+                param.Value = new Guid(userId);
+
+                param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = id;
+
+                int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+
+            }
+
+            CommitTransaction();
+        }
 
 
         // Loads
@@ -218,7 +334,7 @@ namespace Graphs4Social_AR
 
             return lista;
         }
-
+       
 
         // Load das Tags das Ligações
         public static Tag LoadTagRelacaoById(int idTagRelacao)
@@ -281,8 +397,8 @@ namespace Graphs4Social_AR
         {
 
 
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag/User WHERE UserId = '"
-                + User.LoadByUserName(username).UniqueIdentifierUserId + "' AND ELIMINADO ='" + 0 + "'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM [Tag/User] WHERE UserId = '"
+                + User.LoadByUserName(username).UniqueIdentifierUserId + "'");
 
             IList<Tag> lista = new List<Tag>();
 
@@ -293,8 +409,10 @@ namespace Graphs4Social_AR
             {
                 if ((int)row["ID_TAG"] != idTag)
                 {
-                    tag = new Tag(row, true);
-                    lista.Add(tag);
+
+                    tag = Tag.LoadTagById((int)row["ID_TAG"]);
+                    if(!tag.Eliminado)
+                        lista.Add(tag);
 
                     idTag = (int)row["ID_TAG"];
                 }
@@ -427,12 +545,15 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE TagRelacao SET QUANTIDADE=@QUANT, ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
                     param.Value = myID;
+
+                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;
@@ -512,12 +633,15 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE FROM Tag SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                    sql.CommandText = "UPDATE Tag SET ESTADO=@ESTADO, QUANTIDADE=@QUANT, ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
                     param.Value = myID;
+
+                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;
@@ -559,7 +683,7 @@ namespace Graphs4Social_AR
             {
                 BeginTransaction();
 
-                sql.CommandText = "UPDATE FROM TagRelacao SET ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                sql.CommandText = "UPDATE TagRelacao SET ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                 sql.Transaction = CurrentTransaction;
 
@@ -590,7 +714,7 @@ namespace Graphs4Social_AR
 
                 BeginTransaction();
 
-                sql.CommandText = "UPDATE FROM Tag SET ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
+                sql.CommandText = "UPDATE Tag SET ELIMINADO=@ELIMINADO WHERE ID_TAG=@ID_TAG";
 
                 sql.Transaction = CurrentTransaction;
 

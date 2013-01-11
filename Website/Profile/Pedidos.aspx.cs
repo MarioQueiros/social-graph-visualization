@@ -7,13 +7,45 @@ using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using Graphs4Social_AR;
 using System.Reflection;
+using System.Globalization;
+using System.Resources;
+using System.Drawing;
 
 public partial class Profile_Pedidos : System.Web.UI.Page
 {
 
+    private static string baseName = "Resources.Graphs4Social";
+    private static ResourceManager rm = new ResourceManager(baseName, System.Reflection.Assembly.Load("App_GlobalResources"));
+    private CultureInfo ci;
+
+
+    private void chooseLanguage()
+    {
+
+        if (Profile.Language != null && !Profile.Language.Equals(""))
+        {
+
+            if (Profile.Language.Equals("Português") || Profile.Language.Equals("Portuguese"))
+            {
+                ci = new CultureInfo("pt");
+
+            }
+            else
+            {
+                ci = new CultureInfo("en-US");
+            }
+        }
+        else
+        {
+            ci = new CultureInfo("en-US");
+        }
+
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+        chooseLanguage();
+
         btt.Visible = false;
         btt1.Visible = false;
         dropi.Visible = false;
@@ -22,6 +54,10 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         {
             try
             {
+                
+
+                label3.Text = rm.GetString("Master_Pedidos", ci);
+
                 FillTagsCombo(Request.QueryString["user"]);
                 forca = Convert.ToInt32(Request.QueryString["forca"]);
                 
@@ -33,18 +69,60 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                 string imagem = "", sexo = "";
 
+                string linguagem = "";
+
                 foreach (string element in profile)
                 {
-                    if (element.Contains("Imagem:"))
+                    if (element.Equals("Language:"))
                     {
-                        imagem = element;
+                        linguagem = element;
                     }
-                    else if (element.Contains("Sexo:"))
+                }
+
+                if((ci.Name.Equals("pt") && (linguagem.Equals("Português") || linguagem.Equals("Portuguese")))
+                    ||(ci.Name.Equals("en-US") && (linguagem.Equals("Inglês") || linguagem.Equals("English")))){
+
+                    foreach (string element in profile)
                     {
-                        sexo = element;
+                        if (element.Contains("Imagem:"))
+                        {
+                            imagem = element;
+                        }
+                        else if (element.Contains("Sexo:"))
+                        {
+                            sexo = element;
+                        }
+
+                    }
+
+                }else{
+
+                    foreach (string element in profile)
+                    {
+                        if (element.Contains("Imagem:"))
+                        {
+                            imagem = element;
+                        }
+                        else if (element.Contains("Sexo:"))
+                        {
+                            if (element.Equals("Male") || element.Equals("Masculino"))
+                                sexo = rm.GetString("Editar_Masculino", ci);
+                            else if (element.Equals("Female") || element.Equals("Feminino"))
+                                sexo = rm.GetString("Editar_Feminino", ci);
+                            else if (element.Equals("Tell you Later") || element.Equals("Digo Depois"))
+                                sexo = rm.GetString("Editar_Digote", ci);
+                            else if (element.Equals("Undecided") || element.Equals("Indeciso"))
+                                sexo = rm.GetString("Editar_Indeciso",ci);
+                            else
+                                sexo = rm.GetString("Editar_Indeciso", ci);
+
+                        }
+
                     }
 
                 }
+
+                
 
                 if (!imagem.Equals(""))
                 {
@@ -66,21 +144,26 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     FillImagemPerfil(img, "Indeciso.png");
                 }
 
-                //Globalization aqui!!!
-                Label2.Text = "Amigo adicionado com sucesso";
+                Label2.Text = rm.GetString("Pedido_Adicionado", ci);
                 Label2.Visible = true;
             }
             catch (Exception ex)
             {
-                Label2.Text = "Ocorreu um erro. Tente mais tarde";
+                Label2.Text = rm.GetString("Pedido_Erro", ci);
                 Label2.Visible = true;
             }
+
+            
         }
         else
         {
+            label3.Text = rm.GetString("Master_Pedidos", ci);
+
+
             FillTagsCombo("Default");
             if (!IsPostBack)
             {
+                
 
                 IList<User> list = Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName);
 
@@ -105,9 +188,19 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 for (int i = 0; i < list.Count; i++)
                 {
 
+                    IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(list[i].Username);
 
-                    Image img1 = new Image();
-                    img1.ImageUrl = "~/Images/cookie-avatar-350x350.jpeg";
+                    System.Web.UI.WebControls.Image img1 = new System.Web.UI.WebControls.Image();
+                    
+                    foreach(string elemento in profile){
+
+                        if(elemento.Contains("Imagem:")){
+                            img1.ImageUrl = "~/Images/" + elemento.Split(':')[1];
+
+                            break;
+                        }
+
+                    }
                     img1.Height = 150;
                     img1.Width = 150;
                     img1.BorderWidth = 2;
@@ -192,6 +285,16 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 btt.Visible = false;
                 btt1.Visible = false;
                 dropi.Visible = false;
+
+                if (pedidosTable.Rows.Count == 0)
+                {
+
+                    imagem1.Visible = true;
+                    labelNoRequests.Visible = true;
+
+                    labelNoRequests.Text = rm.GetString("Pedidos_NoRequest", ci);
+
+                }
             }
             else
             {
@@ -200,7 +303,12 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 dropi.Visible = false;
 
             }
+
+
+            
         }
+
+        
     }
 
     private void FillTagsCombo(string username)
@@ -254,14 +362,33 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         }
     }
 
-    private void FillImagemPerfil(Image img, string image)
+    private void FillImagemPerfil(System.Web.UI.WebControls.Image img, string elemento)
     {
-        img.ImageUrl = "~/Images/" + image;
+        if (elemento.Equals("Masculino") || elemento.Equals("Male"))
+        {
+            img.ImageUrl = "~/Images/Masculino.png";
+        }
+        else if (elemento.Equals("Feminino") || elemento.Equals("Female"))
+        {
+            img.ImageUrl = "~/Images/Feminino.png";
+        }
+        else if (elemento.Equals("Digo depois") || elemento.Equals("Tell you later"))
+        {
+            img.ImageUrl = "~/Images/Digo depois.png";
+        }
+        else if (elemento.Equals("Undecided") || elemento.Equals("Indeciso"))
+        {
+            img.ImageUrl = "~/Images/Indeciso.png";
+        }
+        else
+        {
+            img.ImageUrl = "~/Images/" + elemento;
+        }
+
         img.Height = 150;
         img.Width = 150;
         img.BorderWidth = 2;
-        img.BorderColor = System.Drawing.Color.Gray;
-        Label1.Text = Request.QueryString["user"];
+        img.BorderColor = Color.Gray;
     }
 
     public static Object CloneObject(object o)

@@ -119,6 +119,7 @@ typedef struct Estado
 	GLboolean	apresentaNormais;
 	GLint		lightViewer;
 	GLint		eixoTranslaccao;
+	GLint		tooltip;
 	GLdouble	eixo[3];
 	teclas_t    teclas;
 	GLint       timer;
@@ -711,7 +712,6 @@ void desenhaPlanoDrag(int eixo)
 
 void desenhaEixos()
 {
-
 	glPushMatrix();
 	glTranslated(estado.eixo[0],estado.eixo[1],estado.eixo[2]);
 	material(emerald);
@@ -749,7 +749,6 @@ void setCamera()
 	glRotatef(graus(-M_PI/2.0),1,0,0);
 	glRotatef(graus(M_PI/2.0-estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
-
 }
 
 void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
@@ -770,15 +769,9 @@ void display(void)
 	material(slate);
 	desenhaSolo();
 
-	desenhaEixos();
+	//desenhaEixos();
 
 	desenhaLabirinto();
-
-	if(estado.eixoTranslaccao) {
-		// desenha plano de translacção
-		//cout << "Translate... " << estado.eixoTranslaccao << endl; 
-		//desenhaPlanoDrag(estado.eixoTranslaccao);
-	}
 
 	char msg[100];
 	if(estado.vooRasante){
@@ -796,7 +789,6 @@ void display(void)
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_w);
 	drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
 	glPopMatrix();
-
 
 	glFlush();
 	glutSwapBuffers();
@@ -1008,8 +1000,8 @@ void Timer(int value)
 			estado.camera.velv = 0;
 			k = colisaoLivre();
 
-			nx = estado.camera.eye.x + k * cos(estado.camera.dir_long);
-			ny = estado.camera.eye.y + k * sin(estado.camera.dir_long);
+			nx = estado.camera.eye.x + k * estado.camera.velh * cos(estado.camera.dir_long);
+			ny = estado.camera.eye.y + k * estado.camera.velh * sin(estado.camera.dir_long);
 
 			estado.camera.eye.x = nx;
 			estado.camera.eye.y = ny; 
@@ -1276,11 +1268,13 @@ void SpecialKeyUp(int key, int x, int y)
 }
 
 void myReshape(int w, int h)
-{		
+{	
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	setProjection(0,0,GL_FALSE);
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	width = w;
 	height = h;
 	glutSetWindow (estado.navigateSubwindow);
@@ -1369,6 +1363,25 @@ void motionDrag(int x, int y)
 	glutPostRedisplay();
 }
 
+void Square (void)
+{
+  const float u[3] = {0.2, 0, 0};
+  const float v[3] = {0, 0.2, 0};
+
+  glBegin (GL_QUADS);
+
+	  //glTexCoord2i(0, 0); 
+	  glVertex3f ( u[0] + v[0],  u[1] + v[1],  u[2] + v[2]);
+	  //glTexCoord2i(1, 0); 
+	  glVertex3f (-u[0] + v[0], -u[1] + v[1], -u[2] + v[2]);
+	  //glTexCoord2i(1, 1); 
+	  glVertex3f (-u[0] - v[0], -u[1] - v[1], -u[2] - v[2]);
+	  //glTexCoord2i(0, 1); 
+	  glVertex3f ( u[0] - v[0],  u[1] - v[1],  u[2] - v[2]);
+  glEnd ();
+}
+
+
 int picking(int x, int y)
 {
 	int i, n, objid=0;
@@ -1410,6 +1423,85 @@ int picking(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 
 	return objid;
+}
+
+void processHits(GLint hits, GLuint buffer[])
+{
+	int i;
+	unsigned int j;
+	GLuint names, *ptr;
+
+	printf("hits = %d\n", hits);
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < hits; i++) {  /* for each hit  */
+		names = *ptr;
+		printf(" number of names for hit = %d\n", names);
+		ptr++;
+		printf("  z1 is %g;", (float) *ptr/0xffffffff);
+		ptr++;
+		printf(" z2 is %g\n", (float) *ptr/0xffffffff);
+		ptr++;
+		printf("   the name is ");
+		for (j = 0; j < names; j++) {  /* for each name */
+			printf("%d ", *ptr);
+			ptr++;
+		}
+		printf("\n");
+	}
+}
+
+int pickingToolTip(int x, int y)
+{
+	int i, n, objid=0;
+	double zmin = 10.0;
+
+	GLuint selectBuf[BUFSIZE];
+	//GLint viewport[4];
+
+	glSelectBuffer(BUFSIZE, selectBuf);
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	//glPushName((GLuint) ~0);
+	//glGetIntegerv(GL_VIEWPORT, viewport);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix(); // guarda a projecção
+	glLoadIdentity();
+	setProjection(x,y,GL_TRUE);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	setCamera();
+	//desenhar so os nos
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
+	
+	//desenhaLabirinto();
+
+	n = glRenderMode(GL_RENDER);
+
+	if(n>0){
+		glTranslatef(0,0,0.05);
+		Square();
+	}
+
+
+	//processHits (n, selectBuf);
+	
+	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	myReshape(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
+	return n;
 }
 
 void desenhaAngVisao(camera_t *cam)
@@ -1524,6 +1616,14 @@ void mouse(int btn, int state, int x, int y)
 	}
 }
 
+void mouseToolTip(int x, int y){
+
+	//estado.tooltip=pickingToolTip(x,y);
+
+	cout << estado.tooltip << endl;
+
+}
+
 void main(int argc, char **argv)
 {
 	alutInit (&argc, argv);
@@ -1540,6 +1640,9 @@ void main(int argc, char **argv)
 	glutSpecialFunc(Special);
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
+
+	//glutPassiveMotionFunc(mouseToolTip);
+
 	myInit();
 	imprime_ajuda();
 

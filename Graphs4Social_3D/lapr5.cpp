@@ -93,6 +93,11 @@ typedef struct Camera
 	Eye eye;
 }Camera;
 
+typedef struct posMouse{
+	GLint posMouseX;
+	GLint posMouseY;
+} posMouse;
+
 typedef struct pos_t{
 	GLfloat    x,y,z;
 }pos_t;
@@ -111,6 +116,7 @@ typedef struct teclas_t
 
 typedef struct Estado
 {
+	posMouse	posMouse;
 	Camera		camera;
 	camera_t    Camera;
 	int			xMouse,yMouse;
@@ -485,10 +491,10 @@ void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio)
 	glPushMatrix();
 	glNormal3f(0,0,1);
 	glTranslatef(xi,yi,zi+10); //meter mais para cima
-	for(int i=0;i<n;i++){
-		glutSolidSphere(raio, 32, 32);
-		valAng+=nAng;
-	}
+
+	glutSolidSphere(raio, 16, 16);
+	valAng+=nAng;
+	
 
 	glPopMatrix();
 	if(estado.apresentaNormais) {
@@ -670,13 +676,15 @@ void desenhaLabirinto()
 	glScalef(5,5,5);
 
 	for(int i=0; i<numNos; i++){
-		glLoadName(NO + i);
+		glPushName(NO + i);
 		desenhaNo(i);
+		glPopName();
 	}
 	material(red_plastic);
 	for(int i=0; i<numArcos; i++){
-		glLoadName(ARCO + i);
+		glPushName(ARCO + i);
 		desenhaArco(arcos[i]);
+		glPopName();
 	}
 	glPopMatrix();
 }
@@ -794,6 +802,17 @@ void display(void)
 	//desenhaEixos();
 
 	desenhaLabirinto();
+
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
 
 	char msg[100];
 	if(estado.vooRasante){
@@ -1285,7 +1304,7 @@ void myReshape(int w, int h)
 {	
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	//glLoadIdentity();
 	setProjection(0,0,GL_FALSE);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -1387,13 +1406,42 @@ void motionDrag(int x, int y)
 	glutPostRedisplay();
 }
 
-void Square (void)
+void Square (int x, int y,int w,int h)
 {
-  const float u[3] = {0.2, 0, 0};
-  const float v[3] = {0, 0.2, 0};
+	//material(azul);
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glLoadIdentity();
+	glViewport(x,y,250,250);
+	//glViewport(tooltip.posX,tooltip.posY,tooltip.dimX,tooltip.dimY);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-tooltip.dimX,tooltip.dimX,-tooltip.dimY,tooltip.dimY,0,100);
+	glOrtho(-250,250,-250,250,0,100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_POLYGON);
+		glVertex2f(0,0);
+		glVertex2f(-250,0);
+		glVertex2f(-250,-250);
+		glVertex2f(0,-250);
+	glEnd();
+	glPopMatrix();
+
+	//glDepthMask(GL_TRUE);
+	//glDisable(GL_BLEND);
+  /*
+  glPushMatrix();
+
+  glTranslatef(estado.camera.center[0],estado.camera.center[1],estado.camera.center[2]);
 
   glBegin (GL_QUADS);
-
 	  //glTexCoord2i(0, 0); 
 	  glVertex3f ( u[0] + v[0],  u[1] + v[1],  u[2] + v[2]);
 	  //glTexCoord2i(1, 0); 
@@ -1403,8 +1451,10 @@ void Square (void)
 	  //glTexCoord2i(0, 1); 
 	  glVertex3f ( u[0] - v[0],  u[1] - v[1],  u[2] - v[2]);
   glEnd ();
-}
 
+  glPopMatrix();
+  */ 
+}
 
 int picking(int x, int y)
 {
@@ -1478,7 +1528,7 @@ int pickingToolTip(int x, int y)
 {
 	int i, n, objid=0;
 	double zmin = 10.0;
-
+	GLint width,height;
 	GLuint selectBuf[BUFSIZE];
 	//GLint viewport[4];
 
@@ -1514,10 +1564,12 @@ int pickingToolTip(int x, int y)
 	n = glRenderMode(GL_RENDER);
 
 	if(n>0){
-		glTranslatef(0,0,0.05);
-		Square();
+		width = glutGet(GLUT_WINDOW_WIDTH);
+		height = glutGet(GLUT_WINDOW_HEIGHT);
+		//estado.posMouse.posMouseX=x;
+		//estado.posMouse.posMouseY=y;
+		Square(x,glutGet(GLUT_WINDOW_HEIGHT)-y,width,height);
 	}
-
 
 	//processHits (n, selectBuf);
 	
@@ -1594,10 +1646,8 @@ void redisplayTopSubwindow(int width, int height)
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluOrtho2D(0, width, height, 0);
 	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,500);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void mouse(int btn, int state, int x, int y)
@@ -1642,7 +1692,7 @@ void mouse(int btn, int state, int x, int y)
 
 void mouseToolTip(int x, int y){
 
-	//estado.tooltip=pickingToolTip(x,y);
+	estado.tooltip=pickingToolTip(x,y);
 
 	cout << estado.tooltip << endl;
 
@@ -1665,7 +1715,7 @@ void main(int argc, char **argv)
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
 
-	//glutPassiveMotionFunc(mouseToolTip);
+	glutPassiveMotionFunc(mouseToolTip);
 
 	myInit();
 	imprime_ajuda();

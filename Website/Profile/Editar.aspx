@@ -123,7 +123,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/anonymous.png" onClick="avatarClick(1);" />
+                                                        <img class="avatar" src="../Images/anonymous.png" onClick="avatarClick(1);" />
                                                         <input name="avatar" runat="server" type="radio" id="r1" /></td>
                                                 </tr>
                                             </table>
@@ -132,7 +132,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/Atlas_RobotPortal.png" onclick="avatarClick(2);" />
+                                                        <img class="avatar" src="../Images/Atlas_RobotPortal.png" onclick="avatarClick(2);" />
                                                         <input name="avatar" runat="server" type="radio" id="r2" /></td>
                                                 </tr>
                                             </table>
@@ -143,7 +143,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/bugsbunny.png" onclick="avatarClick(3);" />
+                                                        <img class="avatar" src="../Images/bugsbunny.png" onclick="avatarClick(3);" />
                                                         <input name="avatar" runat="server" type="radio" id="r3" /></td>
                                                 </tr>
                                             </table>
@@ -152,7 +152,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/DarthVader.png" onclick="avatarClick(4);" />
+                                                        <img class="avatar" src="../Images/DarthVader.png" onclick="avatarClick(4);" />
                                                         <input name="avatar" runat="server" type="radio" id="r4" /></td>
                                                 </tr>
                                             </table>
@@ -163,7 +163,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/girl.png" onclick="avatarClick(5);" />
+                                                        <img class="avatar" src="../Images/girl.png" onclick="avatarClick(5);" />
                                                         <input name="avatar" runat="server" type="radio" id="r5" /></td>
                                                 </tr>
                                             </table>
@@ -172,7 +172,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/nuku_Girl.png" onclick="avatarClick(6);" />
+                                                        <img class="avatar" src="../Images/nuku_Girl.png" onclick="avatarClick(6);" />
                                                         <input name="avatar" runat="server" type="radio" id="r6" /></td>
                                                 </tr>
                                             </table>
@@ -183,7 +183,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/P-Body_RobotPortal.png" onclick="avatarClick(7);" />
+                                                        <img class="avatar" src="../Images/P-Body_RobotPortal.png" onclick="avatarClick(7);" />
                                                         <input name="avatar" runat="server" type="radio" id="r7" /></td>
                                                 </tr>
                                             </table>
@@ -192,17 +192,16 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <image class="avatar" src="../Images/Spiderman.png" onClick="avatarClick(8);" />
+                                                        <img class="avatar" src="../Images/Spiderman.png" onClick="avatarClick(8);" />
                                                         <input name="avatar" runat="server" type="radio" id="r8" /></td>
                                                 </tr>
                                             </table>
                                         </td>
                                     </tr>
+                                    </table>
+                                </td>
                         </tr>
-                    </table>
 
-                    </td>
-                    </tr>
                     <tr>
                         <td style="width: 250px; vertical-align: middle;">
                             <asp:Button ID="Button6" Height="30px" runat="server" Text="" ValidationGroup="SetAvatar" OnClick="setAvatar_Click" />

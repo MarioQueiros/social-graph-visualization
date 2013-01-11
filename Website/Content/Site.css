@@ -13,6 +13,33 @@ body {
 	background:url("../Images/bg.png");
 }
 
+#profiletab {
+	background: transparent;
+	border: none;
+}
+#profiletab .ui-widget-header {
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid #c0c0c0;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+#profiletab .ui-state-default {
+	background: transparent;
+	border: none;
+}
+#profiletab .ui-state-active {
+	background: transparent url(../Images/uiTabsArrow.png) no-repeat bottom center;
+	border: none;
+}
+#profiletab .ui-state-default a {
+	color: #c0c0c0;
+}
+#profiletab .ui-state-active a {
+	color: #191970;
+}
+
 /* ~~ Element/tag selectors ~~ */
 ul, ol, dl { /* Due to variations between browsers, it's best practices to zero padding and margin on lists. For consistency, you can either specify the amounts you want here, or on the list items (LI, DT, DD) they contain. Remember that what you do here will cascade to the .nav list unless you write a more specific selector. */
 	padding: 0;

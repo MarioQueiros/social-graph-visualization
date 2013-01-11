@@ -9,5 +9,5 @@ using System.Text;
 public interface IGraphs4Social_Service
 {
 	[OperationContract]
-	void DoWork();
+	string DoWork();
 }

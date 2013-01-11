@@ -189,6 +189,9 @@
   <data name="Inicio_Lingua" xml:space="preserve">
     <value>Língua</value>
   </data>
+  <data name="Inicio_NoTags" xml:space="preserve">
+    <value>Sem Tags Seleccionadas</value>
+  </data>
   <data name="Inicio_Pedido" xml:space="preserve">
     <value>Enviar Pedido de Amizade</value>
   </data>
@@ -221,5 +224,50 @@
   </data>
   <data name="Master_Welcome" xml:space="preserve">
     <value>Viva, </value>
+  </data>
+  <data name="Pedidos_NoRequest" xml:space="preserve">
+    <value>Sem Pedidos de Amizade</value>
+  </data>
+  <data name="Pedido_Adicionado" xml:space="preserve">
+    <value>Amigo adicionado com sucesso</value>
+  </data>
+  <data name="Pedido_Erro" xml:space="preserve">
+    <value>Ocorreu um erro, tente mais tarde</value>
+  </data>
+  <data name="Default_Text" xml:space="preserve">
+    <value>Descobre a tua rede social numa nova dimensão através do website e da aplicação Windows 3D da tua rede</value>
+  </data>
+  <data name="Default_Title" xml:space="preserve">
+    <value>Graphs4Social - Muito mais que uma Rede Social</value>
+  </data>
+  <data name="Estado_Aborrecido" xml:space="preserve">
+    <value>Aborrecido</value>
+  </data>
+  <data name="Estado_Alegre" xml:space="preserve">
+    <value>Alegre</value>
+  </data>
+  <data name="Estado_Baixo" xml:space="preserve">
+    <value>Em Baixo</value>
+  </data>
+  <data name="Estado_Chorar" xml:space="preserve">
+    <value>A Chorar</value>
+  </data>
+  <data name="Estado_Entusiasmado" xml:space="preserve">
+    <value>Entusiasmado</value>
+  </data>
+  <data name="Estado_Sonolento" xml:space="preserve">
+    <value>Sonolento</value>
+  </data>
+  <data name="Estado_Triste" xml:space="preserve">
+    <value>Triste</value>
+  </data>
+  <data name="Inicio_Estado" xml:space="preserve">
+    <value>Como estás hoje?</value>
+  </data>
+  <data name="Inicio_EstadoOutro1" xml:space="preserve">
+    <value>O estado de </value>
+  </data>
+  <data name="Inicio_EstadoOutro2" xml:space="preserve">
+    <value> hoje</value>
   </data>
 </root>

@@ -7,7 +7,8 @@ using System.Text;
 
 public class Graphs4Social_Service : IGraphs4Social_Service
 {
-	public void DoWork()
+	public string DoWork()
 	{
+        return "Hello Leniker";
 	}
 }

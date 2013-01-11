@@ -33,17 +33,25 @@
         }
 
     </script>
+    <asp:Label ID="label3" runat="server" Visible="true" Text="" Font-Size="X-Large"></asp:Label>
     <table id="pedidosTable" runat="server"></table>
-
-    <asp:Button ID="btt" runat="server" OnClientClick="return false;"/>
-    <asp:Button ID="btt1" runat="server" UseSubmitBehavior="false" OnClick="btt1_Click"/>
-    <asp:DropDownList ID="dropi" runat="server" AutoPostBack="True"/>
+    <table>
+        <tr>
+            <td>
+                <asp:Image ID="imagem1" runat="server" Visible="false" ImageUrl="~/Images/yunorequest.png" /></td>
+            <td>
+                <asp:Label ID="labelNoRequests" runat="server" Visible="false" Text="" Font-Size="Large"></asp:Label></td>
+        </tr>
+    </table>
+    <asp:Button ID="btt" runat="server" OnClientClick="return false;" />
+    <asp:Button ID="btt1" runat="server" UseSubmitBehavior="false" OnClick="btt1_Click" />
+    <asp:DropDownList ID="dropi" runat="server" AutoPostBack="True" />
     <asp:Image ID="img" runat="server" />
     <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
     <br />
     <br />
     <br />
-    <asp:Label ID="Label2" runat="server" Visible="false" style="font-weight: 700"></asp:Label>
+    <asp:Label ID="Label2" runat="server" Visible="false" Style="font-weight: 700"></asp:Label>
 
     <div id="dialog" title="Força Ligação">
         Escolha a força da ligação:<br />

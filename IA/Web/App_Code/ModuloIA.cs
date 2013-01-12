@@ -10,16 +10,25 @@ public class moduloIA : IModuloIa
     public int tamanhoRede(int nivel, string user)
     {
         if (nivel != 2 && nivel != 3)
-            return -1;
+            return 0;
         var cmd = "runTamanhoNivel" + nivel + "(" + user + ").\n";
-        var prolog = new LPA.IntServer("", 0, 1, 0);
-        string s = prolog.InitGoal("load_files(prolog(db)).\n");
-        s = prolog.CallGoal();
-        prolog.ExitGoal();
-        s = prolog.InitGoal("runTamanhoNivel"+nivel+"(+"+user+"user).\n");
-        s = prolog.CallGoal();
-        prolog.ExitGoal();
-        return int.Parse(s.Substring(8));
+
+        try
+        {
+            var prolog = new LPA.IntServer("", 0, 1, 0);
+            string s = prolog.InitGoal("load_files(prolog(sql)).\n");
+            s = prolog.CallGoal();
+            prolog.ExitGoal();
+
+            s = prolog.InitGoal(cmd);
+            s = prolog.CallGoal();
+            var r = int.Parse(s.Substring(8));
+            prolog.ExitGoal();
+            return r;
+        }catch(Exception except)
+        {
+            return -1;
+        }
     }
 
     public string amigosTag(string user, string tags)
@@ -55,5 +64,29 @@ public class moduloIA : IModuloIa
     public float grauMedioSeparacao(string userOrigem, string userDestino)
     {
         throw new NotImplementedException();
+    }
+
+    public string debug()
+    {
+        //return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
+        var cmd = "runTamanhoNivel" + 2 + "(" + "bruno" + ").\n";
+
+        try
+        {
+            var prolog = new LPA.IntServer("", 0, 1, 0);
+            string s = prolog.InitGoal("load_files(prolog(sql)).\n");
+            s = prolog.CallGoal();
+            prolog.ExitGoal();
+
+            s = prolog.InitGoal(cmd);
+            s = prolog.CallGoal();
+            var r =s.Substring(8);
+            prolog.ExitGoal();
+            return r;
+        }
+        catch (Exception except)
+        {
+            return except.Message;
+        }
     }
 }

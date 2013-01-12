@@ -7,8 +7,14 @@ using System.Text;
 
 public class Graphs4Social_Service : IGraphs4Social_Service
 {
-	public string DoWork()
-	{
-        return "Hello Leniker";
-	}
+    public void DoWork()
+    {
+    }
+
+    public string carregaGrafo(string username)
+    {
+        Grafo grafo = new Grafo(username);
+    }
+
+
 }

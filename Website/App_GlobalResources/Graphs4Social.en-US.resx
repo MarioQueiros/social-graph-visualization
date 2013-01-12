@@ -267,4 +267,16 @@
   <data name="Inicio_EstadoOutro2" xml:space="preserve">
     <value> is today</value>
   </data>
+  <data name="Error_Link" xml:space="preserve">
+    <value>Return main page</value>
+  </data>
+  <data name="Error_Texto1" xml:space="preserve">
+    <value>This content is currently unavailable</value>
+  </data>
+  <data name="Error_Texto2" xml:space="preserve">
+    <value>The page you requested cannot be displayed at the moment.</value>
+  </data>
+  <data name="Error_Texto3" xml:space="preserve">
+    <value>It may be temporarily unavailable, the link you clicked on may have expired, or you may not have permission to view this page.</value>
+  </data>
 </root>

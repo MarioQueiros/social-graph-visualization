@@ -98,6 +98,11 @@ typedef struct Camera
 	Eye eye;
 }Camera;
 
+typedef struct posMouse{
+	GLint posMouseX;
+	GLint posMouseY;
+} posMouse;
+
 typedef struct pos_t{
 	GLfloat    x,y,z;
 }pos_t;
@@ -116,6 +121,7 @@ typedef struct teclas_t
 
 typedef struct Estado
 {
+	posMouse	posMouse;
 	Camera		camera;
 	camera_t    Camera;
 	int			xMouse,yMouse;
@@ -123,6 +129,7 @@ typedef struct Estado
 	GLboolean	apresentaNormais;
 	GLint		lightViewer;
 	GLint		eixoTranslaccao;
+	GLint		tooltip;
 	GLdouble	eixo[3];
 	teclas_t    teclas;
 	GLint       timer;
@@ -775,7 +782,6 @@ void setCamera()
 	glRotatef(graus(-M_PI/2.0),1,0,0);
 	glRotatef(graus(M_PI/2.0-estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.center[0],-estado.camera.center[1],-estado.camera.center[2]);
-
 }
 
 void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
@@ -856,15 +862,20 @@ void display(void)
 	material(slate);
 	desenhaSolo();
 
-	desenhaEixos();
+	//desenhaEixos();
 
 	desenhaLabirinto();
 
-	if(estado.eixoTranslaccao) {
-		// desenha plano de translacção
-		//cout << "Translate... " << estado.eixoTranslaccao << endl; 
-		//desenhaPlanoDrag(estado.eixoTranslaccao);
-	}
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
 
 	char msg[100];
 	if(estado.vooRasante){
@@ -882,7 +893,6 @@ void display(void)
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_w);
 	drawString(-3.5 + width/640, 2.65, 0, 0.0015, msg);
 	glPopMatrix();
-
 
 	glFlush();
 	glutSwapBuffers();
@@ -1496,9 +1506,10 @@ void SpecialKeyUp(int key, int x, int y)
 }
 
 void myReshape(int w, int h)
-{		
+{	
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
 	setProjection(0,0,GL_FALSE);
 	glMatrixMode(GL_MODELVIEW);
 	width = w;
@@ -1622,6 +1633,56 @@ void motionDrag(int x, int y)
 	glutPostRedisplay();
 }
 
+void Square (int x, int y,int w,int h)
+{
+	//material(azul);
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glLoadIdentity();
+	glViewport(x,y,250,250);
+	//glViewport(tooltip.posX,tooltip.posY,tooltip.dimX,tooltip.dimY);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-tooltip.dimX,tooltip.dimX,-tooltip.dimY,tooltip.dimY,0,100);
+	glOrtho(-250,250,-250,250,0,100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_POLYGON);
+		glVertex2f(0,0);
+		glVertex2f(-250,0);
+		glVertex2f(-250,-250);
+		glVertex2f(0,-250);
+	glEnd();
+	glPopMatrix();
+
+	//glDepthMask(GL_TRUE);
+	//glDisable(GL_BLEND);
+  /*
+  glPushMatrix();
+
+  glTranslatef(estado.camera.center[0],estado.camera.center[1],estado.camera.center[2]);
+
+  glBegin (GL_QUADS);
+	  //glTexCoord2i(0, 0); 
+	  glVertex3f ( u[0] + v[0],  u[1] + v[1],  u[2] + v[2]);
+	  //glTexCoord2i(1, 0); 
+	  glVertex3f (-u[0] + v[0], -u[1] + v[1], -u[2] + v[2]);
+	  //glTexCoord2i(1, 1); 
+	  glVertex3f (-u[0] - v[0], -u[1] - v[1], -u[2] - v[2]);
+	  //glTexCoord2i(0, 1); 
+	  glVertex3f ( u[0] - v[0],  u[1] - v[1],  u[2] - v[2]);
+  glEnd ();
+
+  glPopMatrix();
+  */ 
+}
+
 int picking(int x, int y)
 {
 	int i, n, objid=0;
@@ -1663,6 +1724,87 @@ int picking(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 
 	return objid;
+}
+
+void processHits(GLint hits, GLuint buffer[])
+{
+	int i;
+	unsigned int j;
+	GLuint names, *ptr;
+
+	printf("hits = %d\n", hits);
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < hits; i++) {  /* for each hit  */
+		names = *ptr;
+		printf(" number of names for hit = %d\n", names);
+		ptr++;
+		printf("  z1 is %g;", (float) *ptr/0xffffffff);
+		ptr++;
+		printf(" z2 is %g\n", (float) *ptr/0xffffffff);
+		ptr++;
+		printf("   the name is ");
+		for (j = 0; j < names; j++) {  /* for each name */
+			printf("%d ", *ptr);
+			ptr++;
+		}
+		printf("\n");
+	}
+}
+
+int pickingToolTip(int x, int y)
+{
+	int i, n, objid=0;
+	double zmin = 10.0;
+	GLint width,height;
+	GLuint selectBuf[BUFSIZE];
+	//GLint viewport[4];
+
+	glSelectBuffer(BUFSIZE, selectBuf);
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	//glPushName((GLuint) ~0);
+	//glGetIntegerv(GL_VIEWPORT, viewport);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix(); // guarda a projecção
+	glLoadIdentity();
+	setProjection(x,y,GL_TRUE);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	setCamera();
+	//desenhar so os nos
+	
+	glPushMatrix();
+		glTranslatef(0,0,0.05);
+		glScalef(5,5,5);
+
+		for(int i=0; i<numNos; i++){
+			glPushName(i);
+			desenhaNo(i);
+		}
+	glPopMatrix();
+	
+	//desenhaLabirinto();
+
+	n = glRenderMode(GL_RENDER);
+
+	if(n>0){
+		width = glutGet(GLUT_WINDOW_WIDTH);
+		height = glutGet(GLUT_WINDOW_HEIGHT);
+		//estado.posMouse.posMouseX=x;
+		//estado.posMouse.posMouseY=y;
+		Square(x,glutGet(GLUT_WINDOW_HEIGHT)-y,width,height);
+	}
+
+	//processHits (n, selectBuf);
+	
+	glMatrixMode(GL_PROJECTION); //repõe matriz projecção
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	myReshape(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
+	return n;
 }
 
 void desenhaAngVisao(camera_t *cam)
@@ -1734,7 +1876,6 @@ void redisplayTopSubwindow(int width, int height)
 	//gluOrtho2D(0, width, height, 0);
 	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,500);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void mouse(int btn, int state, int x, int y)
@@ -1778,14 +1919,22 @@ void mouse(int btn, int state, int x, int y)
 	}
 }
 
+void mouseToolTip(int x, int y){
+
+	estado.tooltip=pickingToolTip(x,y);
+
+	cout << estado.tooltip << endl;
+
+}
+
 void processaUser()
 {
 	if(username.compare("leniker")==0 && pass.compare("gomes")==0)
 	{
 		glutDestroyWindow(1);
 		glutInitWindowPosition(0, 0);
-		glutInitWindowSize(width,height);
-		glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
+		glutInitWindowSize(width,height);		glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
+
 		if (glutCreateWindow("Graphs4Social") == GL_FALSE)
 			exit(1);
 		glutReshapeFunc(myReshape);
@@ -1895,6 +2044,9 @@ glutKeyboardUpFunc(keyboardUp);
 glutSpecialFunc(Special);
 glutSpecialUpFunc(SpecialKeyUp);
 glutMouseFunc(mouse);
+
+	glutPassiveMotionFunc(mouseToolTip);
+
 myInit();
 imprime_ajuda();
 

@@ -16,6 +16,8 @@
 #define NUM_JANELAS     2
 #define	CHAO_DIMENSAO	100
 #define	OBJECTO_ALTURA	0.8
+#define BUFSIZE 100
+
 
 typedef struct No{
 	float x,y,z,largura;

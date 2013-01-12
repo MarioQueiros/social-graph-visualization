@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using Graphs4Social_AR;
 
 [DataContract]
 public class Grafo
@@ -17,7 +18,27 @@ public class Grafo
     [DataMember]
     public IList<Ligacao> Ligacoes { get; set; }
 
-    public Grafo(string username);
+    public Grafo(string username)
+    {
+
+        //  Carrega o user "dono" do grafo
+        //Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(username);
+        
+        //  Carrega as ligações do user
+        IList<Graphs4Social_AR.Ligacao> ligacoes = Graphs4Social_AR.Ligacao.LoadAllByUserName(username);
+        
+        //  Carrega as ligações dos amigos do user
+        IList<Graphs4Social_AR.Ligacao> ligacoesAmigos = new List<Graphs4Social_AR.Ligacao>();
+
+        foreach (Graphs4Social_AR.Ligacao ligacao in ligacoes)
+        {
+            ligacao.
+
+        }
+
+        NrNos = 1 + ligacoes.Count;
+        NrArcos = ligacoes.Count;
+    }
 }
 
 
@@ -25,7 +46,13 @@ public class Grafo
 public class User
 {
     [DataMember]
-    public string Coordenadas { get; set; }
+    public double X { get; set; }
+
+    [DataMember]
+    public double Y { get; set; }
+
+    [DataMember]
+    public double Z { get; set; }
 
     [DataMember]
     public string Avatar { get; set; }
@@ -36,7 +63,13 @@ public class User
     [DataMember]
     public IList<string> Profile { get; set; }
 
-    public User(string username);
+    public User(string username)
+    {
+
+        Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(username);
+        Profile = Graphs4Social_AR.User.LoadProfileByUser(username);
+        
+    }
 }
 
 [DataContract]
@@ -56,6 +89,9 @@ public interface IGraphs4Social_Service
 {
     [OperationContract]
     void DoWork();
+
+    [OperationContract]
+    string carregaGrafo(string username);
 
 
 }

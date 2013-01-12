@@ -11,11 +11,10 @@ public class Graphs4Social_Service : IGraphs4Social_Service
     {
     }
 
-    public int Add(int x, int y)
+    public string carregaGrafo(string username)
     {
-        return (x + y);
+        Grafo grafo = new Grafo(username);
     }
 
-    
 
 }

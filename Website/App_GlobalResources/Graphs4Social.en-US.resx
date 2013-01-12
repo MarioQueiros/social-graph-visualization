@@ -208,7 +208,7 @@
     <value>3D App Download</value>
   </data>
   <data name="Master_Editar" xml:space="preserve">
-    <value>Edit your profile</value>
+    <value>Edit Your Profile</value>
   </data>
   <data name="Master_Gerir" xml:space="preserve">
     <value>Account Management</value>
@@ -267,16 +267,52 @@
   <data name="Inicio_EstadoOutro2" xml:space="preserve">
     <value> is today</value>
   </data>
-  <data name="Error_Link" xml:space="preserve">
-    <value>Return main page</value>
+  <data name="Master_Tags" xml:space="preserve">
+    <value>Edit Tags</value>
   </data>
-  <data name="Error_Texto1" xml:space="preserve">
-    <value>This content is currently unavailable</value>
+  <data name="Created_By" xml:space="preserve">
+    <value>Website created by</value>
   </data>
-  <data name="Error_Texto2" xml:space="preserve">
-    <value>The page you requested cannot be displayed at the moment.</value>
+  <data name="Login_Entrar" xml:space="preserve">
+    <value>Log in</value>
   </data>
-  <data name="Error_Texto3" xml:space="preserve">
-    <value>It may be temporarily unavailable, the link you clicked on may have expired, or you may not have permission to view this page.</value>
+  <data name="Login_IfDont" xml:space="preserve">
+    <value>if you don't have an account.</value>
+  </data>
+  <data name="Login_Lembrar" xml:space="preserve">
+    <value>Remember me?</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Login_UseLocal" xml:space="preserve">
+    <value>Use a local account to log in.</value>
+  </data>
+  <data name="Login_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register_ConfPass" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_Pass1" xml:space="preserve">
+    <value>Passwords are required to be a minimum of</value>
+  </data>
+  <data name="Register_Pass2" xml:space="preserve">
+    <value>characters in length.</value>
+  </data>
+  <data name="Register_Registration" xml:space="preserve">
+    <value>Registration Form</value>
+  </data>
+  <data name="Register_UseForm" xml:space="preserve">
+    <value>Use the form below to create a new account.</value>
   </data>
 </root>

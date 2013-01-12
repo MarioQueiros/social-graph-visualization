@@ -35,10 +35,8 @@ namespace Graphs4Social_AR
 
         // Campo Tipo
         //
-        //      1 - Mulher (Lingua Portuguesa)
-        //      2 - Homem (Lingua Portuguesa)
-        //      3 - Mulher (Lingua Inglesa)
-        //      4 - Homem (Lingua Inglesa)
+        //      1 - Mulher
+        //      2 - Homem
         private int _tipo;
 
         // Campo Quantidade
@@ -74,6 +72,7 @@ namespace Graphs4Social_AR
 
             this._eliminado = ((int)row["ELIMINADO"] == 1) ? true : false;
             this._nome = (string)row["NOME"];
+            this._estado = (int)row["ESTADO"];
         }
 
 
@@ -185,10 +184,18 @@ namespace Graphs4Social_AR
         {
             IList<int> idAdd = new List<int>();
             IList<int> idRem = new List<int>();
-
-            foreach (string tagN in tagsActuais)
+                        
+            if(tagsActuais.Count==1 && tagsActuais[0].Equals(""))
             {
 
+                tagsActuais.Remove(tagsActuais[0]);
+            
+            }
+
+            IList<string> list = new List<string>(tagsActuais);
+
+            foreach(string tagN in list)
+            {
                 Tag tag = Tag.LoadTagByNome(tagN);
                 if (tagsAnteriores.Contains(tagN))
                 {
@@ -200,9 +207,8 @@ namespace Graphs4Social_AR
                     tag.Ocorrencia(1);
                     idAdd.Add(tag.ID);
                 }
-            
             }
-
+            
             foreach (string tagR in tagsAnteriores)
             {
 
@@ -211,7 +217,7 @@ namespace Graphs4Social_AR
                 idRem.Add(tag.ID);
 
             }
-
+            
             string userId = User.LoadByUserName(username).UniqueIdentifierUserId;
 
             AdicionarTagsUser(userId, idAdd);
@@ -549,10 +555,7 @@ namespace Graphs4Social_AR
 
                     sql.Transaction = CurrentTransaction;
 
-                    IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
-                    param.Value = myID;
-
-                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    IDataParameter param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
                     param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
@@ -560,6 +563,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
+                    param.Value = myID;
                     
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -637,10 +643,7 @@ namespace Graphs4Social_AR
 
                     sql.Transaction = CurrentTransaction;
 
-                    IDataParameter param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
-                    param.Value = myID;
-
-                    param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
+                    IDataParameter param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
                     param.Value = Quantidade;
 
                     param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
@@ -648,6 +651,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
+
+                    param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                    param.Value = myID;
                     
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
@@ -687,11 +693,11 @@ namespace Graphs4Social_AR
 
                 sql.Transaction = CurrentTransaction;
 
-                IDataParameter param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
-                param.Value = ID;
-
-                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
+                IDataParameter param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                 param.Value = 1;
+
+                param = sql.Parameters.Add("@ID_REL", SqlDbType.Int);
+                param.Value = ID;
 
                 Eliminado = true;
 
@@ -718,11 +724,11 @@ namespace Graphs4Social_AR
 
                 sql.Transaction = CurrentTransaction;
 
-                IDataParameter param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
-                param.Value = ID;
-
-                param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
+                IDataParameter param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                 param.Value = 1;
+
+                param = sql.Parameters.Add("@ID_TAG", SqlDbType.Int);
+                param.Value = ID;
 
                 Eliminado = true;
 

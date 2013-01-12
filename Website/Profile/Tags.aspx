@@ -21,7 +21,7 @@
 
 
     $("#array_tag_handler").tagHandler({
-                    assignedTags: [],
+                    assignedTags: [<%= setUserTags() %>],
                     availableTags: [<%= setTags() %>],
                     autocomplete: true
     });

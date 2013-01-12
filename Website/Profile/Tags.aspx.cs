@@ -95,4 +95,20 @@ public partial class Profile_Tags : System.Web.UI.Page
         
     }
 
+    protected string setUserTags()
+    {
+
+        IList<Graphs4Social_AR.Tag> tags = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
+
+        string s = "";
+
+        foreach (Graphs4Social_AR.Tag t in tags)
+        {
+            s += "'" + t.Nome + "', ";
+        }
+        s += "";
+
+        return s;
+
+    }
 }

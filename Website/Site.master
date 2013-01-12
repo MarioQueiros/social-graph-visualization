@@ -4,7 +4,7 @@
 <html>
 <head runat="server">
     <meta charset="utf-8" />
-    <title><%: Page.Title %> - MyVa Graphs4Social</title>
+    <title><%: Page.Title %> Graphs4Social</title>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
@@ -123,10 +123,12 @@
                                 <asp:Label ID="Label2" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Profile/Editar.aspx" id="editar" runat="server">
                                 <asp:Label ID="Label3" runat="server" Text=""></asp:Label></a></li>
-                            <li><a href="~/Account/Manage.aspx" runat="server">
+                            <li><a href="~/Profile/Tags.aspx" runat="server">
                                 <asp:Label ID="Label4" runat="server" Text=""></asp:Label></a></li>
-                            <li><a href="#" runat="server">
+                            <li><a href="~/Account/Manage.aspx" runat="server">
                                 <asp:Label ID="Label5" runat="server" Text=""></asp:Label></a></li>
+                            <li><a href="#" runat="server">
+                                <asp:Label ID="Label7" runat="server" Text=""></asp:Label></a></li>
                         </ul>
                     </LoggedInTemplate>
                 </asp:LoginView>
@@ -144,7 +146,7 @@
         <footer>
             <div class="footerDiv">
                 <hr />
-                <p>Graphs4Social © <%: DateTime.Today.Year %> · Website created by MyVa</p>
+                <p>Graphs4Social © <%: DateTime.Today.Year %> · <asp:Label runat="server" ID="created" Text=""></asp:Label> MyVa</p>
             </div>
         </footer>
     </form>

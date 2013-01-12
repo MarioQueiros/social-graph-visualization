@@ -270,16 +270,52 @@
   <data name="Inicio_EstadoOutro2" xml:space="preserve">
     <value> hoje</value>
   </data>
-  <data name="Error_Link" xml:space="preserve">
-    <value>Voltar para a página principal</value>
+  <data name="Master_Tags" xml:space="preserve">
+    <value>Editar Tags</value>
   </data>
-  <data name="Error_Texto1" xml:space="preserve">
-    <value>O conteúdo encontra-se inacessível</value>
+  <data name="Created_By" xml:space="preserve">
+    <value>Website criado por</value>
   </data>
-  <data name="Error_Texto2" xml:space="preserve">
-    <value>A página que procuras não pode ser mostrada de momento.</value>
+  <data name="Login_Entrar" xml:space="preserve">
+    <value>Entrar</value>
   </data>
-  <data name="Error_Texto3" xml:space="preserve">
-    <value>Poderá estar momentaneamente indisponível, o link pode ter expirado ou poderás não ter permissão para aceder a esta página.</value>
+  <data name="Login_IfDont" xml:space="preserve">
+    <value>se ainda não tiver conta.</value>
+  </data>
+  <data name="Login_Lembrar" xml:space="preserve">
+    <value>Lembrar-se de mim?</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Palavra Passe</value>
+  </data>
+  <data name="Login_Register" xml:space="preserve">
+    <value>Registe-se</value>
+  </data>
+  <data name="Login_UseLocal" xml:space="preserve">
+    <value>Use uma conta local para entrar</value>
+  </data>
+  <data name="Login_Username" xml:space="preserve">
+    <value>Nome de Utilizador</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Registar</value>
+  </data>
+  <data name="Register_ConfPass" xml:space="preserve">
+    <value>Confirmar Password</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_Pass1" xml:space="preserve">
+    <value>Palavras chave devem ter o mínimo de</value>
+  </data>
+  <data name="Register_Pass2" xml:space="preserve">
+    <value>caracteres de comprimento.</value>
+  </data>
+  <data name="Register_Registration" xml:space="preserve">
+    <value>Fomulário de Registo</value>
+  </data>
+  <data name="Register_UseForm" xml:space="preserve">
+    <value>Use o formulário em baixo para criar uma nova conta.</value>
   </data>
 </root>

@@ -1,0 +1,159 @@
+/*
+    The solvent example - From an example by James Stephenson 
+    - Alan Westwood february 1999
+    =========================================================
+
+    This example recommends a solvent to be used on some equipment. 
+    Depending on the equipment class, the ventilation of the site, 
+    the main material of the equipment and whether the equipment 
+    contains rubber compounds.
+    
+    Description
+    -----------
+    The main body of the example is the solvent/1 relation which contains 
+    the conditions appropriate for the various solvents.
+
+    Each solvent is tried in turn. The conditions are also the names of 
+    questions. If the question related to the condition has not yet been 
+    asked it gets asked automatically when the condition is tested.
+    The solvent is recommended or rejected depending on the response to 
+    these questions.
+
+    Once a question has been asked the answer is stored so that subsequent
+    tests for the condition does not invoke the question again.
+
+    Running The Example
+    -------------------
+    The following goal reports the recommended solvent according to the
+    answers to the questions:
+    
+    ?- run.
+
+    Flex Technical Points
+    ---------------------
+    The following flex technical points are demonstrated in this example:
+    
+    1. The use of a single backward chaining relation to find the solvent.
+
+    2. The automatic asking of questions when they are tested.
+
+    3. The use of square brackets to limit "or" disjunctions.
+
+*/
+
+% This action gets the solvent and then prints it to the screen.
+
+action run ;
+   do  restart
+   and solvent(BestSolvent)
+   and write( '<b>The recommended solvent is</b> ' )
+   and write( BestSolvent ) .
+
+% this section contains the questions for the example
+
+question equipment_class
+   Which class does the equipment to be cleaned belong to? ;
+   choose one of equipment_class_types
+   because I need to know the classification of what is being cleaned .
+
+group equipment_class_types
+   class_1, class_2, class_3, class_4.
+
+question main_material
+   Which of the following materials are primary materials in the equipment to be cleaned? ;
+   choose some of main_material_types
+   because I need to know what is being cleaned .
+
+group main_material_types
+   stainless_steel, other_metal, plastic .
+
+question ventilation
+   How good is the ventilation at the cleaning site? ;
+   choose one of ventilation_types
+   because some cleaning fumes are dangerous .
+
+group ventilation_types
+   poor, fair, good .
+
+question rubber
+   Does the equipment to be cleaned contain any rubber compounds? ;
+   choose one of rubber_types
+   because some cleaning solvents damage rubber .
+
+group rubber_types
+   yes, no .
+
+% The solvent relation 
+
+relation solvent('galaxy')
+   if equipment_class is class_1
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is no .
+
+relation solvent('pulverizer' )
+   if equipment_class is class_1
+   and ventilation is good
+   and rubber is no .
+
+relation solvent('polysol')
+   if equipment_class is class_1
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is yes .
+
+relation solvent('polysol_plus')
+   if equipment_class is class_1
+   and ventilation is good
+   and rubber is yes .
+
+relation solvent('cloripro_1')
+   if equipment_class is class_2
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is no  .
+
+relation solvent('cloripro_2')
+   if equipment_class is class_2
+   and ventilation is good
+   and rubber is no.
+
+relation solvent('mtz_80')
+   if equipment_class is class_2
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is yes  .
+
+relation solvent('machine_saver' )
+   if equipment_class is class_2
+   and ventilation is good
+   and rubber is yes.
+
+relation solvent('acd_100')
+   if equipment_class is class_3
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is no .
+
+relation solvent('banish')
+   if equipment_class is class_3
+   and ventilation is good
+   and rubber is no .
+
+relation solvent('d_grease' )
+   if equipment_class is class_3
+   and [ ventilation is poor or ventilation is fair ]
+   and rubber is yes.
+
+relation solvent('grime_stopper' )
+   if equipment_class is class_3
+   and ventilation is good
+   and rubber is yes.
+
+relation solvent(not_known1)
+   if main_material includes other_metal
+   and [ main_material includes stainless_steel or main_material includes plastic ]
+   and equipment_class is class_4 .
+
+relation solvent(not_known2)
+   if [ main_material includes other_metal or main_material includes plastic ]
+   and main_material does not include stainless_steel
+   and equipment_class is class_4 .
+
+relation solvent(not_known3) .
+

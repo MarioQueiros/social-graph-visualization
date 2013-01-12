@@ -1,0 +1,193 @@
+
+% A simple expert system for the choice of pesticides.
+
+relation run 
+   if  restart
+   and ensure_loaded( prolog('examples\pestqs') )
+   and dbg_write( start )
+   and invoke ruleset find_pesticide
+   and show_pesticide .
+
+relation run
+   if pws_solution( no_solution ).
+
+
+ruleset find_pesticide
+   contains malathion_ok, pyrethrum_ok, metaldehyde_ok, no_pesticide ;
+   select rule using first come first served ;
+   update ruleset by removing each selected rule .
+
+
+% PWS questions
+% These questions are applicable in a web-context.
+question pest
+   answer is Choices
+   such that choose_some( Choices ) .
+
+question crop
+   answer is Choice
+   such that choose_one( Choice ) .
+
+question harvestdate
+   answer is Days 
+   such that harvest_question( Days ) .
+
+
+relation choose_some( Choices ) 
+   if isa_group( pests, Pests ) and
+   findall( PestInfo,
+            isa_pest( Pests, PestInfo ),
+            Data
+          ) 
+   and pws_question_pest( Pests, Data, Choices ) . 
+
+
+relation choose_one( Choice )
+   if isa_group( crops, Crops ) and
+   findall( CropInfo,
+            isa_crop( Crops, CropInfo ),
+            Data
+          )
+   and pws_question_crop( Crops, Data, Choice ).
+
+
+relation isa_pest( Pests, {Picture,Description} )
+   if member(Pest,Pests) and
+   lookup( picture, Pest, Picture ) and
+   lookup( description, Pest, Description ) .
+
+
+relation isa_crop( Crops, Picture )
+   if member(Crop,Crops) and
+   lookup( picture, Crop, Picture ) .
+
+
+relation harvest_question( Days )
+   if  Text = 'What is the harvest date for the crop in days from today? ' 
+   and Explanation = 
+   'The crop you have chosen is a soft fruit and I have determined that the
+    pesticide malathion may be appropriate, but malathion should not
+    be applied less than 14 days before harvesting a soft fruit . '
+   and pws_question_harvest( Text, Explanation, Days ) .
+
+/*
+% Windows questions
+% These questions are applicable in the windows gui environment
+question pest
+   What are the pests ;
+   choose some of pests .
+   
+question crop
+   What is the crop ;
+   choose from crops .
+   
+question harvestdate
+   What is the harvest date for the crop in days from today? ;
+   input integer ;
+   because    
+'The crop you have chosen is a soft fruit and I have determined that the
+pesticide malathion may be appropriate, but malathion should not
+be applied less than 14 days before harvesting a soft fruit . ' .
+ 
+*/
+
+
+% find_pesticide ruleset
+
+rule malathion_ok
+   if not found_pesticide(_)
+   and X is included in pest
+   and X is included in malathion`s victims
+   and [ the crop`s type is vegetable
+         or  
+         the crop`s type is soft_fruit
+         and harvestdate is greater than or equal to 14
+       ]
+   then remember found_pesticide( malathion ) .
+
+rule pyrethrum_ok
+   if not found_pesticide(_)
+   and X is included in pest
+   and X is included in pyrethrum`s victims
+   then remember found_pesticide( pyrethrum ) .
+
+rule metaldehyde_ok
+   if not found_pesticide(_)
+   and X is included in pest
+   and X is included in metaldehyde`s victims
+   then remember found_pesticide( metaldehyde ) .
+
+   
+frame pesticide .
+
+instance malathion is a pesticide 
+   victims are { red_spider_mite, caterpillar, aphid } .
+
+instance pyrethrum is a pesticide 
+   victims are { caterpillar, aphid } .
+
+instance metaldehyde is a pesticide 
+   victims are { slug } .
+
+
+group pests
+   red_spider_mite, caterpillar, aphid, slug .
+
+group crops
+   strawberry, tomato, potato, brussel_sprout .
+
+group pesticides
+   malathion, pyrethrum, metaldehyde .   
+
+
+action show_pesticide ;
+   do  found_pesticide( Pesticide )
+   and pws_solution( {crop(crop),pests(pest),pesticide(Pesticide)} ) .
+
+
+frame page 
+   default description is 'No description available'
+   and default picture is nopicture .
+
+frame plant
+   default type is a vegetable .
+   
+frame strawberry is a plant, page
+   default type is soft_fruit and
+   default picture is 'strw.gif' .
+
+frame tomato is a plant, page 
+   default type is soft_fruit and
+   default picture is 'tomo.gif' .
+
+frame potato is a plant, page 
+   default picture is 'pota.gif' .
+
+frame brussel_sprout is a plant, page 
+   default picture is 'brus.gif' .
+
+
+frame pest .
+
+frame red_spider_mite is a pest, page 
+   default description is 'The red spider mite is an arachnid of miniscule proportions.' 
+   and default picture is 'rdsm.gif' .
+
+frame caterpillar is a pest, page 
+   default description is 'Caterpillars are the larval form of butterflies and moths.' 
+   and default picture is 'catr.gif' .
+
+frame aphid is a pest, page 
+   default description is 'Aphids are sap-sucking insects cultivated by ants.' 
+   and default picture is 'aphd.gif' .
+
+frame slug is a pest, page 
+   default description is 'The common garden slug is a mollusc that likes beer.' 
+   and default picture is 'slug.gif' .
+
+
+action write_nl( Message )
+   do nl
+   and write( Message )
+   and nl .
+

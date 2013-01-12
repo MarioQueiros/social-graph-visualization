@@ -1,0 +1,33 @@
+<HTML>
+<BODY>
+<FORM NAME="ProWeb" METHOD=GET ACTION="/pws_exec/pws/proweb.exe">
+<CENTER>
+<TABLE BORDER="1" CELLSPACING="3" CELLPADDING="6" WIDTH="100%">
+  <TR>
+    <TD COLSPAN="3" ALIGN=CENTER>
+      <H1>Phases of the Moon</H1>
+    </TD>
+  </TR>
+  <TR>
+    <TD WIDTH="33%" ALIGN=CENTER VALIGN=MIDDLE>
+      <H2><B><PROWEB REPLY="phase"></B>
+      <P>
+      on
+      <P>
+      <B><PROWEB REPLY="day"> / <PROWEB REPLY="month"> / <PROWEB REPLY="year"></B></H2>
+    </TD>
+
+    <TD WIDTH="34%" ALIGN=CENTER VALIGN=MIDDLE>
+      <PROWEB REPLY="phase_gif">
+    </TD>
+
+    <TD WIDTH="33%" ALIGN=CENTER VALIGN=MIDDLE>
+      <INPUT TYPE="submit" VALUE="Get Next Phase">
+    </TD>
+  </TR>
+</TABLE>
+</CENTER>
+<P>
+</FORM>
+</BODY>
+</HTML>

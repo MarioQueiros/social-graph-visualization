@@ -1,0 +1,53 @@
+BODY
+{
+   background-color: #336633;
+   color: #ffff00
+}
+
+A:link
+{
+    COLOR: #0000ff
+}
+A:visited
+{
+    COLOR: #ff0000
+}
+A:active
+{
+    COLOR: #00ff00
+}
+H2
+{
+    COLOR: #FFCC33;
+    FONT-FAMILY: sans-serif
+}
+H3
+{
+    COLOR: #FFFFFF;
+    FONT-FAMILY: sans-serif
+}
+H4
+{
+    COLOR: #FFCC33;
+    FONT-FAMILY: sans-serif
+}
+TD
+{
+    COLOR: #FFFF33;
+    FONT-FAMILY: sans-serif
+}
+CODE
+{
+    COLOR: #00ff88;
+    FONT-FAMILY: monospace
+}
+PRE
+{
+    COLOR: #FFFF00;
+    FONT-FAMILY: monospace
+}
+
+CAPTION
+{
+    COLOR: #FFFFFF;
+}

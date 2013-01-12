@@ -1,0 +1,45 @@
+VisiRule version 1.1.2  for WIN-PROLOG Version 4.900
+============================================================
+
+Welcome to the VisiRule System for WIN-PROLOG 4.900!
+This toolkit requires that you have previously installed WIN-PROLOG and flex.
+ If you have not already done so please read the information on your 
+WIN-PROLOG CD on how to install your WIN-PROLOG system.
+
+Loading and Running the VisiRule 
+--------------------------------
+To load VisiRule, enter the following command at the WIN-PROLOG prompt:
+
+?- load_files(system(visirule) ).
+
+You can then create new VisiRule windows by selecting the File/New menu option 
+and the appropriate file type.
+
+
+
+Bugs, Problems and Errors
+-------------------------
+
+----- Start of List -----
+
+No known bugs.
+
+----- End of List -----
+
+Please report any suspected bugs that do not appear in the above list to
+LPA:
+
+Contact Details
+---------------
+
+        Info:           info_team@lpa.co.uk
+        Sales:          sale_team@lpa.co.uk
+        Support:        tech_team@lpa.co.uk
+
+        Phone:          +44 (0) 20 8871 2016
+        Fax:            +44 (0) 20 8874 0449
+        Web:            http://www.lpa.co.uk
+
+        Logic Programming Associates Ltd
+        Studio 30, Royal Victoria Patriotic Building
+        Trinity Road, London, SW18 3SX, England.

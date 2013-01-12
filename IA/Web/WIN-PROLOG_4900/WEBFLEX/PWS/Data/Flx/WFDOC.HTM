@@ -1,0 +1,388 @@
+<HTML>
+<HEAD>
+<TITLE>WebFlex Documentation</TITLE>
+<LINK REL="stylesheet" TYPE="text/css" HREF="/pws_data/flx/flex.css">
+</HEAD>
+<BODY>
+<table border="0">
+<tr><td id="title" colspan="2"><H1>LPA WebFlex</H1></td></tr>
+<tr>
+<td id="contents">
+<a href="#intro">Introduction</a><br>
+<a href="#setup">Setup</a><br>
+<a href="#docs">Documentation</a><br>
+<a href="#ini">INI File settings</a><br>
+<a href="#applicable">Available settings</a><br>
+<a href="#general">General Behaviour</a><br>
+<a href="#htm">Example Pages</a><br>
+<a href="#questions">Questions</a><br>
+<a href="#groupstyle">Group Styles</a><br>
+<a href="#questionstyle">Question Styles</a><br>
+<a href="#because">Because and Help</a><br>
+</td>
+<td width="700">
+<a name="intro"><h2>introduction</h2></a>
+<pre>
+This system comprises of an Internet enabled version of the
+flex expert system toolkit. It requires that you have licensed copy of
+Win-Prolog version 4.320, flex and proweb installed. The files are stored in the
+directory WEBFLEX which is a sub-directory of your prolog directory.
+</pre>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<a name="setup"><h3>Setup</h3></a>
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+After installing WebFlex the directory will contain the following files:
+
+webflex
+|
++---pws
+|   +---Data
+|   |   \---Flx
+|   |       +---images ...
+|   |       \---Temp
+|   \---Exec
+|       \---Flx
+|           |   webflex.exe
+|           |   webflex.ini
+|           |   webflex.pc
+|           +---system
+|           \---examples
+|
+\---wwwroot
+
+The directories contain the LPA website examples for webflex. To set up
+webflex so that it will work you need to do the following. You need an HTTP
+server such as Microsoft IIS, and the documentation that follows will assume
+that it is IIS and that the main directory is C:\INETPUB and that the home
+directory is C:\INETPUB\WWWROOT. xcopy the pws and the wwwroot directories
+into the INETPUB directory from a dos box as:
+
+        C&gt; xcopy myprologdirectory\webflex\pws     c:\inetpub\pws /e
+        C&gt; xcopy myprologdirectory\webflex\wwwroot c:\inetpub\wwwroot /e
+
+so now you have the directory structure:
+
+c:\inetpub
+|
++---pws
+|   +---Data
+|   |   \---Flx
+|   |       +---images
+|   |       \---Temp
+|   \---Exec
+|       \---Flx
+|           |   webflex.exe
+|           |   webflex.ini
+|           |   webflex.pc
+|           +---system
+|           \---examples
+\---wwwroot
+
+Next you need to copy the files PROWEB.OVL, FLEX.PC and PRO386W.EXE files into
+the C:\INETPUB\PWS\EXEC\FLX directory as:
+     copy PROWEB.OVL and rename to WEBFLEX.OVL in the above directory.
+     copy PRO386W.EXE and rename to WEBFLEX.SYS in the above directory.
+     copy FLEX.PC to the above directory.
+
+Next you need to edit the file c:\inetpub\pws\exec\flx\webflex.ini and change
+the lines
+<code>
+BASE_URL=http://velociraptor/pws_exec/flx/
+TEMP_URL=http://velociraptor/pws_data/flx/temp/
+</code>
+to
+<code>
+BASE_URL=http://myservername/pws_exec/flx/
+TEMP_URL=http://myservername/pws_data/flx/temp/
+</code>
+If the directory you copied to is not called INETPUB then you also need to
+change the following lines:
+<code>
+TEMP_PATH=c:\inetpub\pws\data\flx\temp\
+HTML_PATH=c:\inetpub\pws\data\flx\
+</code>
+to
+<code>
+TEMP_PATH=c:\mydirectory\pws\data\flx\temp\
+HTML_PATH=c:\mydirectory\pws\data\flx\
+</code>
+Now you need to set up the aliases \pws_exec and \pws_data to point at
+c:\inetpub\pws\exec and c:\inetpub\pws\data respectively, how you do this is
+dependent on your http server software.
+
+\pws_exec should have execute only permissions and \pws_data should have read
+only permissions.
+
+Now you need to copy your licensed copy of PRO386W.EXE to the
+c:\inetpub\pws\exec\flx and rename it WEBFLEX.SYS.
+
+The WebFlex examples should now be runnable by browsing the page:
+
+   <A href="http://myserver/wfs_dem.htm">http://myserver/wfs_dem.htm</A>
+</pre></BLOCKQUOTE>
+<a name="docs"><h3>Documentation</h3></a>
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+WebFlex allows flex programs to run through a browser, to do this it
+generates HTML forms for the questions it needs to ask. Indeed most flex
+programs will run unchanged immediately through WebFlex, though they will look
+rather plain. Unlike previous versions of flex several questions can be asked
+at once, obviously this is important for a system that is generating HTML
+pages to send to a browser.
+</pre></BLOCKQUOTE>
+<a name="ini"><h3 dir=ltr>INI Files settings</h3></a>
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+    <DIV dir=ltr style="MARGIN-RIGHT: 0px">
+    <P dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+There are a number of settings contained in the WEBFLEX.INI file to control
+webflex.
+
+<div id="ini">[general]</div>
+This section contains settings that are generally applicable.
+
+The path to the flex KSL files can be specified here (it defaults to examples)
+the path should be named as:
+
+<div id="ini">scripts_directory=path</div>
+Where path is a relative directory to where WEBFLEX.SYS (PRO386W.EXE) lives.
+For example scripts_directory could be set to the directory KSL which is a
+sub-directory of where WEBFLEX.SYS lives, by the entry:
+
+<div id="ini">scripts_directory=ksl</div>
+The KSL files for your application will be picked up from this path.
+
+<div id="ini">[name]</div>
+A NAME section corresponds to a NAME.KSL file in the above defined scripts 
+directory and applies to that. Settings here override settings in the general 
+section.
+</pre></P></DIV>
+<a name="applicable"><h4>Available settings</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+<table>
+<col span="1" width="200">
+<tr>
+<td id="ini">main_goal=my_main_goal</td><td>This specifies the main goal to run for a given example this is not applicable
+to the general section. All other settings can be in the general section.</td>
+</tr><tr>
+<td id="ini">explain_text=Explain</td><td>The text for an explain button.</td>
+</tr><tr>
+<td id="ini">help_text=Help</td><td>The text for an help button.</td>
+</tr><tr>
+<td id="ini">submit_text=OK</td><td>The text for an OK button.</td>
+</tr><tr>
+<td id="ini">question_seperator=br</td><td>The HTML code used to separate questions (could be hr)</td>
+</tr><tr>
+<td id="ini">explain_image=</td><td>An image URL to display instead of the explain button.</td>
+</tr><tr>
+<td id="ini">help_image=</td><td>An image URL to display instead of the help button</td>
+</tr><tr>
+<td id="ini">submit_image=</td><td>An image URL to display instead of the submit button</td>
+</tr></table>
+The following three settings can also be overridden in the style definition of
+a question group to allow individual pages for each group of questions.
+
+<table>
+<tr>
+<col span="1" width="200">
+<td id="ini">header=testhead.htm</td><td>The head part of the HTML page</td>
+</tr><tr>
+<td id="ini">body=test.htm</td><td>The body part of the HTML page</td>
+</tr><tr>
+<td id="ini">footer=testfoot.htm</td><td>The foot part of the HTML page</td>
+</tr></table>
+
+</pre></BLOCKQUOTE></BLOCKQUOTE>
+<a name="general"><h3 dir=ltr>General behaviour</h3></a>
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+    <DIV dir=ltr style="MARGIN-RIGHT: 0px">
+    <P dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+For each example a header page, a body page and a foot page can be defined
+together with the output from the flex program up to the question(s) being
+asked and the form containing the question(s) constitute one page to be sent
+to the browser.
+
+</pre>
+    <P></P></DIV>
+<a name="htm"><h4>Example HEAD.HTM, BODY.HTM and FOOT.HTM</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+HEAD.HTM:
+<code>
+&lt;HTML&gt;
+&lt;HEAD&gt;
+&lt;TITLE&gt;Webflex example&lt;/TITLE&gt;
+&lt;LINK REL="stylesheet" TYPE="text/css" HREF="/white.css"&gt;
+&lt;/HEAD&gt;
+</code>
+BODY.HTM:
+<code>
+&lt;BODY&gt;
+&lt;H2&gt;Robbie the Robot&lt;/H2&gt;
+&lt;HR&gt;
+</code>
+WebFlex output will be inserted here.
+
+FOOT.HTM
+<code>
+    &lt;P&gt;
+    &lt;A HREF="/wfs_dem.htm"&gt;Back to WebFlex demos&lt;/A&gt;&lt;P&gt;
+    &lt;A HREF="/ind_top.htm" TARGET="_top"&gt;Visit the LPA Home Page!&lt;/A&gt;&lt;P&gt;
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</code>
+</pre></BLOCKQUOTE><a name="questions"><h4>Questions</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+The basic user input to flex is through questions, webflex allows flex
+questions to be grouped together, and for individual questions to have style
+information associated, and for question groups to have style information
+associated. The way the styles are associated to questions and groups is
+through the frame hierarchy by a naming convention. Say you have the question
+foo, then by defining a frame foo_style you can add slots to specify various
+things.
+
+The ask mechanism allows for the following use:
+<code>
+   ask groupname,
+</code>
+will ask the questions defined in the group groupname :
+<code>
+group group_test1
+   multi_choice, single_choice_radio, single_choice_listbox,
+   single_choice_dropdown.
+</code>
+Ask can also ask several questions (or one!) as:
+<code>
+  ask q1,q2,q3
+</code>
+The difference is that by using a group you can change the appearance of the
+containing table, through the group style frame :
+<code>
+frame group_test1_style
+   default caption is 'Form 1' and
+   default body is 'test1.htm' and
+   default footer is 'tstfoot1.htm' and
+   default tablestyle is { bgcolor-'#FFccFF', border-1 }.
+</code>
+or for a question :
+<code>
+question single_choice_radio
+   A single-choice radio-button question ;
+   choose one of choices
+   because I need to test a single-choice radio-button question.
+
+frame single_choice_radio_style ;
+   default method is radio and
+   default prefill is apples and
+   default infix is br .
+</code>
+All output from flex up to the ask will be prepended to the form in the page
+so for example:
+<code>
+   ...
+   and write( '&lt;h1&gt;hi there&lt;/h1&gt;' )
+   and ask group_test1
+   ...
+</code>
+will write out the '&lt;h1&gt;hi there&lt;/h1&gt;' before the table containing the group_test1
+form, notice that it is written out as HTML so if you want to use characters
+such as &gt;  then you will have to write the HTML equivalent, in this
+case &amp;gt; as in :
+<code>
+   and write( '&lt;h1&gt;hi there 3 &amp;gt; 2&lt;/h1&gt;' ).
+</code>
+Any output after the last question in a program is executed are sent to the
+final results page.
+
+</pre></BLOCKQUOTE>
+The following is a list of styles for various questions and groups.
+All of the styles are optional and default to various settings.
+
+<a name="groupstyle"><h4>Group Styles</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+<table>
+<col span="1" width="200">
+<tr><td id="stylez">caption</td><td>The caption for the containing table.</td></tr>
+<tr><td id="stylez">columns</td><td>The number of columns in the table.</td></tr>
+<tr><td id="stylez">header</td><td>A header HTM file for use with this form.</td></tr>
+<tr><td id="stylez">body</td><td>A body HTM file for use with this form.</td></tr>
+<tr><td id="stylez">footer</td><td>A footer HTM file for use with this form.</td></tr>
+<tr><td id="stylez">tablestyle</td><td>A set that defines the style of the containing table of the form { attribute-Value, ... } see your HTML documentation for attributes applicable to a table, (cellpadding etc.).</td></tr>
+</table>
+</pre></BLOCKQUOTE>
+<a name="questionstyle"><h4>Question Styles</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+multiple choice styles
+
+<table>
+<col span="1" width="200">
+<tr><td id="stylez">method</td><td>{listbox, checkboxes}</td></tr>
+<tr><td id="stylez">rows</td><td>The number of rows in the listbox.</td></tr>
+<tr><td id="stylez">prefill</td><td>A set of items on the list to preselect.</td></tr>
+</table>
+
+single choice styles
+
+<table>
+<col span="1" width="200">
+<tr><td id="stylez">method</td><td>Set the method options are: { radio, listbox(default) }</td></tr>
+<tr><td id="stylez">rows</td><td>The number of rows in the listbox if omitted the single choice listbox becomes a drop-down list, only applicable if the method is not radio.</td></tr>
+<tr><td id="stylez">prefill</td><td>An item on the list to preselect</td></tr>
+<tr><td id="stylez">infix</td><td>Infix HTML between each item br or hr say, only applicable if the method is radio.</td><tr>
+</table>
+input styles
+
+<table>
+<col span="1" width="200">
+<tr><td id="stylez">prefill</td><td>Text to prefill the text box.</td></tr>
+<tr><td id="stylez">maximum_length</td><td>Maximum number of characters to allow.</td></tr>
+<tr><td id="stylez">cols</td><td>The number of columns for the text box.</td></tr>
+<tr><td id="stylez">rows</td><td>The number of rows for the text box.</td></tr>
+<tr><td id="stylez">lower_bound</td><td>The least value for a number input field.</td></tr>
+<tr><td id="stylez">upper_bound</td><td>The greatest value for a number input field.</td></tr>
+</table>
+
+Styles can also be passed down by inheritance, for example if you want to
+apply the style 'method is radio' to several fields you can use the following:
+<code>
+frame radio_style ;
+   default method is radio .
+
+frame q1_style is a radio_style .
+frame q2_style is a radio_style ;
+   prefill is fred .
+</code>
+</pre></BLOCKQUOTE>
+<a name="because"><h4>Because and Help</h4></a>
+    <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+<pre>
+The because clause of a question will be associated with a button (or graphic)
+on the form that will when clicked show a popup dialog with the contained
+because text.
+<code>
+question single_choice_radio
+  A single-choice radio-button question ;
+  choose one of choices
+  because I need to test a single-choice radio-button question .
+</code>
+If the because clause of a question uses the browse file '<URL>' form then
+that page will be opened in a seperate browser window when the button (or
+graphic) is clicked.
+<code>
+question input_set
+  A set input field ;
+  input set ;
+  browse file 'http://www.lpa.co.uk/fln.htm' .
+</code>
+</pre></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+</td>
+</tr>
+</table>
+</BODY>
+</HTML>

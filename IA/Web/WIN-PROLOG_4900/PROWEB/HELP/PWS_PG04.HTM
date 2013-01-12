@@ -1,0 +1,195 @@
+<HTML>
+<HEAD>
+<TITLE>ProWeb Server - Deploying an Application</TITLE>
+</HEAD>
+<BODY BACKGROUND="lpa_line.gif" BGCOLOR="#C0C0C0" TEXT="#000080" LINK="#0000FF" VLINK="#00FF00" ALINK="#FF0000">
+<TABLE COLS=2>
+<TD VALIGN=TOP ALIGN=CENTER>
+<IMG SRC="lpa_left.gif">
+</TD><TD VALIGN=TOP ALIGN=LEFT><IMG SRC="pws.gif"><P>
+
+<H1>Deploying an Application</H1>
+
+<OL><FONT SIZE=5>
+  <LI> <A HREF="#PG0401"> Introduction                            </A>
+  <LI> <A HREF="#PG0402"> Building a "Home Page"                  </A>
+  <LI> <A HREF="#PG0403"> Generating the Application's Executable </A>
+  <LI> <A HREF="#PG0404"> Deploying the Executable                </A>
+</FONT></OL>
+
+<BR><BR><BR><BR>
+<A NAME="PG0401">
+<H2>Introduction</H2>
+</A NAME="PG0401">
+
+Throughout this document the following assumptions are made :-
+<P>
+
+<TABLE COLS=2 BORDER=1 CELLPADDING=4 CELLSPACING=4>
+<TR><TD><B>hercules</B></TD>
+    <TD>The name of the host NT server machine.</TD></TR>
+<TR><TD><B>C:</B></TD>
+    <TD>The name of the hard drive.</TD></TR>
+<TR><TD><B>C:\InetPub</B></TD>
+    <TD>The root directory name for the <I>Internet Public</I> folder.</TD></TR>
+<TR><TD><B>C:\InetPub\MyArea</B></TD>
+    <TD>The sub-directory in which the application resides.</TD></TR>
+<TR><TD><B>MyCode.pl</B></TD>
+    <TD>The source-code file of the application.</TD></TR>
+<TR><TD><B>MyHome.html</B></TD>
+    <TD>The "Home Page" file of the application.</TD></TR>
+</TABLE>
+
+<BR><BR><BR><BR>
+<A NAME="PG0402">
+<H2>Building a "Home Page"</H2>
+</A NAME="PG0402">
+
+A "Home Page" is the entry point into any WWW system. 
+A CLIENT who visits the "Home Page" of a ProWeb SERVER will 
+be able to invoke a conversation whose flow is determined by 
+the ProWeb application, but which is ultimately driven by the CLIENT.
+<P>
+To generate a ProWeb "Home Page" follow the sequence of operations :-
+<OL>
+<LI>
+Provide a complete definition for the special form name <B>proweb_home_form</B> 
+using the predicate <B>proweb_form/2</B>.
+<P>
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_form(
+             proweb_home_form,
+             [
+               h1 @ `Example Home Page`,
+               verbatim @ `This is a rather bland home page.`
+             ]
+           ).
+</PRE></FONT>
+
+<P>
+<LI>
+Customise the page with a definition of the predicate
+<B>proweb_page/2</B> whose 1st argument is the list 
+<B>[ proweb_home_form ]</B>.
+<P>
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_page(
+/* Forms */  [ proweb_home_form ],
+/* Page  */  include( 'my_home_page_template' )
+           ).
+</PRE></FONT>
+
+<P>
+<LI>
+Generate the "Home Page" by calling 
+<B>proweb_home_page/2</B>
+<P>
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+?- proweb_home_page( 'C:\InetPub\wwwroot\MyHome.Html', live ).
+</PRE></FONT>
+
+</OL>
+
+<BR><BR><BR><BR>
+<A NAME="PG0403">
+<H2>Generating the Application's Executable</H2>
+</A NAME="PG0403">
+
+<P>
+The generation of an application's executable is simply a matter of
+making an overlay file <B>PROWEB.OVL</B> by following the
+sequence of operations :-
+
+<OL>
+<LI>
+Start a Prolog session and load the ProWeb toolkit.
+<P>
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+?- ensure_loaded( system(proweb) ).
+</PRE></FONT>
+
+<LI>
+Load the source code or object code of the application.
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+?- ensure_loaded( 'MyCode' ).
+</PRE></FONT>
+
+<LI>
+Generate the application's overlay file in an executable directory
+of the host NT server.
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+?- procgi_make( 'C:\InetPub\MyArea\PROWEB.OVL' ).
+</PRE></FONT>
+
+</OL>
+
+<BR><BR><BR><BR>
+<A NAME="PG0404">
+<H2>Deploying the Executable</H2>
+</A NAME="PG0404">
+
+<P>
+The deployment of an application involves setting up an executable
+directory within the <I>Internet Public</I> area of the NT server.
+
+<OL>
+<LI>
+Create and install the <I>Internet Public</I> directory.
+<P>
+  <UL>
+    <LI>FOLDER: Microsoft Internet Server (Common)
+    <LI>APPLICATION: Microsoft Internet Information Setup
+  </UL>
+<P>
+The default directory created by this procedure is
+<B>C:\InetPub</B>
+<P>
+
+<LI>
+Create the sub-directory <B>C:\InetPub\MyArea</B> and
+register it with the service manager as both readable and executable.
+<P>
+  <UL>
+    <LI>FOLDER: Microsoft Internet Server (Common)
+    <LI>APPLICATION: Internet Service Manager
+    <LI>DOUBLE CLICK: <B>hercules</B>
+    <LI>TAB: <B>Directories</B>
+    <LI>CLICK: <B>Add...</B>
+    <LI>Directory: <B>C:\InetPub\MyArea</B>
+    <LI>Virtual Directory Alias: <B>/MyArea</B>
+    <LI>TICK: <B>Access Read</B>
+    <LI>TICK: <B>Access Execute</B>
+    <LI>OK
+  </UL>
+<P>
+
+<LI>
+Install the executable files into the sub-directory <B>C:\InetPub\MyArea</B>.
+<P>
+  <UL>
+    <LI>ProWeb.Exe
+    <LI>ProWeb.Sys
+    <LI>ProWeb.Ovl
+    <LI>ProWeb.Ini
+  </UL>
+<P>
+
+<LI>
+Register the ProWeb application's executable through the 
+<B>HOME</B> setting in the <B>ProWeb.Ini</B> file.
+<P>
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+[ALIAS]
+
+HOME=/MyArea
+</PRE></FONT>
+
+</OL>
+
+</TD></TABLE><IMG SRC="lpa_logo.gif">
+</BODY>
+</HTML>

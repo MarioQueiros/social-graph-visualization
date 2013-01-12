@@ -1,0 +1,679 @@
+<HTML>
+<HEAD>
+<TITLE>ProWeb Server - Reference Manual - ProWeb Imports</TITLE>
+</HEAD>
+<BODY BACKGROUND="lpa_line.gif" BGCOLOR="#C0C0C0" TEXT="#000080" LINK="#0000FF" VLINK="#00FF00" ALINK="#FF0000">
+<TABLE COLS=2>
+<TD VALIGN=TOP ALIGN=CENTER>
+<IMG SRC="lpa_left.gif">
+</TD><TD VALIGN=TOP ALIGN=LEFT><IMG SRC="pws.gif"><P>
+
+<H1>Reference Manual - ProWeb Imports</H1>
+
+The following list represents the predicates imported by ProWeb. Some or all
+of these will be defined by the user's application in order to specify the
+form and content of HTML pages passed between SERVER and CLIENT.
+
+<UL><FONT FACE=courier COLOR=800000 SIZE=3>
+  <LI> <A HREF="#PG0501"> proweb_frameset        / 2 </A>
+  <LI> <A HREF="#PG0502"> proweb_page            / 2 </A>
+  <LI> <A HREF="#PG0503"> proweb_form            / 2 </A>
+  <LI> <A HREF="#PG0504"> proweb_question        / 2 </A>
+  <LI> <A HREF="#PG0505"> proweb_help            / 3 </A>
+  <LI> <A HREF="#PG0506"> proweb_expansion       / 3 </A>
+  <LI> <A HREF="#PG0507"> proweb_friends         / 2 </A>
+  <LI> <A HREF="#PG0508"> proweb_startup         / 0 </A>
+  <LI> <A HREF="#PG0509"> proweb_aborted         / 0 </A>
+  <LI> <A HREF="#PG0510"> proweb_client_time_out / 1 </A>
+</FONT></UL>
+
+<BR><BR><BR><BR>
+<A NAME="PG0501">
+<H3>User-Defined Predicate : proweb_frameset / 2</H3>
+</A NAME="PG0501">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_frameset( +Forms, -Page )                                   %
+%                                                                    %
+%	Forms		LIST		The forms on this page       %
+%                                                                    %
+%       Page            LIST/TERM       HTML page hosting the forms  %
+%                                                                    %
+% Called during the expansion stage prior to the page being sent.    %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_frameset(
+/* Forms */  [ a_frame_form ],
+/* Page  */  include( 'a_frameset_template' )
+               ).
+</PRE></FONT>
+
+<P>
+Such a definition indicates to ProWeb that the HTML page about to be
+sent to the client should be wrapped within a frameset. The active
+frame is referenced by a statement of the form :-
+<BR><BR>
+<SAMP>     SRC="_proweb"</SAMP>
+</P>
+<BR><BR><BR><BR>
+<A NAME="PG0502">
+<H3>User-Defined Predicate : proweb_page / 2</H3>
+</A NAME="PG0502">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_page( +Forms, -Page )                                       %
+%                                                                    %
+%	Forms		LIST		The forms on this page       %
+%                                                                    %
+%       Page            LIST/TERM       HTML page hosting the forms  %
+%                                                                    %
+% Called during the expansion stage prior to the page being sent.    %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+<P>
+To define a specific page the <I>Forms</I> parameter is specified,
+as in the following definition :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_page(
+/* Forms */  [ my_home_form ],
+/* Page  */  include( 'my_home_page_template' )
+           ).
+</PRE></FONT>
+
+To define a general page the <I>Forms</I> parameter is ignored,
+as in the following definition :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_page(
+/* Forms */  _Forms,
+/* Page  */  include( 'my_generic_page_template' )
+           ).
+</PRE></FONT>
+
+<BR><BR><BR><BR>
+<A NAME="PG0503">
+<H3>User-Defined Predicate : proweb_form / 2</H3>
+</A NAME="PG0503">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_form( +Form, -Fields )                                      %
+%                                                                    %
+% 	Form		TERM		User-defined ProWeb form     %
+%                                                                    %
+%	Fields		LIST		List of ProWeb fields        %
+%                                                                    %
+%                                                                    %
+% Called during the expansion stage prior to the page being sent.    %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+The user defines this predicate to specify the appearance and contents
+of each form sent in an HTML page from SERVER to CLIENT.
+<P>
+The <I>Form</I> parameter can be a simple name, as in the definition :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_form(
+        	proweb_home_form,
+		[
+		  h3 @ `Select the towns you wish to visit ...`,
+		  p,
+		  ?towns,
+		  p,
+		  h3 @ `Select the algorithm to be used ...`,
+		  p,
+		  ?algorithm
+		]
+           ).
+</PRE></FONT>
+
+or it can itself be parameterised, as in the definition :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_form(
+       		property_details( Property ),
+       		[
+       		  h4 @ b @ [`Address of the `,Pth,` property  ...`],
+       	          address( Property )
+       		]
+           ) :-
+	property( Property, Pth ).
+</PRE></FONT>
+
+where each different instantiation of <I>Property</I> yields a
+different form.
+<P>
+The <I>Fields</I> parameter of <B>proweb_form/2</B> specifies both the
+appearance and the contents of the <I>Form</I>.  It is a list of HTML fields
+where each field is one of :-
+<UL>
+  <LI>A complex field which can be expanded by <A HREF="#PG0506">proweb_expansion/3</A>
+  <LI>An input field defined by <A HREF="#PG0504">proweb_question/2</A>
+  <LI>A help button defined by <A HREF="#PG0505">proweb_help/3</A>
+  <LI>The name of an HTML document to be included within the form
+  <LI>Any HTML object (see <A HREF="pws_pg07.htm">Reference Manual - HTML Prolog Terms</A>)
+</UL>
+<P>
+Questions are indicated by fields of the form :-
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+        ? <I>question</I>
+</PRE></FONT>
+Help buttons are indicated by fields of the form :-
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+        ?? <I>question</I>
+</PRE></FONT>
+File inclusions are indicated by fields of the form :-
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+        include( <I>filename</I> )
+</PRE></FONT>
+
+<P>
+In addition to the definition of the application forms the author can
+also re-define the standard, built-in forms which ProWeb automatically
+generates when certain situations arise. The standard forms are named
+by general Prolog terms as follows.
+<P>
+<TABLE BORDER=1 CELLPADDING=4 CELLSPACING=4>
+<THEAD>
+  <TR><TH> Standard Form </TH>
+      <TH> Description   </TH></TR>
+</THEAD>
+<TBODY>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_terminate_form( true )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the main procedure 
+      terminates with success.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_terminate_form( fail )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the main procedure 
+      terminates with failure.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_terminate_form( abort )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the application aborts.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_terminate_form( error(When,Error,Goal) )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the main or post (<I>When</I>)
+      procedure terminates with an <I>Error</I> for a particular
+      <I>Goal</I>.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_time_out_form( client )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the CLIENT response exceeds
+      the setting <B>client_time_out</B>.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_time_out_form( server )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever the time taken for the
+      main procedure to terminate exceeds the setting 
+      <B>server_time_out</B>.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_undefined_form( Form )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever an application <I>Form</I> is
+      sent by the main program for which there is no legitimate definition.
+    </TD>
+  </TR>
+  <TR>
+    <TD VALIGN=TOP ALIGN=LEFT>
+      <FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_error_making_forms( Error, Goal, Forms )
+      </PRE></FONT>
+    </TD>
+    <TD VALIGN=TOP ALIGN=JUSTIFY>
+      ProWeb generates this form whenever an <I>Error</I> in a <I>Goal</I>
+      occurs during the construction of some application <I>Forms</I>.
+      <P>
+      <B>Beware:</B> If this standard form is defined then it must always
+      succeed without error otherwise ProWeb will fall into an 
+      infinite loop.
+    </TD>
+  </TR>
+</TBODY>
+</TABLE>
+
+<BR><BR><BR><BR>
+<A NAME="PG0504">
+<H3>User-Defined Predicate : proweb_question / 2</H3>
+</A NAME="PG0504">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_question( +Question, -Parameters )                          %
+%                                                                    %
+%       Question        TERM            User-defined ProWeb question %
+%                                                                    %
+%       Parameters      LIST            Valid question parameters    %
+%                                                                    %
+% Called during the expansion stage prior to the page being sent.    %
+%                                                                    %
+% Parameter   Valid Value                              Default Value %
+% ---------   -----------                              ------------- %
+%                                                                    %
+% method    = input                                    input         %
+%             password                                               %
+%             date                                                   %
+%             time                                                   %
+%             checkbox                                               %
+%             radio                                                  %
+%             menubox                                                %
+%             multibox                                               %
+%                                                                    %
+% type      = atom                                     atom          %
+%             string                                                 %
+%             number                                                 %
+%             integer                                                %
+%             { input | password | radio | menubox | multibox }      %
+%                                                                    %
+% format    = ATOM | STRING                                          %
+%             { date }                                 'dd//mm//yy'  %
+%             { time }                                 'hh:mm:ss'    %
+%                                                                    %
+% select    = LIST(TYPE)                                             %
+%             { radio | menubox | multibox }                         %
+%                                                                    %
+% prefill   = TYPE                                                   %
+%             { input | password | radio | menubox }                 %
+%                                                                    %
+%           = LIST(TYPE)                                             %
+%             { multibox }                                           %
+%                                                                    %
+%           = off                                      off           %
+%             on                                                     %
+%             { checkbox }                                           %
+%                                                                    %
+%           = [ YEAR , MONTH , DAY ]                                 %
+%             { date }                                               %
+%                                                                    %
+%           = [ HOUR , MINUTE , SECOND ]                             %
+%             { time }                                               %
+%                                                                    %
+% infix     = HTMLOBJECT                                             %
+%             { radio }                                              %
+%                                                                    %
+% rows      = NATURAL                                  1             %
+%             { input | password | menubox | multibox }              %
+%                                                                    %
+% cols      = NATURAL                                  10            %
+%             { input | password }                                   %
+%                                                                    %
+% maxlength = NATURAL                                                %
+%             { input | password }                                   %
+%                                                                    %
+% lwb       = NUMBER                                                 %
+%             { input number | input integer }                       %
+%                                                                    %
+% upb       = NUMBER                                                 %
+%             { input number | input integer }                       %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate determines the form, content and function of all
+questions asked of the CLIENT.  The following table exemplifies the different
+parameters which are available for this purpose.
+<P>
+<FORM ACTION="">
+<TABLE BORDER=1 CELLSPACING=1 CELLPADDING=4 WIDTH="100%">
+<THEAD>
+  <TR>
+    <TH ALIGN=CENTER> Parameter List </TH>
+    <TH ALIGN=CENTER> Visual Effect  </TH>
+  </TR>
+</THEAD>
+<TBODY>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = input,<BR>type = atom,<BR>prefill = 'Your Name',<BR>rows = 1,<BR>cols = 12</PRE></FONT></TD>
+    <TD><INPUT TYPE=TEXTAREA SIZE="12,1" VALUE="Your Name"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = input,<BR>type = string,<BR>prefill = `Your Address`,<BR>rows = 2,<BR>cols = 12</PRE></FONT></TD>
+    <TD><INPUT TYPE=TEXTAREA SIZE="12,2" VALUE="Your Address"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = input,<BR>type = string,<BR>prefill = `Your Address`,<BR>maxlength = 6</PRE></FONT></TD>
+    <TD><INPUT TYPE=TEXTAREA SIZE="10,1" MAXLENGTH=6 VALUE="Your Address"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = input,<BR>type = number,<BR>prefill = 0.333,<BR>lwb = 0,<BR>upb = 1</PRE></FONT></TD>
+    <TD><INPUT TYPE=TEXTAREA SIZE="10,1" VALUE="0.333"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = password,<BR>prefill = 'Password'</PRE></FONT></TD>
+    <TD><INPUT TYPE=PASSWORD SIZE="10,1" VALUE="Password"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = checkbox,<BR>prefill = on</PRE></FONT></TD>
+    <TD><INPUT TYPE=CHECKBOX CHECKED></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = checkbox,<BR>prefill = off</PRE></FONT></TD>
+    <TD><INPUT TYPE=CHECKBOX></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = radio,<BR>select = [a,b,c],<BR>prefill = b</PRE></FONT></TD>
+    <TD><INPUT TYPE=RADIO NAME="p">a<INPUT TYPE=RADIO NAME="p" CHECKED>b<INPUT TYPE=RADIO NAME="p">c</TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = radio,<BR>select = [a,b,c],<BR>prefill = b,<BR>infix = [`, or`,br]</PRE></FONT></TD>
+    <TD><INPUT TYPE=RADIO NAME="q">a, or<BR><INPUT TYPE=RADIO NAME="q" CHECKED>b, or<BR><INPUT TYPE=RADIO NAME="q">c</TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = menubox,<BR>select = [a,b,c],<BR>prefill = b</PRE></FONT></TD>
+    <TD><SELECT SIZE=1><OPTION>a<OPTION SELECTED>b<OPTION>c</SELECT></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = menubox,<BR>select = [a,b,c],<BR>prefill = b,<BR>rows = 4</PRE></FONT></TD>
+    <TD><SELECT SIZE=4><OPTION>a<OPTION SELECTED>b<OPTION>c</SELECT></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = multibox,<BR>select = [a,b,c],<BR>prefill = [b,c],<BR>rows = 4</PRE></FONT></TD>
+    <TD><SELECT MULTIPLE SIZE=4><OPTION>a<OPTION SELECTED>b<OPTION SELECTED>c</SELECT></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = date,<BR>format = '/Day:dth /Month:mm /Year:yy',<BR>prefill = [1997,1,11]</PRE></FONT></TD>
+    <TD>Day:<SELECT><OPTION>1st<OPTION SELECTED>11th<OPTION>31st</SELECT> Month:<SELECT><OPTION SELECTED>01<OPTION>12</SELECT> Year:<INPUT SIZE="2" MAXLENGTH="2" VALUE="97"></TD>
+  </TR>
+  <TR>
+    <TD><FONT FACE=courier COLOR=800000 SIZE=2><PRE>method = time,<BR>format = '/h/mm/ss',<BR>prefill = [15,1,59]</PRE></FONT></TD>
+    <TD><SELECT><OPTION>0<OPTION SELECTED>3<OPTION>12</SELECT><SELECT><OPTION>00<OPTION SELECTED>01<OPTION>59</SELECT><SELECT><OPTION>00<OPTION>01<OPTION SELECTED>59</SELECT></TD>
+  </TR>
+</TBODY>
+</TABLE>
+</FORM>
+
+<BR><BR><BR><BR>
+<A NAME="PG0505">
+<H3>User-Defined Predicate : proweb_help / 3</H3>
+</A NAME="PG0505">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_help( +Question, -HelpButton, -HelpString )                 %
+%                                                                    %
+%       Question        TERM            User-defined ProWeb question %
+%                                                                    %
+%       HelpButton      TERM            Name of the help button      %
+%                                                                    %
+%       HelpString      TERM            Associated help string       %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate is used to attach help buttons to the
+HTML questions sent to the CLIENT.
+<P>
+For example,
+<FONT FACE=courier COLOR=800000 SIZE=3><PRE>
+proweb_question(
+                peril( _Property, _Peril ),
+                [
+                  method = radio,
+                  select = ['Yes','No']
+                ]
+               ).
+
+proweb_help(
+                peril( _Property, Peril ),
+                `Help Me`,
+                PerilClause
+           ) :-
+        peril_clause( Peril, PerilClause ).
+
+peril_name( fire, `Fire` ).
+
+peril_clause( fire, `Fire excluding any act of arson` ).
+</PRE></FONT>
+will generate the following question together with its attached
+help button.
+<FORM ACTION="">
+Fire
+<INPUT TYPE=RADIO NAME="p">Yes
+<INPUT TYPE=RADIO NAME="p">No
+<INPUT TYPE=BUTTON VALUE="Help Me" onClick="return alert( '\nFire excluding any act of arson' )">
+</FORM>
+
+<BR><BR><BR><BR>
+<A NAME="PG0506">
+<H3>User-Defined Predicate : proweb_expansion / 3</H3>
+</A NAME="PG0506">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_expansion( +Term, +Form, -Fields )                          %
+%                                                                    %
+% 	Term		TERM		Any term                     %
+%                                                                    %
+% 	Form		TERM		User-defined ProWeb form     %
+%                                                                    %
+%	Fields		LIST		List of expanded fields      %
+%                                                                    %
+%                                                                    %
+% Called during the expansion stage prior to the page being sent.    %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate behaves in much the same way as the Prolog
+predicate <B>term_expansion/2</B> in that complex terms appearing within
+a specified <I>Form</I> are macro-expanded to primitive objects whenever
+the <I>Form</I> is sent.
+<P>
+For example, in the definitions :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+proweb_expansion(
+                        select_properties,
+                        _Form,
+        		PropertyFields
+                ) :-
+	findall(
+	         select_property( Property, Pth ),
+	         property( Property, Pth ),
+	         PropertyFields
+	       ).
+
+
+proweb_expansion(
+                        select_property( Property, Pth ),
+                        _Form,
+                        [
+                          ?select_property( Property ),
+                          verbatim @ Pth,
+                          br
+                        ]
+                ).
+</PRE></FONT>
+
+the complex term <I>select_properties</I> will be macro-expanded in any
+form into a list of HTML objects and ProWeb questions :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><PRE>
+  [
+    ?select_property( 1 ),
+    verbatim@`1st`,
+    br,
+    ?select_property( 2 ),
+    verbatim@`2nd`,
+    br,
+    ...
+  ]
+</PRE></FONT>
+
+which will translate into the HTML listing :-
+
+<FONT FACE=courier COLOR=800000 SIZE=2><XMP>
+<INPUT TYPE=CHECKBOX NAME="Q001" CHECKED>
+1st
+<BR>
+<INPUT TYPE=CHECKBOX NAME="Q002">
+2nd
+<BR>
+...
+</XMP></FONT>
+
+<BR><BR><BR><BR>
+<A NAME="PG0507">
+<H3>User-Defined Predicate : proweb_friends / 2</H3>
+</A NAME="PG0507">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_friends( +FormA, -FormB )                                   %
+%                                                                    %
+% 	FormA		TERM		User-defined ProWeb form     %
+%                                                                    %
+% 	FormB		TERM		User-defined ProWeb form     %
+%                                                                    %
+%                                                                    %
+% Called during the main program to determine whether the form is    %
+% sent now.                                                          %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+The user defines this predicate in order to relate complementary forms
+to each other.
+<P>
+There is a special setting (0) for <A HREF="pws_pg06.htm#SETTING03">max_forms_per_page</A>
+which allows any number of forms to be sent in the same HTML page providing
+they are all pairwise friendly.  By using this setting and the corresponding
+definitions of <B>proweb_friends/2</B> the user can fully control which
+forms are sent together.
+
+<BR><BR><BR><BR>
+<A NAME="PG0508">
+<H3>User-Defined Predicate : proweb_startup / 0</H3>
+</A NAME="PG0508">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_startup                                                     %
+%                                                                    %
+% Called during the main initialization phase of the deployed        %
+% application.                                                       %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate is called during the initialization phase
+of the deployed application. It allows for the user's application to
+set up an initial state which might include a dynamic Prolog database,
+loading of system resources such as metafiles, loading of system
+libraries such as the ODBC interface, etc..
+
+<BR><BR><BR><BR>
+<A NAME="PG0509">
+<H3>User-Defined Predicate : proweb_aborted / 0</H3>
+</A NAME="PG0509">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_aborted                                                     %
+%                                                                    %
+% Called whenever the ProWeb application aborts.                     %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate is called whenever the deployed ProWeb
+application aborts. It gives the application programmer the 
+opportunity to reset the Prolog state, for example tidying up any
+dynamic procedures.
+<P>
+<B>Beware:</B> If the implementation of this procedure itself causes
+an abort then the application will enter an infinite loop!
+
+<BR><BR><BR><BR>
+<A NAME="PG0510">
+<H3>User-Defined Predicate : proweb_client_time_out / 1</H3>
+</A NAME="PG0510">
+
+<PRE>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                    %
+% proweb_client_time_out( +Seconds )                                 %
+%                                                                    %
+% Called periodically to allow the application to clear expired      %
+% items from its own wastebasket.                                    %
+%                                                                    %
+% The Seconds parameter indicates how long since the last            %
+% invocation of the time-out.                                        %
+%                                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+</PRE>
+
+This user-defined predicate is called periodically according to the
+ProWeb setting <B>client_time_out</B>. Following the system's disposal
+of expired conversational databases from the SERVER's hard disk, an
+opportunity is given for the application to do likewise.
+<P>
+For instance, suppose the application dynamically generates pictures 
+which are stored on the SERVER's hard disk before inclusion in a page 
+sent to the CLIENT. This periodic procedure allows the application 
+to dispose of such metafiles when they have been deemed to expire.
+
+</TD></TABLE><IMG SRC="lpa_logo.gif">
+</BODY>
+</HTML>

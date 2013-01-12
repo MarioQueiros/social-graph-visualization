@@ -1,0 +1,40 @@
+WELCOME!
+========
+
+Welcome to the PRODATA toolkit for WIN-PROLOG 4.900.
+
+This version of Prodata is for use with 32-bit ODBC drivers.
+
+Running The PRODATA from WIN-PROLOG
+-----------------------------------
+To run the PRODATA toolkit you first run WIN-PROLOG version 4.900.
+Then at the WIN-PROLOG command line you enter the following command:
+
+        ?- ensure_loaded( system(dblink) ).
+
+Bugs, Problems and Errors
+-------------------------
+
+----- Start of List -----
+
+No known bugs.
+
+----- End of List -----
+
+Please report any suspected bugs that do not appear in the above list to
+LPA:
+
+Contact Details
+---------------
+
+        Info:           info_team@lpa.co.uk
+        Sales:          sale_team@lpa.co.uk
+        Support:        tech_team@lpa.co.uk
+
+        Phone:          +44 (0) 20 8871 2016
+        Fax:            +44 (0) 20 8874 0449
+        Web:            http://www.lpa.co.uk
+
+        Logic Programming Associates Ltd
+        Studio 30, Royal Victoria Patriotic Building
+        Trinity Road, London, SW18 3SX, England.

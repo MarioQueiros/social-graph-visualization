@@ -1,0 +1,2906 @@
+Applic.pl
+
+apply/2
+
+apply a predicate to a list of arguments
+
+	apply(Pred, Args)
+
+	+Pred		<pred_name>
+	+Args		<list>
+
+
+apply/2 is basically a variant of call/1 where some of the arguments are
+already in Pred and the rest are passed in the list of Args. Thus
+apply(foo, [X,Y]) is the same as callingfoo(X,Y), and apply(foo(X), [Y])
+is the same as calling foo(X,Y) too.
+
+	Examples
+
+		If foo/3 is defined as:
+
+			% foo/3
+			foo(a,b,c).
+			foo(c,d,e).
+			foo(e,f,g).
+
+		?- P = foo, apply(P, [a,Y,Z]).
+		P = foo ,
+		Y = b ,
+		Z = c
+
+		?- P = foo(c), apply(P, [Y,Z]).
+		P = foo(c) ,
+		Y = d ,
+		Z = e
+
+
+checkand/2
+
+check whether a predicate succeeds for all members of a conjunction
+
+	checkand(Pred, Conjunction)
+
+	+Pred			<pred_name>
+	+Conjunction		<term>
+
+checkand(Pred, Conjunction) succeeds when Pred(Conjunct) succeeds for
+every Conjunct in the Conjunction.  All the *and predicates in this
+module assume that a&b&c&d is parsed as a&(b&(c&d)), and that the "null"
+conjunction is 'true'.  It is possible for this predicate, and most of
+the others, to backtrack and try alternative solutions.
+
+
+	Examples
+
+		?- checkand(integer, 1 & -5 & 6 & 0).
+		yes
+
+		?- checkand(integer, 1 & -5 & a & 0).
+		no
+
+
+checklist/2
+
+check whether a predicate succeeds for all members of a list
+
+	checklist(Pred, List)
+
+	+Pred		<pred_name>
+	+List		<list>
+
+checklist(Pred, List) succeeds when Pred(Elem) succeeds for each Elem in
+List.
+
+	Examples
+
+		% are all the elements of the list greater than 5?
+		?- checklist('<'(5), [10, -5, 8, 11]).
+		no
+
+		% are all the elements of the list greater than 5?
+		?- checklist('<'(5), [10, 15, 8, 11]).
+		yes
+
+
+
+
+convlist/3
+
+filter and convert a list by a given predicate
+
+	convlist(Pred, OldList, NewList)
+
+	+Pred		<pred_name>
+	+OldList	<list>
+	?NewList	<list>
+
+convlist(Pred, OldList, NewList) is a sort of hybrid of maplist/3 and
+sublist/3. Each element of NewList is the image under Pred of some
+element of OldList, and order is preserved, but elements of OldList on
+which Pred is undefined (fails) are not represented.
+
+	Example
+
+		Given succ/2 defined as:
+
+			succ(X,Y) :- integer(X), Y is X+1.
+
+		?- convlist(succ, [1,a,0,joe(99),101], L).
+		L = [2,1,102] ;
+
+		no
+
+
+exclude/3
+
+filter out a list of element by a given predicate
+
+	exclude(Pred, List, SubList)
+
+	+Pred		<atom> or <compound>
+	+List		<list>
+	?SubList	<list> or <variable>
+
+exclude(Pred, List, SubList) succeeds when SubList is the SubList of
+List containing all the elements for which Pred(Elem) is *false*.  That
+is, it removes all the elements satisfying Pred.
+
+
+	Example
+
+		Given odd/1 defined as:
+
+			odd(N) :- integer(N), 1 =:= N mod 2.
+
+		% remove the odd numbers from a list
+		?- exclude(odd, [1,2,3,a,4,5], L).
+		L = [2,a,4] ;
+
+		no
+
+mapand/3
+
+apply a predicate to all members of a conjunction to build a new
+transformed one
+
+	mapand(Pred, OldConj, NewConj)
+
+	+Pred		<pred_name>
+	+OldConj	<list>
+	-NewConj	<variable>
+
+mapand(Pred, OldConj, NewConj) succeeds when Pred is able to rewrite
+each conjunct of OldConj, and combines the results into NewConj.
+
+	Example
+
+		Given succ defined as:
+
+			succ(N, M) :- M is N + 1.
+
+		?- mapand(succ, 1&2&3&4, M).
+		M = (2 & 3 & 4 & 5)
+
+
+maplist/3
+
+apply a predicate to all members of a list to build a new transformed
+one
+
+	maplist(Pred, OldList, NewList)
+
+	+Pred		<pred_name>
+	+OldList	<list>
+	?NewList	<list> or <variable>
+
+maplist(Pred, OldList, NewList) succeeds when Pred(Old,New) succeeds for
+each corresponding Old in OldList and New in NewList.
+
+
+
+	Examples
+
+		Given succ defined as:
+
+			succ(N, M) :- integer(N), M is N + 1.
+			pair_2_NameArity((Name, Arity), Name/Arity).
+
+		?- maplist(succ, [1,2,3,4], L).
+		L = [2,3,4,5];
+
+		no
+
+
+		?- maplist(succ, [1,2,a,4], L).
+		no
+
+		?- pdict(-1,P), maplist(pair_2_NameArity,P,NewP).
+		P = [(writeln,1),(built_in,1),(checkand,2),
+		      (sublist,3),(maplist,3),(convlist,3),
+		      (somechk,2),(apply,2),(checklist,2),(some,2),
+		      (exclude,3),(foo,3),(error_message,2),(succ,2),
+		      (mapand,3),(between,3),(sysops,0),(wclose,1),
+		      (pair_2_NameArity,2)] ,
+		NewP = [writeln / 1,built_in / 1,checkand / 2,
+			  sublist /3,maplist / 3,convlist / 3,
+			  somechk / 2,apply / 2,checklist /2,some / 2,
+			  exclude / 3,foo / 3,error_message / 2,succ /
+2,
+			  mapand /3,between / 3,sysops / 0,wclose /1,
+			  pair_2_NameArity / 2] ;
+
+		no
+
+
+some/2
+
+check nondeterministically whether at least one element of a list
+satisfies a predicate
+
+	some(Pred, List)
+
+	+Pred		<pred_name>
+	+List		<list>
+
+some(Pred, List) succeeds when Pred(Elem) succeeds for some Elem in
+List.  It will try all ways of proving Pred for each Elem, and will try
+each Elem in the List.
+
+	Example
+
+		Given odd/1 defined as:
+
+			odd(N) :- integer(N), 1 =:= N mod 2.
+
+
+Note that the query succeeds three times because there are three odd
+numbers in the list.
+
+			X=X, some(odd, [1,2,3,a,4,5]).
+			X = _ ;
+
+			X = _ ;
+
+			X = _ ;
+
+			no
+
+somechk/2
+
+check deterministically whether at least one element of a list satisfies
+a predicate
+
+	somechk(Pred, List)
+
+	+Pred		<pred_name>
+	+List		<list>
+
+	somechk/2 is to some/2 as memberchk/2 is to member/2.
+
+	Example
+
+		Given odd/1 defined as:
+
+		odd(N) :- integer(N), 1 =:= N mod 2.
+
+
+		Note that the query succeeds once in this case.
+
+		X=X, somechk(odd, [1,2,3,a,4,5]).
+
+		X = _
+
+
+
+sublist/3
+
+extract the elements of a list that satisfy a predicate
+
+	sublist(Pred, List, SubList)
+
+	+Pred		<pred_name>
+	+List		<list>
+	?SubList	<list> or <variable>
+
+sublist(Pred, List, SubList) succeeds when SubList is the sub-sequence
+of the List containing all the Elems of List for which Pred(Elem)
+succeeds.
+
+	Example
+
+		Given odd/1 defined as:
+
+		odd(N) :- integer(N), 1 =:= N mod 2.
+
+		?- sublist(odd, [1,2,3,a,4,5], L).
+		L = [1,3,5]
+
+
+Arrays.pl
+
+In this package an array is represented in the following notation
+
+	{1,2,3} is shown initially as array([1|_1],[2|_2],[3|_3])+0
+
+where the [1|_1] etc. are lists in which the most recent value for the
+element comes last, and the +0 is a zero updates count.
+Updating the 2nd element to a 5 for example would make the array into
+
+	array([1|_1],[2,5|_2],[3|_3])+1.
+
+The operations made available by this package are fully described in
+"Updatable Arrays in Prolog", R.A.O'Keefe, DAI Working Paper 150.
+
+Note that store(Index, Old, Elem, New) sometimes side-effects Old and
+sometimes doesn't; you cannot rely on Old remaining unchanged. (i.e.
+uninstantiated arguments in Old may become instantiated.)
+
+This is NOT an example of logic programming.  For a logic programming
+solution (with cost O(lgN) rather O(1)) see the TREES package.
+
+array_length/2
+
+return the length of an array
+
+	array_length(Array, Length)
+
+	+Array		<term>
+	-Length	<variable>
+
+
+array_to_list/2
+
+convert an array to a list
+
+	array_to_list(Array, List)
+
+	+Array		<term>
+	-List		<variable>
+
+
+fetch/3
+
+fetch an element from an array
+
+	fetch(Index, Array, Elem)
+
+	+Index	<integer>
+	+Array		<term>
+	-Element	<term>
+
+list_to_array/2
+
+convert a list to an array
+
+	list_to_array(List, Array)
+
+	+List		<list>
+	-Array		<variable>
+
+store/4
+
+store an element into an array
+
+	store(Index, Array, Elem, NewArray)
+
+	+Index	<integer>
+	+Array		<term>
+	+Element	<term>
+	-NewArray	<variable>
+
+
+assoc.pl
+
+put_assoc/4
+
+Store association pairs in a tree structure, creating a new tree, the
+empty tree being simply "t".
+
+put_assoc(Key,Old_tree,Value,New_Tree).
+
++Key		<term>
++Old_tree	<term>
+?Value	<simple> or <char>
+-New_Tree	<term>
+
+	Examples
+
+		create a tree T with the pair foo-moo
+
+			put_assoc(foo,t,moo,T)
+
+		Add to tree T the pair "bee-flea" giving the tree U
+
+			put_assoc(bee,T,flea,U)
+
+
+get_assoc/3.
+
+Get the Value associated with a specific Key in a tree, or find a range
+of values on backtracking for Key - Value pair.
+
+get_assoc(Key,Tree,Value)
+
++Key		<term>
++Tree		<term>
+?Value	<simple> or <char>
+
+examples
+	
+	get_assoc(foo,Tree,Value)
+
+			will find the value associated with "foo" in
+"Tree".
+If Key is uninstantiated then get_assoc will work sensibly for the
+calling patterns
+
+		get_assoc(-K,+Tree,-V)
+get_assoc(-K,+Tree,+V)
+
+Both will find every K-V pair on back tracking. Although the pattern
+get_assoc(-K,+Tree,+V) is *time consuming*.
+
+
+assoc_to_list/2
+
+Converts between a list of the form [Key1-Val1, Key2-Val2...] and a tree
+
+assoc_to_list(Assoc,List)
+
+	?Assoc	<term> or <variable>
+	?List		<pairs> or <variable>
+
+	examples
+		
+map_assoc/3
+
+Calls Pred(X,Y) for every X on the tree and constructs a tree of Ys.
+
+	map_assoc(Pred,In_tree,Out_tree)
+	
+	+Pred		<pred_name>
+	+In_tree	<term>
+	-Out_tree	<variable>
+
+
+
+bagutl.pl
+
+A bag B is a function from a set dom(B) to the non-negative integers.
+For the purposes of this module, a bag is constructed from two
+functions:
+	
+	bag		- creates an empty bag
+	bag(E, M, B)	- extends the bag B with a new (NB!) element E
+			  which occurs with multiplicity M, and which
+			  precedes all elements of B in Prolog's order.
+
+For instance the bag with an a and two bs in it is represented by the
+term
+
+	bag(a,1,bag(b,2,bag)).
+
+A bag is represented by a Prolog term mirroring its construction.  There
+is one snag with this: what are we to make of
+
+	bag(f(a,Y), 1, bag(f(X,b), 1, bag))	?
+
+As a term it has two distinct elements, but f(a,b) will be reported as
+occurring in it twice.  But according to the definition above,
+
+	bag(f(a,b), 1, bag(f(a,b), 1, bag))
+
+is not the representation of any bag, that bag is represented by
+
+	bag(f(a,b), 2, bag)
+
+alone.  We are apparently stuck with a scheme which is only guaranteed
+to work for "sufficiently instantiated" terms, but then, that's true of
+a lot of Prolog code. The reason for insisting on the order is to make
+union and intersection linear in the sizes of their arguments.
+
+
+
+is_bag/1
+
+Tests a term to determine if it is a valid bag. This will also
+instantiate a variable to the atom "bag" which is a valid empty bag.
+
+	is_bag(Bag)
+
+	?Bag	<variable> or <term>
+
+	example
+
+	is_bag(X)
+
+	will instantiate X to the atom bag
+
+	is_bag(bag(1,3,bag))
+
+	will succeed
+
+portray_bag/1
+
+write in a formated structured a valid bag to the current output stream
+
+	portray_bag(Bag)
+
+	+Bag		<term>
+
+	example
+
+		portray_bag(bag(1,2,bag(2,1,bag(3,1,bag(4,1,bag)))))
+
+		would result in an output of [% 1:2, 2:1, 3:1, 4:1 %]
+		
+checkbag/2
+
+apply a predicate with the arguments as each element and count in the
+bag
+
+	checkbag(Pred,Bag)
+
+	+Pred		<pred_name>
+	+Bag		<term>
+
+	example
+
+		checkbag(not_equal,bag(1,2,bag(2,1,bag(3,1,bag(4,1,bag)))))
+
+		where not_equal is defined as
+		
+			not_equal(N1,N2):-
+				not N1 == N2.
+
+		would succeed.
+
+mapbag/3.
+
+apply a predicate with the elements of a bag creating a new bag of
+answers
+
+	mapbag(Pred,Bag,NewBag)
+	
+	+Pred		<pred_name>
+	+Bag		<term>
+	-NewBag	<variable>
+
+	example
+		mapbag(likes,bag(barney,1,bag(fred,1,bag(wilma,1,bag))),NewBag)
+
+		would result in
+
+			NewBag = bag(barney,1,bag(fred,2,bag))
+
+		given a definition of likes/2 as
+
+			likes(barney,fred).
+			likes(fred,barney).
+			likes(wilma,fred).
+
+since there are two instance of people who like fred but, only one who
+likes barney.
+	
+
+list_to_bag/2.
+
+Create a new bag from a list of objects.
+
+	list_to_bag(List,Bag)
+
+	+List		<list>
+	-Bag		<term>
+
+	example
+		
+		list_to_bag([barney,fred,wilma],Bag).	
+
+		Will produce
+
+		Bag = bag(barney,1,bag(fred,1,bag(wilma,1,bag)))
+
+
+
+
+bag_to_list/2.
+
+Create a new list from the elements of a bag
+
+	bag_to_list(Bag,List)
+
+	+Bag		<term>
+	-List		<list>
+
+	example
+
+		bag_to_listbag(barney,1,bag(fred,1,bag(wilma,1,bag))),List).
+
+		Would result in
+
+		List = [barney,fred,wilma]
+
+		where as
+
+		bag_to_list(bag(barney,1,bag(fred,1,bag(wilma,3,bag))),X).
+
+		would result in the list
+
+		List = [barney,fred,wilma,wilma,wilma]
+
+
+bag_to_set/2.
+
+Create a list of unique elements from the elements of a bag
+
+	bag_to_set(Bag,Set)
+
+	+Bag		<term>
+	-Set		<list>
+
+	example
+
+		bag_to_set(bag(barney,1,bag(fred,1,bag(wilma,3,bag))),Set).
+
+		would result in
+
+		Set = [barney,fred,wilma]
+
+
+bag_member/3
+
+Find all or some specific elements and there associated multiplicity
+within a bag .
+
+	bag_member(Element, Multiplicity, Bag)
+	
+	?Element		<term>
+	?Multiplicity		<integer>
+	+Bag			<term>
+
+	examples
+
+		bag_member(E,M,bag(barney,1,bag(fred,1,bag(wilma,3,bag)))).
+
+Upon execution and backtracking will find the following solutions for E
+and M.
+
+E = barney ,
+M = 1 ;
+
+E = fred ,
+M = 1 ;
+
+E = wilma ,
+M = 3 ;
+
+no
+
+		given
+bag_member(E,1,bag(barney,1,bag(fred,1,bag(wilma,3,bag)))).
+
+		bag_member will instantiate E upon backtracking as
+
+		E = barney ;
+
+		E = fred ;
+
+		no
+
+
+	
+
+memberchk/3.
+
+Check that an element is a member of a bag, or that there is some some
+element which has a specific multiplicity. This functions in the same
+way as bag_member/3, except that it will not return successive solutions
+on backtracking.
+
+	memberchk(Element,Multiplicity,Bag)
+	
+	?Element	<term>    or <variable>
+	?Multiplicity	<integer> or <variable>
+	+Bag		<term>
+
+	example
+
+		memberchk(E,M,bag(barney,1,bag(fred,1,bag(wilma,3,bag)))).
+
+		will result in the single solution of
+
+		E = barney ,
+		M = 1
+
+		
+		memberchk(wilma,M,bag(barney,1,bag(fred,1,bag(wilma,3,bag)))).
+
+		will return
+
+		M = 3.
+
+bagmax/2
+
+Find the element which occurs the most frequently within the bag. If all
+elements within the bag are of an equal number, nagmax/2 will return the
+first element in the bag.
+
+	bagmax(Bag,Element)
+
+	+Bag		<term>
+	-Element	<variable>
+
+	examples
+		
+bagmin/2.
+
+Find the element which occurrs the least frequently within a given bag.
+
+bagmin(Bag,Element)
+
++Bag		<term>
+-Element	<variable>
+
+length/3.
+
+Find the number of  unique elements within a bag, and the actual number
+of elements regardless of duplication.
+
+length(Bag,BagLength,SetLength)
+
++Bag		<term>
+-BagLength	<variable>
+-SetLength	<variable>
+
+Example
+
+length(bag(barney,1,bag(fred,1,bag(wilma,3,bag))) ,BL,SL)
+
+would result in
+
+Bl = 5 ,
+Sl = 3
+
+Three distinct element barney, willma, fred, and five actual elements,
+barney, wilma, wilma, wilma and fred.
+
+
+make_sub_bag/2.
+
+Find all sub bags within a bag. make_sub_bag/2 given a valid bag as it's
+first argument will backtrack to find all possible sub bags.
+
+	make_sub_bag(Bag,SubBag)
+
+	+Bag		<term>
+	-SubBag	<variable>
+
+	example
+
+		make_sub_bag(bag(barney,1,bag(fred,1,bag(wilma,3,bag)))
+,SubBag)
+
+would result in the following execution
+
+SubBag = bag(barney,1,bag(fred,1,bag(wilma,3,bag))) ;
+SubBag = bag(barney,1,bag(fred,1,bag(wilma,2,bag))) ;
+SubBag = bag(barney,1,bag(fred,1,bag(wilma,1,bag))) ;
+SubBag = bag(barney,1,bag(fred,1,bag)) ;
+SubBag = bag(barney,1,bag(wilma,3,bag)) ;
+SubBag = bag(barney,1,bag(wilma,2,bag)) ;
+SubBag = bag(barney,1,bag(wilma,1,bag)) ;
+SubBag = bag(barney,1,bag) ;
+SubBag = bag(fred,1,bag(wilma,3,bag)) ;
+SubBag = bag(fred,1,bag(wilma,2,bag)) ;
+SubBag = bag(fred,1,bag(wilma,1,bag)) ;
+SubBag = bag(fred,1,bag) ;
+SubBag = bag(wilma,3,bag) ;
+SubBag = bag(wilma,2,bag) ;
+SubBag = bag(wilma,1,bag) ;
+SubBag = bag
+
+test_sub_bag/2.
+
+
+Test a bag to determine weather it is a sub bag. Note that an empty bag
+in the second argument will always succeed as it is a sub bag of all
+possible bags.
+
+	test_sub_bag(Bag,SubBag)
+	
+	+Bag		<term>
+	-SubBag	<variable>
+
+	example
+	
+		test_sub_bag(bag(barney,1,bag(fred,1,bag(wilma,3,bag))),bag(wilma,2,bag))
+
+	would succeed.
+
+Note that an empty bag in the second argument will always succeed as it
+is a sub bag of all possible bags.
+
+bag_union/3.
+
+merge two bags creating a third.
+
+	bag_union(Bag1, Bag2, Bag3)
+
+	+Bag1		<term>
+	+Bag2		<term>
+	-Bag3		<variable>
+
+	example
+
+		bag_union(bag(barney,1,bag(fred,1,bag(wilma,1,bag))),bag(wilma,2,bag),Bag)	
+	would result in
+
+	Bag = bag(barney,1,bag(fred,1,bag(wilma,3,bag))))
+
+
+bag_inter/3.
+
+Find the intersection between two bags where  the intersection is a
+third bag containing the elements common to both bags.
+
+	bag_inter(Bag1,Bag2,Intersection)
+
+	+Bag1		<term>
+	+Bag2		<term>
+	-Intersection	<variable>
+
+	Example
+
+		bag_interbag(barney,1,bag(fred,1,bag(wilma,1,bag))),bag(wilma,2,bag),B)
+
+	Would result in
+
+	B = bag(wilma,1,bag)
+
+	As there is one element called "wilma" which is common to both
+bags
+
+Between.pl
+
+between/3.
+
+Find or determine weather an integer is between two other integers i.e.
+within there bounds.
+
+This predicate has been replaced by LPA's built in predicate integer
+bound, though a definition has been left in the library for reasons of
+compatibility. The definition supplied however simply calls
+integer_bound/3.
+
+	between(Int1, Int2, Int3)
+	
+	+Int1		<integer>
+	?Int2		<integer> or <variable>
+	+Int3		<integer>
+
+	Example
+		
+		between(1,2,3)
+
+		will succeed
+
+		between(2,1,3)
+
+		would fail
+
+		between(1,Int,3)
+
+		would return
+
+		Int = 1
+		Int = 2
+		Int = 3
+	
+
+gen_arg/3
+
+gen_arg/3 is exactly like arg(N, Term, Arg), except that it will
+generate
+solutions for N by backtracking (will work when N is a variable).
+
+	gen_arg(N,Term,Arg)
+
+	?N		<integer> or <variable>
+	+Term		<term>
+	?Arg		<term>     or <variable>
+
+	Example
+
+		gen_arg(1,likes(fred,wilma),Arg
+
+		Will result in
+
+		Arg = fred
+
+		gen_arg(N,likes(fred,wilma),fred)
+
+		will result in
+
+		N = 1
+
+gen_nat/1.
+
+Generate or test a natural number,  (a non negative integer).
+
+	gen_nat(N)
+
+	?N	<integer> or <variable>
+
+	examples
+
+		gen_nat(N)
+
+		will generate
+
+		N = 0 ;
+		N = 1 ;
+		N = 2 ;
+		......
+		
+		gen_nat(20)
+		
+		will succeed
+
+gen_nat/2.
+
+generate a natural number which is equal to or larger than a specified
+number, or test a natural number against a specified number.
+
+	gen_nat(Nat1, Nat2)
+
+	?Nat1		<integer> or <variable>
+	?Nat2		<integer> or <variable>
+
+	Examples
+
+	gen_nat(1,N)
+
+	Will generate on backtracking
+
+	N = 1 ;
+	N = 2 ;
+	N = 3 ;
+	...
+
+	gen_nat(1,2)
+	
+	Will succeed
+
+	gen_nat(N,5)
+
+	Will generate
+	
+	N = 5 ;
+
+	no
+
+gen_int/1.
+
+Generate or test a valid integer.
+
+	gen_int(N)
+
+	?N	<integer> or <variable>
+
+	Example
+
+		gen_int(1)
+
+		Will succeed
+
+		gen_int(1.4)
+
+		Will fail
+
+		gen_int(N)
+
+		Will generate on backtracking
+
+		N = 0 ;
+
+		N = 1 ; 	
+
+		N = -1 ;
+
+		N = 2 ;
+
+		N = -2 ;
+
+		...
+
+count.pl
+
+count/1.
+
+Provides information about contents of a valid Prolog file. Any files
+prefixed ":- consult(file)" will be counted too. The information given
+is Number of predicates
+Number of clauses in each predicate.
+
+	count(File)
+
+	+File		<file_spec>
+
+	Example
+
+		count('count.pl')
+
+		Would generate the following output
+
+    	5 predicates
+   	count/1:   3 clauses in count.pl
+    	count/2:   2 clauses in count.pl
+    	summarise/0:   2 clauses in count.pl
+    	dump/1:   1 clauses in count.pl
+    	look_at/2:   3 clauses in count.pl
+
+
+decons.pl
+
+Construct and take apart Prolog control structures.
+
+prolog_bounded_quantification/3.
+
+handles the syntax of forall(Gen, Test).
+
+	prolog_bounded_quantification(Form, Generator, Test)
+
+	
+
+prolog_clause/3.
+
+prolog_clause/3 handles the syntax of clauses.  Note that it is not used
+to recognise whether a term is a clause or not; almost any Prolog term
+can serve as a (unit) clause.  If is for building a clause given the
+head and body, or for taking something known to be a clause apart.
+
+	prolog_clause(Clause, Head, Body)
+
+
+prolog_if_branch/3
+	
+prolog_if_branch/3 handles the syntax of individual arms of if-then-
+elses.
+
+	prolog_if_branch(Branch, Hypothesis, Conclusion)
+
+
+
+prolog_negation/2.
+
+prolog_negation/2 recognises and/or generates negations.
+
+	prolog_negation(NegatedForm, PositiveForm)
+
+
+lpa.pl	
+
+Provides Edinburgh compatibility.  There are no user defined predicates
+in this library. Its function is to provide definition for a number of
+predicates which appear in the edinburgh syntax.
+
+
+flags.pl
+
+Flags are stored in the data base keyed under the Flag itself with the
+information RECORDEed as follows
+
+	Flag --> recorded(Flag,Current_value,Key)
+
+If you only access flags through these routines there will be at most
+one such record per flag.  The flag/2 predicate will clear out any
+records it may find.  The flag/3 predicate maintains the flags returning
+the previous value as Old and updating the flag to New.  The code
+actually checks to see if this updating really has to change the data
+base.  For compatibility with old code, if you call flag/3 on a flag
+which has no record, an old value of 0 is assumed.  For compatibility
+with C-Prolog, flags may not be integers, but only atoms or compound
+terms.
+
+flag/2.
+
+Initialise a new flag to a given value.
+
+	flag(Flag,Value)
+
+	+Flag		<atom>
+	+Value	<atom>
+
+flag/3.
+
+Change the value of an existing flag
+
+	flag(Flag, OldValue, NewValue)
+
+	+Flag		<atom>
+	?OldValue	<atom> or <variable>
+	?NewValue	<atom> or <variable>
+
+flat.pl
+
+This file was originally for PRESS, where you often want to take a tree
+such as 1+x+0+(u*v+9)+(x^2+2) and flatten it to a list such as
+[1,x,u*v,9,x^2,2] so that you can easily pick out all the constants or
+all the terms involving x or something, without having to write N
+different sets of predicates to handle N different binary operators.  It
+can be useful for other things as well.
+
+The <operator>_to_list predicates take a binary tree (where leaf nodes
+are anything not labelled by the operator) and flatten it to a list.
+They also omit "units" of that operator, that is, if the operator is &
+{| + *} the constant true {false 0 1} will not    appear in the list.
+The predicate binary_to_list(Tree, Operator, Unit, Before, After)
+enables you to make your own versions.  Note that the answer is
+accumulated in the difference Before-After. binary_to_list(Tree,
+Operator, Before, After) lets you convert trees where the operator has
+no unit.
+
+The well known and not often useful predicate "flatten" is a not very
+interesting special case of binary_to_list/5.
+
+The list_to_<operator> predicates take a list and turn it back into a
+tree.  Now there's an interesting question here: is [a,b,c] to be turned
+into f(a,f(b,c)) or into f(f(a,b),c)?  The former is a good idea for & |
+and '.', while the latter is a good idea for + and *.  My solution was
+to have the top-level predicate check whether the Operator is a yfx
+operator (such as + and * are) and if so to generate f(f(a,b),c).  In
+all other cases xfy,xfx, or no operator declaration) f(a,f(b,c)) is
+generated.
+list_to_binary(List, Operator, Unit, Tree)
+lets you make your own versions.  If the list is [] the Unit will be
+returned, that is the only use of the Unit. list_to_binary(List,
+Operator, Tree) should be used when the Operator has no Unit, if given
+an empty list it will fail.
+
+gensym.pl
+
+gensym(Prefix, V)
+
+binds V to a new atom whose name begins with Prefix and ends with a
+number.  E.g. gensym(a,X), gensym(a,Y), gensym(a,Z) might bind X to a1,
+Y to a2, Z to a3.  It only succeeds once per call, to get another
+binding for V you have to call it again.
+
+garphs.pl
+
+The P-representation of a graph is a list of (from-to) vertex pairs,
+where the pairs can be in any old order.  This form is convenient for
+input/output.
+
+(Note [KJ] The representation of a link in the Pform, e.g.edinburgh-
+glasgow, does not imply the existence of a link from glasgow to
+edinburgh. You have to put that in separately.)
+
+The S-representation of a graph is a list of (vertex-neighbours) pairs,
+where the pairs are in standard order (as produced by keysort) and the
+neighbours of each vertex are also in standard order (as produced by
+sort).  This form is convenient for many   calculations.
+
+p_to_s_graph(Pform, Sform) converts a P- to an S- representation.
+s_to_p_graph(Sform, Pform) converts an S- to a P- representation.
+
+warshall(Graph, Closure) takes the transitive closure of a graph in S-
+form.  (NB: this is not the reflexive transitive closure).
+
+s_to_p_trans(Sform, Pform) converts Sform to Pform, transposed.
+p_transpose transposes a graph in P-form, cost O(|E|).
+s_transpose transposes a graph in S-form, cost O(|V|^2).
+
+heaps.pl
+
+A heap is a labelled binary tree where the key of each node is less than
+or equal to the keys of its sons.  The point of a heap is that we can
+keep on adding new elements to the heap and we can keep on taking out
+the minimum element.  If there are N elements total, the total time is
+O(NlgN).  If you know all the elements in advance, you are better off
+doing a merge-sort, but this file is for when you want to do say a best-
+first search, and have no idea when you start how many elements there
+will be, let alone what they are.
+
+A heap is represented as a triple t(N, Free, Tree) where N is the number
+of elements in the tree, Free is a list of integers which specifies
+unused positions in the tree, and Tree is a tree made of
+	t
+terms for empty subtrees and
+	t(Key,Datum,Lson,Rson)	
+terms for the rest The nodes of the tree are notionally numbered like
+this:
+		 		          1
+		           2			     3
+                          4                6                 5
+7
+                     8      12      10     14       9       13      11
+15
+      ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..  ..
+The idea is that if the maximum number of elements that have been in the
+heap so far is M, and the tree currently has K elements, the tree is
+some subtreee of the tree of this form having exactly M elements, and
+the Free list is a list of K-M integers saying which of the positions in
+the M-element tree are currently unoccupied.  This free list is needed
+to ensure that the cost of passing N elements through the heap is
+O(NlgM) instead of O(NlgN).  For M say 100 and N say 10^4 this means a
+factor of two.  The cost of the free list is slight.
+The storage cost of a heap in a copying Prolog (which Dec-10 Prolog is
+not) is K+3M words.
+
+lazy.pl
+
+It does rely on the 'var' metalogical predicate and cuts. The lists are
+a little bit too eager to really be called lazy, but if you look at N
+elements it is true that only N+1 will be computed. Really lazy lists
+would compute N.  If you backtrack, the computed  elements will be
+undone just like other Prolog data structures, a Prolog system with
+"intelligent backtracking" might not do that.
+
+A lazy list is a pair consisting of a normal Prolog list (usually ending
+with an unbound variable) and a goal which may be used to generate new
+elements.  The idea is that [X0,X1,X2,...]/R should satisfy X0 R X1, X1
+R X2, ...  These objects should only be used as arguments to these
+predicates.
+
+An example
+	make_lazy(0,succ,List),		% List is the list [0,1,2....]
+	head_lazy(List,H),			% H is 0
+	tail_lazy(List,T).			% T is [1,2,3...]
+					  	where [0,1,2...] and
+[1,2,3...]
+					  	are represented in a
+special form
+					  	e.g. [0 | _1]/succ
+
+listut.pl
+
+Various list based utilities
+
+correspond/4
+
+checks weather two distinct elements exist in the same place in two
+distinct lists. Note that the positioning of elements within a list is
+regarded as the number of elements from the head of the list as a list
+is defined as [Head|RestOfList]
+
+	correspond(Element1,  List1, List2, Element2)
+
+	+Element1		<term>
+	+List1			<list>
+	+List2			<list>
+	+Element2		<term>
+
+	Example
+
+		correspond(1,[2,3,4,1],[1,2,3,4],4)
+
+		Will succeed
+
+		correspond(1,[2,3,4,1],[2,1],1)
+
+		Will fail
+
+delete/3.
+
+As removeall is defined within LPA Prolog delete simply calls this
+predicate. This deletes all elements from a list creating a new list.
+
+	delete(List,Element,NewList)
+	
+	?List		<list> or <variable>
+	+Element	<term>
+	?NewList	<list>  or <variable>
+
+
+last/2.
+
+Find or test for the last element of a list.
+
+	last(Element,List)
+	
+	?Element	<term> or <variable>
+	+List		<list>
+
+	Example
+		
+		last(4,[1,2,3,4])
+		
+		Will succeed
+
+		last(L,[1,2,3,4])
+
+		Will instantiate L to 4
+
+
+nextto/3.
+
+Find or test adjacent elements within a list.
+
+	nextto(Element1, Element2, List)
+
+	?Element1	<term> or <variable>
+	?Element2	<term> or <variable>
+	+List		<list>
+
+	Example
+
+		nextto(1,2,[1,2,3,4,5])
+
+		Will succeed
+
+		nextto(1,N,[1,2,3,4,5])
+
+		Will instantiate N to 2
+
+		nextto(N1, N2, [1,2,3,4,5])
+
+		Will produce
+
+		N1 = 1 ,
+		N2 = 2 ;
+
+		N1 = 2 ,
+		N2 = 3 ;
+
+		N1 = 3 ,
+		N2 = 4 ;
+	
+		N1 = 4 ,
+		N2 = 5 ;
+	
+nth0/3.
+
+Finds the nth element within a list counting the first element as
+element 0.
+
+	nth0(Number, List, Item)
+
+	?Number	<integer>
+	+List		<list>
+	?Item		<term> or <variable>
+
+	Example
+	
+		nth0(1,[fred,barney,wilma],E)
+
+		Will instantiate E to wilma.
+
+		nth0(N,[fred,barney,wilma],wilma)
+
+		Will instantiate N to 2.
+
+nth1/3.
+
+Same as nth0/3 except that it counts the first element of the list as
+element 1.
+
+numlist/3.
+
+Generate a list of integers between two bounds.
+
+	numlist(N1, N2, List)
+
+	+N1		<integer>
+	+N2		<integer>
+	-List		<variable>
+
+	Example
+		
+		numlist(1,4,List)
+
+		Will instantiate List as [1,2,3,4]
+
+	
+
+perm/2.
+
+Reorders elements of a list creating a new list an finds various order
+permutations upon backtracking. Note that behaviour can only be
+guarantied if all elements within the list are ground terms.
+
+	perm(List, Perm)
+ 	
+	+List		<list>
+	+Perm		<list>
+
+	Example
+
+		perm([1,2,3],Perm)
+
+		Would result in
+
+		Perm = [1,2,3] ;
+
+		Perm = [1,3,2] ;
+
+		Perm = [2,1,3] ;
+
+		Perm = [2,3,1] ;
+
+		Perm = [3,1,2] ;
+
+		Perm = [3,2,1] ;
+
+		no
+
+perm2/4.
+
+Test weather {A,B} = {B,C} .
+
+	perm(N1, N2, P1, P2)
+
+	+N1		<integer>
+	+N2		<integer>
+	?P1		<term> or <variable>
+	?P2		<term> or <variable>
+
+	Example
+
+		perm(1,2,2,1)
+
+		Will succeed
+
+
+
+remove_dups/2.
+
+Remove duplicate items from a list. Note that the order of the new list
+may not reflect that of the old one.
+
+	remove_dups(List,NewList)
+
+	+List		<list>
+	-NewList	<variable>
+
+	Examples
+
+		remove_dups([bety, fred, wilma, fred],List)
+
+		Would instantiate List to [bety,fred,wilma]
+
+		remove_dups([bety, wilma, fred, fred],List)
+
+		would instantiate List to [bety,fred,wilma]
+
+rev/2.
+
+Calls built in LPA predicate reverse/2. Reverse a list creating a new
+reversed list.
+
+	rev(List, RevList)
+
+	+List		<list>
+	-RevList	<variable>
+
+	Example
+
+		rev([1,2,3],RL)
+
+		Would result in
+
+		RL = [3,2,1]
+
+
+same_length/2.
+
+Check that two lists have the same number of elements, or generate a
+list of variables that is the same length as a given list.
+
+	same_length(List1, List2)
+
+	+List1		<list>
+	?List2		<list> or <variable>
+	
+	Example
+
+		same_length([1,2,3],[fred,barney,wilma])
+
+		Will succeed
+
+		same_length([fred,barney,wilma],L2)
+
+		Will generate a list of variables i.e.
+
+		L2 = [_00040BB4,_00040BDC,_00040C04]
+
+
+select/4
+
+Find or verify unique elements in two lists at a single location.
+
+	select(Element1, List1, Element2 ,List2)
+
+	?Element1	<term> or <variable>
+	+List1		<list>
+	?Element2	<term> or <variable>
+	+List2
+
+	Example
+
+		select(2,[1,2,3],5,[7,5,2])
+
+		Will succeed
+
+		select(E1,[1,23],E2,[7,5,2])
+
+		Will instantiate E1 and E2 to
+
+		E1 = 1 ,
+		E2 = 7 ;
+
+		E1 = 2 ,
+		E2 = 5 ;
+
+		E1 = 3 ;
+		E2 = 2
+
+
+shorter_list/2.
+
+Test that a list is strictly shorter than a second list.
+
+	shorter_list(List1, List2)
+
+	+List1		<list>
+	?List2		<list> or <variable>
+
+	example
+
+		shorter_list([1,2],[1,2,3])
+	
+		Will succeed
+
+subseq/3.
+
+Find the sub sequence and complement of a list where every element not
+in the sub sequence is in the complement. Not that this routine does
+preserve the order of elements in the original list.
+
+	subseq(Sequence, SubSequence, Complement)
+
+	+Sequence		<list>
+	-SubSequnce	<variable>
+	?Complement	<list> or <variable>
+
+	example
+
+		subseq([1,2,3,2,4], SubSequence,[2])
+
+		Will produce on backtracking
+
+		SubSequence = [1,3,2,4] ;
+
+		SubSequence = [1,2,3,4]
+
+
+subseq0/2.
+
+The same as subseq/3, but will return the sequence it's self as a Sub
+Sequence without the compliment.
+
+subseq1/2.
+
+The same as subseq/3, but will only return a strict Sub Sequence where
+the sub sequence contains strictly less than the sequence, and without
+the compliment.
+
+sumlist/2.
+
+Sums a list of integers.
+
+	sumlist(List, Sum)
+
+	+List		<list>
+	-Sum		<variable>
+
+	Example
+
+		sumlist([1,2,3],Sum)
+
+		Will instantiate Sum to 6.
+
+
+Logarr.pl
+
+An array extends from 0 to 2**Size - 1, where Size is a multiple of 2.
+Note that 2**Size = 1<<Size.
+
+External interface.
+
+new_array(A) returns a new empty array A.
+
+is_array(A) checks whether A is an array.
+
+aref(Index,Array,Element) unifies Element with Array[Index], or fails if
+Array[Index] has not been set.
+
+arefa(Index,Array,Element) is as aref/3, except that it unifies Element
+with a new array if Array[Index] is undefined.
+This is useful for multidimensional arrays implemented as arrays of
+arrays.
+
+arefl(Index,Array,Element) is as aref/3, except that Element appears as
+'[]' for undefined cells.
+
+aset(Index,Array,Element,NewArray) unifies NewArray with the result of
+setting Array[Index] to Element.
+
+array_to_list(Array,List) returns a list of pairs Index-Element of all
+the elements of Array that have been set.
+
+In the interests of uniformity, R.A.O'K used the Prolog source code
+tidier on this file; this is not its original layout.  He made no
+algorithmic changes, however.
+
+long.pl
+
+As "number" is an immutable name in NIP I have replaced it by
+"ratnum" throughout. (Ken Johnson 6-5-87)
+
+This package provides arithmetic for arbitrary precision rational
+numbers.  The normal domain of prolog 'integers' is extended to full
+rational 'numbers'.  This domain includes all Prolog integers.
+The predicate:
+
+		ratnum(N)
+
+will recognise any number in this extended domain. Rational numbers are
+produced by using the predicates
+
+		eval(Command)
+
+		eval(Expression,Answer)
+
+Expression can involve any form of rational number, whether such numbers
+can be represented by Prolog integer or not.  Any form of number
+produced as output by "eval" is acceptable as input to it.
+
+For convenience the Answer produced by eval is normalised as follows:
+
+	a) Integers X (where |X| <= 99999) are represented as Prolog
+integers;
+
+	b) 1/0, 0/0, -1/0 are represented as infinity, undefined,
+neginfinity;
+
+	c) All other numbers are represented as full rationals in
+reduced form
+	   i.e. numerator and denominator are relatively prime.
+
+In the current representation, one normalised number will unify with
+another (including an integer) iff the two numbers are equal.  But it is
+better to test for equality between arbitrary numbers by calling
+			eval(N1=:=N2)
+
+which also handles infinity & undefined, and is guaranteed to work.
+Once created, representations of rational numbers can be passed round
+your program, used with eval, or printed.  The predicate
+
+		portray_ratnum(Number)
+
+will pretty-print arbitrary numbers, and will fail for anything else.
+In particular, it will not evaluate an expression.  (But
+eval(write(Expr)) combines evaluation and printing if you want.) If this
+is connected up to your general "portray" mechanism, you will never have
+to see the internal representation of rationals.
+It is ill-advised to write procedures which assume knowledge of this
+internal representation as it is subject to change (rarely), not to
+mention that such activities are against all the principles of
+abstraction and structured programming.
+
+NB Note that eval/1 and eval/2 will only evaluate fully numeric
+expressions. If there is some garbage in the expression (such as an
+atom) then no evaluation at all occurs and the whole input expression is
+returned untouched. If you want to evaluate mixed symbolic and numeric
+expressions then use tidy/2 (from TIDY.PL) which is designed for this
+purpose.
+
+map.pl
+
+A finite map is a function from terms to terms with a finite domain.
+This definition actually implies that its domain consists of ground
+terms, and the code below assumes that. The representation is similar to
+the representation for bags (indeed a bag could be regarded as a map
+from keys to integers), that is, the empty map is 'map' and any other
+map is	map(Key,Val,Map)  where Map is a finite map and Key is @< than
+every key in Map.
+
+
+metutl.pl
+
+simple/1.
+
+Test to see if a term is an unistantiated variable or an atom.
+
+	simple(Term)
+
+	+Term		<term>
+
+occurs_in/2.
+
+Note that this predicate merely calls the built in LPA predicate
+occurs_chk/2. Test to see if a variable occurs in a term.
+
+	occurs_in(Var, Term)
+
+	-Var		<variable>
+	+Term		<term>
+
+	Example
+		
+		occurs_in(X,test(A,B,X))
+
+		Will succeed
+
+		occurs_in(A,test(X))
+
+		Will fail
+
+subterm/2.
+
+Check that a term is a sub term of some other term. Note that the term
+it's self is a valid sub term. Note that if there is an uninstantiated
+variable within the term, subterm/2 will instantiate it to the sub term
+in the first argument.
+
+	subterm(SubTerm, Term)
+	
+	+SubTerm	<term>
+	+Term		<term>
+
+	Example
+		
+		subterm([1,2,3],is_list([1,2,3]))
+
+		Will succeed
+
+		subterm(1, is_list([1,2,3]))
+
+		Will however fail.
+
+unify/2.
+
+Unify variables within terms, or unify a variable with a term
+
+	unify(Term1, Term2)
+
+	+Term1	<term>
+	+Term2	<term>
+
+	Example
+
+		unify(test(X),Y)
+
+		Will instantiate Y = test(X)
+
+		unify(test(X), try(Y))
+
+		Will instantiate Y = X = _
+
+		unify(X, Y)
+
+		Will instantiate X = Y = _
+
+
+unify/3.
+
+Unify multiple variables in two terms.
+
+	unify(N, Term1 , Term2)
+			
+	+N		<integer>
+	+Term1	<term>
+	+Term2	<term>
+
+	Example
+
+		unify(2,test(X,Y),try(Z,A))
+
+		Will instantiate
+
+		X = Z = _
+		Y = A = _
+		
+		unify(1,test(X,Y),try(Z,A))
+	
+		Will instantiate
+
+		X = Z = _
+		Y = _
+		A = _
+
+occurs_check/2.
+
+Test that a variable does not occur within a term.
+
+	occurs_check(Term, Var)
+
+	+Term		<term>
+	-Var		<variable>
+
+	Example
+
+		occurs_check(test(X,try(A)),A)
+
+		Will fail
+
+		occurs_check(test(X,try(A)),Y)
+
+		Will succeed
+
+
+var_member_chk/2.
+
+Check that a variable is a member of a list of variable. Note that if a
+term other than a variable is on the list, the variable being tested
+will be instantiated to this term. This predicate can not therefor be
+used to test for the presence of a variable on a list of mixed terms.
+
+	var_member_chk(Var, VarList)
+
+	+Var		<variable>
+	+VarList	<list_of <variable>>
+
+	Example
+
+		var_member_chk(X,[A,B,C,X])
+
+		Will succeed
+
+		var_member_chk(X,[A,B,C,D])
+
+		Will fail.
+
+variables_of/2.
+
+Generate a list of variable within a term.
+
+	variables_of(Term, VarList)
+
+	+Term		<term>
+	-VarList	<variable>
+
+	Example
+
+		variables_of(test(X,Y,try(S)),A).
+
+		Will generate the list
+
+		A = [X,Y,S]
+
+
+subsumes/2.
+
+subsumes/2 is true if Specific can be found by instantiating variables
+in General.
+
+	subsumes(General, Specific)
+
+	+General	<term>
+	+Specific	<term>
+
+	Example
+
+		subsumes(foo(X), foo(bar))
+
+		Will succeed instantiating X to bar in foo.
+
+multil.pl
+
+Multiple list routines
+
+
+ml_taketop/3.
+
+ml_taketop/3 is true when Lists is a list of non-empty lists, Heads is a
+list whose elements are the heads of the elements of Lists, and Tails is
+a list whose elements are the tails of Lists.
+
+	ml_taketop(Lists, Heads, Tails)
+
+	+Lists		<list>
+	?Heads	<list> or <variable>
+	?Tails		<list> or <variable>
+
+	Example
+
+		ml_taketop([[1,2,3],[2,3,4]],[1,2],Tails).
+
+		Will generate
+		
+		Tails = [[2,3],[3,4]]
+
+		ml_taketop([[1,2,3],[2,3,4]],Heads,Tails).
+
+		Will gnerate
+
+		Heads = [1,2] ,
+		Tails	= [[2,3],[3,4]]
+
+
+ml_allempty/1
+
+ml_allempty/1 is true when Lists is a list, all of whose elements are
+nil ([]).
+It is used to test whether all the lists being mapped over have come to
+an end at once.  Since ml_taketop will succeed precisely when all the
+lists have at least one member, we could produce a set of routines that
+terminate when any list runs out by simply omitting this test.  As it
+is, the ml* routines demand that all the lists be the same length.
+
+	ml_allempty(List)
+
+	+List
+
+mlmaplist/2.
+
+mlmaplist/2 applies Pred to argument tuples which are successive slices
+of the Lists.
+Thus mlmaplist(tidy, [Untidy,Tidied]) would apply tidy([U,T]) to each
+successive [U,T] pair from Untidy and Tidied.  It isn't tail-recursive,
+because Pred (and hence apply) may backtrack.
+
+	mlmaplist(Pred, Lists)
+
+	+Pred		<pred_name>
+	+Lists		<list>
+
+mlmaplist/3.
+
+mlmaplist/3 is like mlmaplist/2, but passes the Extra argument to Pred
+as well as the slices from the Lists.
+
+	mlmaplist(Pred, Lists, Extra)
+
+	+Pred
+	+List
+	+Extra
+
+
+
+
+
+mlmaplist/4.
+
+mlmaplist/4  is like mlmaplist/2, but has an extra accumulator feature.
+Init is the initial value of the accumulator, and Final is the final
+result. Pred(Slice, AccIn, AccOut) is called to update the accumulator.
+
+	mlmaplist(Pred, Lists, Init, Final)
+
+	+Pred		<pred_name>
+	+Lists		<list>
+	+Init		<integer>
+	-Final		<variable>
+
+ml_member/2.
+
+Determine if elements in a list are present in a succession of lists
+within lists.
+
+	ml _member(Elements,Lists)
+
+	?Elements	<list> or <variable>
+	+Lists		<list>
+
+	Example
+		
+		ml_member([2,3],[[1,2,3],[2,3,4]]).
+
+		Is true
+
+		ml_member(Elements,[[1,2,3],[2,3,4]])
+
+		Elements = [1,2] ;
+
+		Elements = [2,3] ;
+
+		Elements = [3,4] ;
+
+
+ml_select/3.
+
+Select members from each successive list within Lists creating a new
+list and residue list.
+
+	ml_select(Elems, Lists, Residues)
+
+	?Elems
+	+List
+	?Residues
+
+	Example
+
+		ml_select(Elements,[[1,2,3],[2,3,4]],Residue).
+
+		Elements = [1,2] ,
+		Residue   = [[2,3],[3,4]] ;
+
+		Elements = [2,3] ,
+		Residue   = [[1,3],[2,4]] ;
+
+		Elements = [3,4] ,
+		Residue   = [[1,2],[2,3]] ;
+
+ml_putback/3
+
+
+ml_putback/3 is true when ml_taketop(Lists, Heads, Tails) is true, but
+is rearranged for efficiency with different calling pattern.  It only
+exists for the benefit of ml_select, and as the bug in the latter went
+unnnoticed for 3 years, I) don't suppose it matters much.	
+
+	ml_putback(Heads, Tails, Lists)
+
+	+Heads	<list>
+	?Tails		<list> or <variable>
+	?Lists		<list> or <variable>
+
+ml_putback/3.
+
+
+ml_putback/3 is true when ml_taketop(Lists, Heads, Tails) is true, but
+is rearranged for efficiency with different calling pattern.  It only
+exists for the benefit of mlselect, and as the bug in the latter went
+unnnoticed for 3 years, I don't suppose it matters  much.
+
+	ml_putback(Heads, Tails, Lists)
+
+	+Heads	<list>
+	?tails		<list> or <variable>
+	?Lists		<list> or <variable>
+
+
+
+occur.pl
+
+More meta logic stuff
+
+freeof/2.
+
+freeof/2 is true when the given Kernel does not occur anywhere in the
+Expression.  NB: if the Expression contains an unbound variable, this
+must fail, as the Kernel
+might occur there.  Since there are infinitely many Kernels not
+contained in any Expression, and als infinitely many Expressions not
+containing any Kernel, it doesn't make sense to use this except as a
+test.
+
+	freeof(Kernel, Expression)
+
+	
+patharg/3
+
+patharg/3 unifies Term with the subterm of Exp found by following Path.
+It may be viewed as a generalisation of arg/3.  It cannot be used to
+discover a path to a known Term; use position/3 for that.
+
+	patharg(Path, Exp, Term)
+
+
+position/3.
+
+position/3 is true when Term occurs in Exp at the position defined by
+Path. It may be at other places too, so the predicate is prepared to
+generate them all.  The path is a generalised Dewey number, as usual.
+
+position(x, 2*x^2+2*x+1=0, [1, 1, 2, 2]) {2*x} and
+position(x, 2*x^2+2*x+1=0, [1, 1, 1, 2, 1]) {x^2} are both examples.	
+
+replace/4.
+
+replace/4 is true when OldExpr and NewExpr are identical except at the
+position
+identified by Path, where NewExpr has SubTerm.  There is a bug in the
+Dec-10 compiler, which is why the second 'arg' call follows the replace
+recursion.  If it weren't for that bug, replace would be tail recursive.
+replace([1,1,2,2], 2*x^2+2*x+1=0, y, 2*x^2+2*y+1=0) is an example.
+
+	replace(Path, OldExpr, SubTerm, NewExpr)
+
+
+
+
+
+order.pl
+
+Looks like ordered sets. But possibly not !. What the hell is this?
+
+ordered/1.
+
+orderd/1 is true when List is a list of terms [T1,T2,...,Tn] such that
+for all k in 2..n Tk-1 @=< Tk, i.e. T1 @=< T2 @=< T3 ...
+The output of keysort/2 is always ordered, and so is that of sort/2.
+Beware: just because a list is ordered does not mean that it is the
+representation of an ordered set; it might contain duplicates.  E.g. L =
+[1,2,2,3] & sort(L,M) => ordered(L) & M\=L.
+
+	orderd(List)
+
+	+List
+
+ordset.pl
+
+In this module, sets are represented by ordered lists with no
+duplicates.  Thus {c,r,a,f,t} would be [a,c,f,r,t].  The ordering is
+defined by the @< family of term comparison predicates, which is the
+ordering used by sort/2 and setof/3.
+
+The benefit of the ordered representation is that the elementary set
+operations can be done in time proportional to the Sum of the argument
+sizes rather than their Product.  Some of the unordered set routines,
+such as member/2, length/2, select/3 can be used unchanged. The main
+difficulty with the ordered representation is  remembering to use it!
+
+list_to_ord_set/2.
+
+list_to_ord_set2  is true when Set is the ordered representation of the
+set represented by the unordered representation List.  The only reason
+for giving it a name at all is that you may not have realised that
+sort/2 could be used this way.
+
+	list_to_ord_set(List, Set)
+
+	+List		<list>
+	?Set		<list> or <variable>
+
+merge/3.
+
+merge/3 is true when Merged is the stable merge of the two given lists.
+If the two lists are not ordered, the merge doesn't mean a great deal.
+Merging is perfectly well defined when the inputs contain duplicates,
+and all copies of an element are reserved in the output, e.g.
+merge("122357", "34568", "12233455678").  Study this routine carefully,
+as it is the basis for all the rest.
+
+	merge(List1, List2, Merged)
+	
+	+List1		<list>
+	+List2		<list>
+	-Merged	<variable>
+
+ord_disjoint/2.
+
+ord_disjoint/2 is true when the two ordered sets have no element in
+common.  If the arguments are not ordered, I have no idea what happens.
+
+	ord_disjoint(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+
+
+ord_insert/3.
+
+ord_insert/3 is the equivalent of add_element for ordered sets.  It
+should give exactly the same result as merge(Set1, [Element], Set2), but
+a bit faster, and certainly more clearly.
+
+	ord_insert(Set1, Element, Set2)
+
+	+Set1		<list>
+	+Element	<term>
+	?Set2		<list> or <variable>
+
+
+ord_intersect/2.
+
+ord_intersect/2 is true when the two ordered sets have at least one
+element in common. Note that the test is == rather than = .
+
+
+	ord_intersect(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+ord_intersect/3.
+
+ord_intersect/3 is true when Intersection is the ordered representation
+of Set1 and Set2, provided that Set1 and Set2 are ordered sets.
+
+	ord_intersect(Set1, Set2, Intersection)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Intersection	<list> or <variable>
+
+
+ord_seteq/2
+
+
+ord_seteq/2 is true when the two arguments represent the same set.
+Since they
+are assumed to be ordered representations, they must be identical.
+
+	ord_seteq(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+
+
+
+ord_subset/2.
+
+ord_subset/2 is true when every element of the ordered set Set1 appears
+in the  ordered set Set2.
+
+	ord_subset(Set1, Set2)
+	
+	+Set1		<list>
+	+Set2		<list>
+
+ord_subtract/3.
+
+ord_subtract/3 is true when Difference contains all and only the
+elements of Set1 which are not also in Set2.
+
+	ord_subtract(+Set1, +Set2, ?Difference)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Diference	<list> or <variable>
+
+ord_symdiff/3.
+
+ord_symdiff/3  is true when Difference is the symmetric difference of
+Set1 and Set2.
+
+	ord_symdiff(+Set1, +Set2, ?Difference)
+		
+	+Set1		<list>
+	+Set2		<list>
+	?Difference	<list> or <variable>
+
+
+ord_union/3.
+
+ord_union/3 is true when Union is the union of Set1 and Set2.  Note that
+when  something occurs in both sets, we want to retain only one copy.
+
+	ord_union(Set1, Set2, Union)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Union	<list> or <variable>
+
+projec.pl
+
+Select Kth argument of a list of elements.
+
+keys_and_values/3.
+
+Separate a list in which each element is in the form Key-Value into two
+separate list, or join two lists into Key-Value form.
+
+	keys_and_values(KVList, Keylist, ValueList)
+
+	?KVLIst	<pairs> or <variable>
+	?KeyList	<list>	  or <variable>
+	?ValueList	<list>     or <variable>
+
+	Example
+
+		keys_and_values(KV,[1,2,3],[4,5,6])
+
+		Will instantiate KV to [1-4,2-5,3-6]
+
+		keys_and_values([1-4,2-5,3-6],Keys, Values)
+
+		Will instantiate
+
+		Keys    = [1,2,3]
+		Values = [4,5,6]
+
+project/3.
+
+build a list of arguments from a list of structures. Note that this will
+also work for structures containing unbound variables.
+
+	projects(StrucList, ArgN, ArgList)
+
+	+StrucList	<list>
+	+ArgN		<integer>
+	-ArgList	<variable>
+
+	Example
+	
+		project([test(1,2),test(X,wilma),test(foo,bar)],1,List).
+
+		Will instantiate List to [1,freed,foo].
+
+		project([1+2+3,wilma-fred-barney,foo/bar/tee],1,List).
+
+		Will instantiate List to [1 + 2,wilma - fred,foo / bar]
+
+		project([three(1,2), there(3,4), is_not(2,5)],0,List).
+
+		Will instantiate List to [three,there,is_not] where as
+
+		project([1+2+3,wilma-fred-barney,foo/bar/tee],0,List).
+		
+		Will instantiate List to [+,-,/]
+
+queues.pl
+
+In this package, a queue is represented as a term Front-Back,  where
+Front  is  a list and Back is a tail of that list, and is normally a
+variable.  join_queue will only work when the Back  is  a  variable, the
+other routines will accept any tail.  The elements of the queue are the
+list difference, that is, all the elements starting at Front and
+stopping at Back.  Examples:
+
+	[a,b,c,d,e|Z]-Z	has elements a,b,c,d,e
+	[a,b,c,d,e]-[d,e]   	has elements a,b,c
+	Z-Z		    	has no elements
+	[1,2,3]-[1,2,3]	    	has no elements
+
+
+make_queue/1.
+
+Creates a new empty queue.  It will also match empty queues, but because
+Prolog doesn't do the occurs check, it will also match other queues,
+creating circular lists.  So this should ONLY be used to make new
+queues.
+
+
+	make_queue(Q)
+
+	-Q		<variable>
+
+join_queue/3.
+
+Add the new element at the end of the queue.  Note that the old queue is
+side-effected, so it can not be used in a second operation such as. The
+new queue becomes the valid queue.
+
+
+See list_join_queue.
+
+	join_queue(Element, OldQueue, NewQueue)
+
+	+Element	<term>
+	+OldQueue	<erm>
+	-NewQueue	<variable>
+
+list_join_queue/3.
+
+Add all the elements of a list to the end of a queue producing a new
+queue. Note that the elements are added to the queue in the order that
+they appear in the list.
+
+	list_join_queue(List, OldQueue, NewQueue)
+
+	+List		<list>
+	+OldQueue	<term>
+	-NewQueue	<variable>
+
+
+jump_queue/3.
+
+Add an element at the front of the queue. Note that this does not side-
+affect the old queue, which remains intact.
+
+	jump_queue(Element, OldQueue, NewQueue)
+
+	+Element	<term>
+	+OldQueue	<term>
+	-NewQueue	<variable>
+
+list_jump_queue/3.
+
+Add a list of elements to the front of the queue. Note that there
+elements in the list are added to the queue so that there order in the
+queue is the same as there order in the list.
+
+	list_jump_queue(List, OldQueue, NewQueue)
+
+	+List		<list>
+	+OldQueue	<term>
+	-NewQueue	<variable>
+
+
+serve_queue/3.
+
+remove the element at the head of the queue for servicing.
+
+	serve_queue(OldQueue, Head, NewQueue)
+
+	+OldQueue	<term>
+	-Head		<term>
+	-NewQueue	<variable>
+empty_queue/1.
+
+Test to see if a queue is empty.
+
+	empty_queue(Queue)
+
+	+Queue	<term>
+
+
+length_queue/2.
+
+Find the length of a given queue.
+
+	length_queue(Queue, Length)
+
+	+Queue	<term>
+	-Length	<variable>
+
+list_to_queue/2.
+
+Create a new queue with the same elements as a specified list.
+
+	list_to_queue(List, Queue)
+
+	+List		<term>
+	-Queue	<variable>
+
+queue_to_list/2.
+
+Create a new list with the same elements as a specified queue.
+
+	queue_to_list(Queue, List)
+
+	+Queue	<term>
+	-List		<variable>
+
+
+
+random.pl
+
+random number generator
+
+random/2.
+
+Generate a random number between 0 and one less than some specified
+integer.
+
+	random(N, Int)
+
+	+N		<integer>
+	-Int		<variable>
+
+	Example
+
+		random(10,Int)
+
+		Will instantiate Int to any number between and including
+0 to 9.
+
+
+random/3.
+
+Given an non-empty List, random(List, Elem, Rest) unifies Elem with a
+random element of List and Rest with the other elements.
+
+
+	random(List, Element, Rest)
+
+	+List		<list>
+	-Element	<variable>
+	-Rest		<variable>
+
+	Example
+
+		random([1,2,3,4],Element,Rest).
+
+		Might produce
+
+		Element = 2
+		Rest	   = [1,3,4]
+
+
+rand_perm/2.
+
+Generate random permutations for the order of a given list.
+
+	rand_perm(List, randList)
+
+	+List		<list>	
+	-randList	<variable>
+
+	Example
+
+		rand_perm([1,2,3,4],RandList)
+
+		Might produce
+
+		RandList = [3,1,4,2]
+
+
+
+samsort.pl
+
+samsort/2.
+
+Sort a list of objects into descending order.
+
+	samsort(List, SortedList)
+
+	+List		<list>
+	-SortedList	<variable>
+
+	Example
+
+		samsort([1,a,3,b,2,c,beta,alph, 'Alpha'],SortedList)
+			
+		Will instantiate SortedList to
+[1,2,3,'Alpha',a,alph,b,beta,c]
+
+setutl.pl
+
+Set manipulation package. Sets are represented in this package as lists
+with no repeated elements. An ordered representation could be much more
+efficient, but
+these routines were designed before sort/2 entered the language.
+
+memberchk/2.
+
+Functions in much the same way as member for normal lists (which is what
+a set is in this representation), except that it can only be used to
+check membership of the list.
+
+	memberchk(Element, Set)
+	
+	+Element	<term>
+	+Set		<list>
+
+nonmember/2.
+
+Test to see if an element is not in a set.
+
+	nonmember(Element, Set)
+	
+	+Element	<term>
+	+Set		<list>
+
+add_element/3.
+
+Add an element to a set by creating a new set containing the new
+element.
+
+	add_element(Element, Set, NewSet)
+	
+	+Element	<term>
+	+Set		<list>
+	-NewSet	<variable>
+
+del_element/3.
+
+Delete an element from a set by creating a new set without the specified
+element.
+
+	del_element(Element,  Set, NewSet)
+	
+	+Element	<term>
+	+Set		<list>
+	-NewSet	<variable>
+
+disjoint/1.
+
+Check a list to insure that it only contains unique elements. In other
+words check to se if it is a true set.
+
+	disjoint(List)
+
+	+List		<list>
+
+disjoint/2.
+
+Check to insure that two sets have no elements in common.
+
+	disjoint(Set1, Set2)
+
+	+Set1		<list>	
+	+Set2		<list>
+
+select/3.
+
+Select and remove an element from a set giving a new set. Note that the
+order of the set is preserved in the new set.
+
+	select(Element, Set, Residue)
+
+	?Element	<term> or <variable>
+	?Set		<list>    or <variable>
+	?Residue	<list>    or <variable>
+
+	Example	
+
+		select(Element,[2,3],[3]).
+
+		Will instantiate Element to 2
+
+		select(2,[2,3],Residue).
+		
+		Will instantiate Residue to [3]
+
+		select(2, Set, [3]).
+
+		Will instantiate Set to [2,3]
+
+
+pairfrom/4.
+
+pairfrom/4  is true when Set is a list, Element1 occurs in list,
+Element2  occurs in list after Element1, and Residue is everything in
+Set bar the two Elements.  The point of this thing is to select pairs of
+elements from a set without selecting the same pair twice in different
+orders.
+
+	pairfrom(Set, Element1, Element2, Residue)
+
+	?Set 		<list>     or <variable>
+	?Element1	<term>  or <variable>
+	?Element2 	<term>  or <variable>
+	?Residue	<list>     or <variable>
+
+	Example
+
+		pairfrom([1,2,3,4,5,6,7],Element1,Element2,Residue).
+
+		Would generate
+		
+		Element1 = 1 ,
+		Element2 = 2 ,
+		Residue = [3,4,5,6,7] ;
+
+		Element1 = 1 ,
+		Element2 = 3 ,
+		Residue = [2,4,5,6,7] ;
+
+		Element1 = 1 ,
+		Element2 = 4 ,
+		Residue = [2,3,5,6,7] ;
+
+		etc...
+
+
+intersect/2
+
+intersect/2 is true if the two sets have a member in common.  It assumes
+that both sets are known, and that you don't care which element it is
+that they share.
+
+	intersect(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+	Example
+
+		intersect([1,2,3],[2,4,6])
+
+		Will succeed
+subset/2.
+
+
+subset/2 is true when each member of Set1 occurs in Set2. Note that It
+can only be used to test two given sets; it cannot be used  to generate
+subsets.  At the moment there is NO predicate for generating subsets,
+but select/3 takes you part-way.
+
+	subset(SubSet, Set)
+
+	+SubSet	<list>
+	+Set		<list>
+
+	Example
+
+		subset([4,5,6],[1,2,3,4,5,6])
+
+		Will succeed
+
+seteq/2.
+
+seteq/2 is true when each Set is a subset of the other. What this means
+is that each set is in fact equivalent as a set is in fact a subset of
+it's self.
+
+	seteq(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+	Example
+
+		seteq([1,2,3],[3,2,1])
+
+		Will succeed
+
+
+listtoset/2.
+
+Create a new list from list which eliminates all duplicate elements and
+preserves it's ordering.
+
+	listtoset(List, Set)
+
+	+List		<list>
+	-Set		<varibale>
+
+	Example
+
+		listtoset([1,2,1,3,2,4,3,5],List)
+
+		Will instantiate List to [1,2,4,3,5]
+
+intersect/3.
+
+intersect/3 is true when Intersection is the intersection of Set1 and
+Set2, *taken in a particular order*.  In fact it is precisely the
+elements of Set1 taken in that order, with elements not in Set2 deleted.
+If Set1 contains duplicates, so may Intersection.
+This routine is due to Peter Ross and avoids the problem that in the
+(otherwise) obvious definition, intersect([a,b,c],[a,b,c],[c]) will
+succeed.
+
+	intersect(Set1, Set2, Intersection)
+	
+	+Set1		<list>
+	+Set2		<list>
+	?Intersection	<list> or <variable>
+
+	Example
+
+		intersect([1,2,3],[3,4,5],Intersection)
+
+		Will succeed with
+
+		Intersection = [3]
+
+subtract/3.
+
+subtract/3 is like intersect, but this time it is the elements of Set1
+which *are* in Set2 that are deleted.
+
+	subtract(Set1, Set2, Difference)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Difference	<list> or <variables>
+
+	Example
+
+		subtract([1,2,3],[3,4,5],Difference).
+
+		Will succeed with
+		
+		Difference = [1,2]
+
+
+
+symdiff/3.
+
+symdiff/3  is true when Diff is the symmetric difference of Set1 and
+Set2, that is, if each element of Union occurs in one of Set1 and Set2,
+but not both.  The construction method is such that the answer will
+contain no duplicates even if the Sets do.
+
+	symdiff(Set1, Set2, Difference)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Difference	<list> or <variable>
+
+	Example
+
+		symdiff([1,2,3],[3,4,5],Difference).
+
+		Will succeed with
+
+		Difference = [1,2,4,5]
+
+union/3.
+
+union/3 is true when subtract(Set1,Set2,Diff) and
+append(Diff,Set2,Union), that is, when Union is the elements of Set1
+that do not occur in Set2, followed by all the elements of Set2.
+
+	union(Set1, Set2, Union)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Union	<list> or <variable>
+
+	Example
+
+		union([1,2,3],[3,4,5], Union)
+
+		Will succeed with
+
+		Union = [1,2,3,4,5]
+
+
+trees.pl
+
+
+get_label/3.
+
+get_label/3  treats the tree as an array of N elements and returns the
+Index-th. If Index < 1 or > N it simply fails, there is no such element.
+
+	get_label(Index, Tree, Label)
+
+	?Index		<integer> or <variable>
+	+Tree		<term>
+	?Label		<term>    or  <variable>
+
+	Example
+
+		get_label(1,t(barney,t(fred,t,t),t(wilma,t,t)),Label).
+
+		Will instantiate label to barney
+
+		get_label(N,t(barney,t(fred,t,t),t(wilma,t,t)),barney).
+
+		Will instantiate N to 1
+
+	
+list_to_tree/2.
+
+list_to_tree/2  takes a given List of N elements and constructs a binary
+Tree where get_label(K, Tree, Lab) <=> Lab is the Kth element of List.
+
+	list_to_tree(List, Tree)
+	
+	+List		<list>
+	-Tree		<variable>
+
+	Example
+
+		list_to_tree([barney, fred, wilma],Tree).
+
+		Will instantiate Tree to
+t(barney,t(fred,t,t),t(wilma,t,t))
+
+
+map_tree/3.
+
+map_tree/3 is true when OldTree and NewTree are binary trees of the same
+shape   and Pred(Old,New) is true for corresponding elements of the two
+trees.
+In fact this routine is perfectly happy constructing either tree given
+the other, I have given it the mode I have for that bogus reason
+"efficiency" and because it is normally used this way round.  This is
+really meant more as an illustration of how to map over trees than as a
+tool for everyday use.
+
+	map_tree(Pred, OldTree, NewTree)
+
+	+Pred		<pred_name>
+	+OldTree	<term>
+	-NewTree	<variable>
+
+
+put_label/4.
+
+Construct a new tree the same shape as the old which moreover has the
+same elements except that the Index-th one is Label.  Unlike the
+"arrays" of Arrays.Pl, OldTree is not modified and you can hang on to it
+as long as you please.  Note that O(lg N) new space is needed.
+		
+	put_label(Index, OldTree, Label, NewTree
+
+	+Index	<integer>
+	+OldTree	<term>
+	+Label	<term>
+	-NewTree	<variable>
+
+tree_size/2.
+
+Calculate the number of elements in the Tree.  All trees made by
+list_to_tree that are the same size have the same shape.
+
+	tree_size(Tree, Size)
+
+	+Tree		<term>
+	-Size		<variable>
+
+	Example
+
+		tree_size(t(barney,t(fred,t,t),t(wilma,t,t)),Size).
+
+		Will succeed with
+		
+		Size = 3
+
+
+tree_to_list/2.
+
+tree_to_list/2 s the converse operation to list_to_tree.  Any mapping or
+checking   operation can be done by converting the tree to a list,
+mapping or checking the list, and converting the result, if any, back to
+a tree. It is also easier for a human to read a list than a tree, as the
+order in the tree goes all over the place.
+
+	tree_to_list(Tree, List)
+	
+	+Tree		<term>
+	-List		<variable>
+

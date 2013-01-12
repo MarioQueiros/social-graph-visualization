@@ -1,0 +1,12 @@
+/* WIN-PROLOG 4.900 0016009215 01 Jun 2010 - Sat 12 Jan 2013 10:43:32 */
+
+[
+  `grauMedio(R).`
+  `redeNivel2(catia,X).`
+  `redeNivel2(hugo,X).`
+  `~~redeNivel2(hugo,X).`
+  `redeNivel3(mario,U).`
+  `redeNivel2(mario,U).`
+  `rede(mario,U).`
+  `.`
+]

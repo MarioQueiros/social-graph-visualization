@@ -1,0 +1,50 @@
+WIN-PROLOG Version 4.900
+========================
+
+Welcome to Prolog++ for WIN-PROLOG!
+
+To load prolog++:
+
+?- ensure_loaded( system(pppenv) ).
+
+This will load the Prolog++ environment and the Prolog++ runtime engine.
+
+Please note that if you force the re-loading of pppenv - through
+for example load_files/1 - then the second and subsequent loads will throw
+an error. This is caused by environment settings being overwritten on
+subsequent loads.  The only recourse in that event is to quit prolog and start
+again, otherwise unspecified behaviour may occur. The correct way of loading
+the Prolog++ environment is either through a shorcut or the console command line:
+
+?- ensure_loaded( system(pppenv) ).
+
+Shortcuts are created at install time that will run Prolog++.
+
+The example programs are now in the sub-directory EXAMPLES\PPP .
+
+Bugs, Problems and Errors
+-------------------------
+
+----- Start of List -----
+
+No known bugs.
+
+----- End of List -----
+
+Please report any suspected bugs that do not appear in the above list to
+LPA:
+
+Contact Details
+---------------
+
+        Info:           info_team@lpa.co.uk
+        Sales:          sale_team@lpa.co.uk
+        Support:        tech_team@lpa.co.uk
+
+        Phone:          +44 (0) 20 8871 2016
+        Fax:            +44 (0) 20 8874 0449
+        Web:            http://www.lpa.co.uk
+
+        Logic Programming Associates Ltd
+        Studio 30, Royal Victoria Patriotic Building
+        Trinity Road, London, SW18 3SX, England.

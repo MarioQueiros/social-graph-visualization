@@ -1,0 +1,740 @@
+LISTUT
+
+%   Author : Bob Welham, Lawrence Byrd, and R.A.O'Keefe
+%   Purpose: list processing utilities
+
+This package operates on standard Prolog lists, of form
+
+	[Head|Tail]
+
+or 
+
+	[Item, Item, Item, ...].
+
+
+This package depends on the SETUTL package.
+
+________________________________________________________________________
+
+correspond/4
+
+puts in one to one correspondance two lists of the same length
+
+	correspond(X, Xlist, Ylist, Y)
+
+	?X		<term> 
+	+Xlist		<list>
+	+Ylist		<list>
+	?Y		<term> 
+
+	and either X or Y should be instantiated.
+
+	correspond(X, Xlist, Ylist, Y) is true when Xlist and Ylist
+	are lists, X is an element of Xlist, Y is an element of
+	Ylist, and X and Y are in similar places in their lists.
+	Only the first occurence of X or Y is taken into account.
+
+
+	Examples
+
+		?- correspond(Country, 
+			      [`UK`,     `Switzerland`, `Belgium`], 
+			      [`London`, `Bern`,        `Brussels`],
+			      `Brussels`).
+		Country = `Belgium`
+
+		?- correspond(`Switzerland`, 
+			      [`UK`,     `Switzerland`, `Belgium`], 
+			      [`London`, `Bern`,        `Brussels`],
+			      Capital).
+		Capital = `Bern`
+
+		?- correspond(`Venezuela`, 
+			      [`UK`,     `Switzerland`, `Belgium`], 
+			      [`London`, `Bern`,        `Brussels`],
+			      Capital).
+		no
+
+________________________________________________________________________
+
+delete/3
+
+remove all occurences of an item from a list
+
+	delete(List, Item, Remainder)
+
+	+List		<list>
+	?Item		<term> or <variable>
+	?Remainder	<list> or <variable>
+
+	Remove all occurences of Item from the List to leave
+	Remainder. 
+
+	Note: delete/3 is equivalent to the built-in removeall/3 with
+	      the order of the arguments modified.
+
+	Example
+
+		?- delete([a,b,a,c,d,a], a, R).
+		R = [b,c,d]
+
+________________________________________________________________________
+
+last/2
+
+access the last element of a list
+
+	last(Last, List)
+
+	?Last		<term> or <variable>
+	?List		<term> or <variable>
+
+
+	last(Last, List) is true when List is a List and Last is its
+	last element. This could be defined as
+
+		last(X, L) :- append(_, [X], L).
+
+	
+	Examples
+
+		?- last(L, [a,b,c]).
+		L = c
+
+		?- last(L, []).
+		no
+
+		?- last(a, L).
+		L = [a]
+
+________________________________________________________________________
+
+nextto/3
+
+enumerate successive pairs from a list
+
+
+	nextto(X, Y, List)
+
+	?X		<term> or <variable>
+	?Y		<term> or <variable>
+	?List		<list> or <variable>
+
+	nextto(X, Y, List) is true when X and Y appear side-by-side
+	in List. It could be written as
+
+		nextto(X, Y, List) :- append(_, [X,Y], List).
+
+	It may be used to enumerate successive pairs from the list.
+
+	Examples
+
+		?- nextto(X, Y, [a,b,c]).
+		X = a ,
+		Y = b ;
+
+		X = b ,
+		Y = c ;
+
+		no
+
+		?- nextto(X, `Belgium`, [`UK`, `Switzerland`, `Belgium`]).
+		X = `Switzerland` ;
+
+		no
+
+		?- nextto(`UK`, Y, [`UK`, `Switzerland`, `Belgium`]).
+		Y = `Switzerland` ;
+
+		no
+
+________________________________________________________________________
+
+nmember/3
+
+get or check a member of a list and its position in the list
+
+	nmember(Element, List, Position)
+
+	?Element	<term> or <variable>
+	?List		<list> or <variable>
+	?Position	<interger> or <variable>
+
+	This predicate is similar to the buil-in member/3.
+
+	Examples
+
+		| ?- nmember(a, [a,b,a,c,d], Pos).
+		Pos = 1 ;
+
+		Pos = 3 ;
+
+		no
+
+		| ?- nmember(E, [a,b,a,c], Pos).
+		E = a ,
+		Pos = 1 ;
+
+		E = b ,
+		Pos = 2 ;
+
+		E = a ,
+		Pos = 3 ;
+
+		E = c ,
+		Pos = 4 ;
+
+		no
+
+________________________________________________________________________
+
+nmembers/3
+
+get or check members of a list and their positions
+
+	nmembers(Indices, Answers, Ans)
+
+	+Indices	<list>
+	+Answers	<list>
+	-Ans		<variable>
+
+		or
+
+	-Indices	<variable>
+	+Answers	<list>
+	+Ans		<list>
+
+
+	It is like nmember/3 except that it looks for a list of
+	arguments in a list of positions.
+
+	Examples
+
+		| ?- nmembers([3,5,1], [a,b,c,d,e,f,g,h], [c,e,a]).
+		yes
+
+		| ?- nmembers(I, [a,b,c,d,e,f,g,h], [c,e,a]).
+		I = [3,5,1] ;
+
+		no
+
+		| ?- nmembers([5,3,1], [a,b,c,d,e,f,g,h], L).
+		L = [e,c,a] ;
+
+		no
+
+		| ?- nmembers([10,2,1], [a,b,c], L).
+		no
+
+________________________________________________________________________
+
+nth0/3
+
+select the Nth element of a list starting with indice 0
+
+	nth0(N, List, Element)
+
+	+N		<integer>
+	+List		<list>
+	?Element	<term> or <variable>
+
+		or
+
+	-N		<variable>
+	+List		<list>
+	+Element	<term>
+
+	nth0(N, List, Element) is true when Elem is the Nth member of
+	List, counting the first as element 0.
+
+	If the nth0(-,+,+) mode is used, only the first Nth member is
+	located.
+
+	Examples
+
+		?- nth0(0, [a,b,c], E).
+		E = a
+
+		?- nth0(10, [a,b,c], E).
+		no
+
+		?- nth0(2, [a,b,c], E).
+		E = c ;
+
+		no
+
+		?- nth0(I, [a,b,c,a], a).
+		I = 0
+
+________________________________________________________________________
+
+nth0/4
+
+get or check the Nth element of list and computes the residue
+starting with indice 0
+
+
+	nth0(N, List, Elem, Rest)
+
+	+N		<integer>
+	?List		<list> or <variable>
+	?Elem		<term> or <variable>
+	?Rest		<list> or <variable>
+
+		or
+
+	-N		<variable>
+	+List		<list>
+	+Elem		<term>
+	?Rest		<list> or <variable>
+
+	nth0(N, List, Elem, Rest) unifies Elem with the Nth element of List,
+	counting from 0, and Rest with the other elements.  It can be used
+	to select the Nth element of List (yielding Elem and Rest), or to 
+	insert Elem before the Nth (counting from 1) element of Rest, when
+	it yields List.
+
+	Examples
+
+		?- nth0(2, List, c, [a,b,d,e]).
+		List = [a,b,c,d,e] ;
+
+		no
+
+		?- nth0(3, [a,b,c,d,e], Elem, Residue).
+		Elem = d ,
+		Residue = [a,b,c,e] ;
+
+		no
+
+		?- nth0(I, [a,b,c,d,e], c, Residue).
+		I = 2 ,
+		Residue = [a,b,d,e]
+
+________________________________________________________________________
+
+nth1/3
+
+select the Nth element of a list starting with indice 1
+
+	nth1(N, List, Element)
+
+	+N		<integer>
+	+List		<list>
+	?Element	<term> or <variable>
+
+		or
+
+	-N		<variable>
+	+List		<list>
+	+Element	<term>
+
+	nth1(N, List, Element) is true when Elem is the Nth member of
+	List, counting the first as element 1.
+
+	If the nth1(-,+,+) mode is used, only the first Nth member is
+	located.
+
+	Examples
+
+		?- nth1(1, [a,b,c], E).
+		E = a
+
+		?- nth1(10, [a,b,c], E).
+		no
+
+		?- nth1(3, [a,b,c], E).
+		E = c ;
+
+		no
+
+		?- nth1(I, [a,b,c,a], a).
+		I = 1
+
+________________________________________________________________________
+
+nth1/4
+
+get or check the Nth element of list and computes the residue
+starting with indice 1
+
+
+	nth1(N, List, Elem, Rest)
+
+	+N		<integer>
+	?List		<list> or <variable>
+	?Elem		<term> or <variable>
+	?Rest		<list> or <variable>
+
+		or
+
+	-N		<variable>
+	+List		<list>
+	+Elem		<term>
+	?Rest		<list> or <variable>
+
+	nth1(N, List, Elem, Rest) unifies Elem with the Nth element of List,
+	counting from 1, and Rest with the other elements.  
+
+	Examples
+
+		?- nth1(3, List, c, [a,b,d,e]).
+		List = [a,b,c,d,e] ;
+
+		no
+
+		?- nth1(4, [a,b,c,d,e], Elem, Residue).
+		Elem = d ,
+		Residue = [a,b,c,e] ;
+
+		no
+
+		?- nth1(I, [a,b,c,d,e], c, Residue).
+		I = 3 ,
+		Residue = [a,b,d,e]
+
+________________________________________________________________________
+
+numlist/3
+
+according to an integer range, build a list of integers
+
+	numlist(Lower, Upper, List)
+
+	+Lower		<integer>
+	+Upper		<integer>
+	?List		<list> or <variable>
+
+	numlist(Lower, Upper, List) is true when List is 
+
+		[Lower, ..., Upper].
+
+	Note that Lower and Upper must be integers, not expressions, and
+	that if Upper < Lower numlist will FAIL rather than producing an
+	empty list.
+
+	Examples
+
+		?- numlist(1,10,L).
+		L = [1,2,3,4,5,6,7,8,9,10]
+
+		?- numlist(10,1,L).
+		no
+
+		?- numlist(-5,5,L).
+		L = [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+
+________________________________________________________________________
+
+perm/2
+
+generate permutations of a list
+
+	perm(List, Perm)
+
+	?List		<list> or <variable>
+	?Perm		<list> or <variable>
+
+	perm(List, Perm) is true when List and Perm are permutations
+	of each other. If you want to use this predicate for checking
+	instead of generating, it would be wiser to sort both List and
+	Perm and to compare the result.
+
+	For generating, List should be instantiated otherwise it will
+	loop forever after generating the first solution.
+
+	Examples
+
+		| ?- bagof(P, perm([a,b,c], P), B).
+		P = _ ,
+		B = [[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]]
+
+
+________________________________________________________________________
+
+perm2/4
+
+check or compute 2 elements permutations
+
+	perm2(A, B, C, D)
+
+	?A		<term> or <variable>
+	?B		<term> or <variable>
+	?C		<term> or <variable>
+	?D		<term> or <variable>
+
+	perm2(A, B, C, D) is true when {A,B} = {C,D}.
+
+
+	Examples
+
+		?- perm2(a,b,X,Y).
+		X = a ,
+		Y = b ;
+
+		X = b ,
+		Y = a
+
+		?- perm2(X,Y,c,d).
+		X = c ,
+		Y = d ;
+
+		X = d ,
+		Y = c
+
+________________________________________________________________________
+
+remove_dups/2
+
+remove duplicates from a list
+
+	remove_dups(List, Pruned)
+
+	+List		<list>
+	-Pruned		<variable>
+
+	remove_dups(List, Pruned) is true when Pruned contains the
+	same elements as List but with no duplicates.
+
+	Beware: if the List has non-ground elements, the result may
+	surprise you.
+
+	Example
+
+		?- remove_dups([a,d,a,e,c,b,a], L).
+		L = [a,b,c,d,e]
+
+________________________________________________________________________
+
+rev/2
+
+a synonym for reverse/2
+
+________________________________________________________________________
+
+same_length/2
+
+check or build lists for the same number of elements
+
+	same_length(List1, List2)
+
+	?List1		<list> or <variable>
+	?List2		<list> or <variable>
+
+	same_length(List1, List2) is true when List1 and List2 are
+	both lists and have the same number of elements. No relation
+	between the values of their elements is implied.
+
+	Modes same_length(-,+) and same_length(+,-) generate either
+	list given the other; mode same_length(-,-) generates two
+	lists of the same length, in which case the arguments will be
+	bound to lists of length 0, 1, 2, ... 
+
+	Examples
+
+		| ?- same_length([a,b,c], [d,e,f]).
+		yes
+
+		| ?- same_length([], [a]).
+		no
+
+		| ?- same_length([a,b,c], L).
+		L = [_00033D7A,_00033DA2,_00033DCA]
+
+		| ?- same_length(L, [a,b,c]).
+		L = [_000345A4,_000345CC,_000345F4] ;
+
+		no
+
+		| ?- same_length(L1, L2).
+		L1 = L2 = [] ;
+
+		L1 = [_00034F5E] ,
+		L2 = [_00034F68] ;
+
+		L1 = [_00034F5E,_00035152] ,
+		L2 = [_00034F68,_0003515C] ;
+
+		L1 = [_00034F5E,_00035152,_0003536E] ,
+		L2 = [_00034F68,_0003515C,_00035378] ;
+
+		L1 = [_00034F5E,_00035152,_0003536E,_000355B2] ,
+		L2 = [_00034F68,_0003515C,_00035378,_000355BC] ;
+
+		...
+
+________________________________________________________________________
+
+select/4
+
+replace an element by another in a list
+
+	select(X, Xlist, Y, Ylist)
+
+	?X		<term> or <variable>
+	?Xlist		<list> or <variable>
+	?Y		<term> or <variable>
+	?Ylist		<list> or <variable>
+
+	select(X, Xlist, Y, Ylist) is true when X is the Kth member
+	of Xlist and Y the Kth element of Ylist for some K, and apart
+	from that Xlist and Ylist are the same.  You can use it to
+	replace X by Y or vice versa. 
+
+	Example
+
+		| ?- select(a, [a,b,c,a], e, L).
+		L = [e,b,c,a] ;
+
+		L = [a,b,c,e] ;
+
+		no
+
+________________________________________________________________________
+
+shorter_list/2
+
+check if a list is shorter than another one or generate shorter lists
+
+	shorter_list(Short, Long)
+
+	?Short		<list> or <variable>
+	+Long		<list>
+
+	shorter_list(Short, Long)
+	is true when Short is a list is strictly shorter than Long.  Long
+	doesn't have to be a proper list provided it is long enough.  This
+	can be used to generate lists shorter than Long, lengths 0, 1, 2...
+	will be tried, but backtracking will terminate with a list that is
+	one element shorter than Long.  It cannot be used to generate lists
+	longer than Short, because it doesn't look at all the elements of the
+	longer list.
+
+
+	Examples
+
+		| ?- shorter_list([a,b], [a,b,c]).
+		yes
+
+		| ?- shorter_list(L, [a,b,c]).
+		L = [] ;
+
+		L = [_00037F92] ;
+
+		L = [_00037F92,_000380C8] ;
+
+		no
+
+________________________________________________________________________
+
+subseq/3
+
+get or check subsequences and residues of a list
+
+	subseq(Sequence, SubSequence, Complement)
+
+	?Sequence	<list> or <variable>
+	?SubSequence	<list> or <variable>
+	?Complement	<list> or <variable>
+
+	subseq(Sequence, SubSequence, Complement)
+	is true when SubSequence and Complement are both subsequences of the
+	list Sequence (the order of corresponding elements being preserved)
+	and every element of Sequence which is not in SubSequence is in the
+	Complement and vice versa.  That is,
+	length(Sequence) = length(SubSequence)+length(Complement), e.g.
+	subseq([1,2,3,4], [1,3,4], [2]).  This was written to generate subsets
+	and their complements together, but can also be used to interleave two
+	lists in all possible ways.  Note that if S1 is a subset of
+	S2, it will be generated *before S2 as a SubSequence and
+	*after it as a Complement. 
+
+
+	Example
+
+		| ?- subseq([a,b,c], S, C).
+		S = [] ,
+		C = [a,b,c] ;
+
+		S = [c] ,
+		C = [a,b] ;
+
+		S = [b] ,
+		C = [a,c] ;
+
+		S = [b,c] ,
+		C = [a] ;
+
+		S = [a] ,
+		C = [b,c] ;
+
+		S = [a,c] ,
+		C = [b] ;
+
+		S = [a,b] ,
+		C = [c] ;
+
+		S = [a,b,c] ,
+		C = []
+
+________________________________________________________________________
+
+subseq0/2
+
+get or check subsequences of a list
+
+	subseq0(Sequence, SubSequence)
+
+	+Sequence	<list>
+	?SubSequence	<list> or <variable>
+
+	subseq0(Sequence, SubSequence)
+	is true when SubSequence is a subsequence of Sequence, but may
+	be Sequence itself.   Thus subseq0([a,b], [a,b]) is true as well
+	as subseq0([a,b], [a]).
+
+	Example
+
+		?- bagof(S, subseq0([a,b], S), B).
+		S = _ ,
+		B = [[a,b],[b],[],[a]]
+
+________________________________________________________________________
+
+subseq1/2
+
+get or check proper subsequences of a list
+
+	subseq1(Sequence, SubSequence)
+
+	+Sequence	<list>
+	?SubSequence	<list> or <variable>
+
+	subseq1(Sequence, SubSequence)
+	is true when SubSequence is a proper subsequence of Sequence,
+	that is it contains at least one element less.
+
+	Example
+
+		?- bagof(S, subseq1([a,b], S), B).
+		S = _ ,
+		B = [[b],[],[a]]
+
+________________________________________________________________________
+
+sumlist/2
+
+computes the sum of a list of numbers
+
+	sumlist(Numbers, Total)
+
+	+Numbers	<list>
+	?Total		<number> or <variable>
+
+	sumlist(Numbers, Total) sums the elements in Numbers to give
+	Total. 
+
+	Example
+
+		?- sumlist([1,0,-1,2,3], S).
+		S = 5

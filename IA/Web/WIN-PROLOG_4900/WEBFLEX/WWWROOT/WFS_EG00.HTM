@@ -1,0 +1,225 @@
+<HTML>
+
+<HEAD>
+<TITLE>Source Code: Demonstration Forms</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="white.css"></LINK>
+</HEAD>
+
+<BODY>
+
+<H2>Source Code: Demonstration Forms</H2>
+<H3>TEST.KSL Listing</H3>
+<PRE>
+/*
+   A demonstration forms example.
+
+   This example demonstrates the control WebFlex has over the display of forms.
+
+   WebFlex Technical Points
+   ------------------------
+
+   The following main WebFlex technical points are demonstrated in this example:
+
+   1. The asking of several questions on the same page through the use of groups.
+
+   2. The declaring of attributes for the containing table.
+
+   3. The control of attributes for individual questions.
+
+   4. The constraint of numeric input fields to given ranges .
+
+   5. The control of the position of questions in the containing table.
+
+   6. The declaration of the containing HTML pages.
+
+   7. The use of explanations and browse files.
+
+   8. The declaration of graphics to use with command buttons.
+
+   9. Text output to the containing page.
+*/
+
+action run ;
+   do  restart
+   and ask group_test1
+   and ask group_test2
+   and ask group_test3
+   and write( '&lt;h3&gt;This page shows several input fields being asked.&lt;//h3&gt;' )
+   and write( '&lt;p&gt;This time the questions are not asked by group, so the questions are arranged vertically.' )
+   and write( '&lt;br&gt;You can also see that the &lt;em&gt;help&lt;//em&gt;, buttons open a new page in a new window.&lt;//p&gt;' )
+   and ask input_name, input_number, input_integer, input_set
+   and write_results .
+
+action write_results ;
+   do  write( '&lt;table border="1" bgcolor="#ccffcc"&gt;' )
+   and write( '&lt;caption&gt;&lt;h3&gt;Solution Page&lt;//h3&gt;&lt;//caption&gt;' )
+   and write( '&lt;tr&gt;&lt;th&gt;Question Type&lt;//th&gt;&lt;th&gt;Returned results&lt;//th&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;multiple choice&lt;//td&gt;&lt;td&gt;' )
+   and write( '&lt;ul&gt;' )
+   and for every member(X, multi_choice )
+       do write( '&lt;li&gt;' ) and write( X ) and write( '&lt;//li&gt;' )
+       end for
+   and write( '&lt;//ul&gt;&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'single choice radio' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( single_choice_radio )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'single choice listbox' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( single_choice_listbox )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'single choice dropdown listbox' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( single_choice_dropdown )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'input a name edit field' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( input_name )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'input a number edit field' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( input_number )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;' ) and write( 'input an integer edit field' )
+   and write( '&lt;//td&gt;&lt;td&gt;' ) and write( input_integer )
+   and write( '&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;tr&gt;&lt;td&gt;input a set edit field&lt;//td&gt;&lt;td&gt;' )
+   and write( '&lt;ul&gt;' )
+   and for every member(Y, input_set )
+       do write( '&lt;li&gt;' ) and write( Y ) and write( '&lt;//li&gt;' )
+       end for
+   and write( '&lt;//ul&gt;&lt;//td&gt;&lt;//tr&gt;' )
+   and write( '&lt;//table&gt;' ) .
+
+group group_test1
+  multi_choice, single_choice_radio, single_choice_listbox, single_choice_dropdown.
+
+frame group_test1_style
+   default caption is 'Form 1' and
+   default body is 'test1.htm' and
+   default footer is 'tstfoot1.htm' and
+   default tablestyle is { bgcolor-'#FFccFF', border-1 } .
+
+group group_test2
+  multi_choice, single_choice_radio, single_choice_listbox, single_choice_dropdown.
+
+frame group_test2_style
+   default caption is 'Form 2' and
+   default columns is 2 and
+   default body is 'test2.htm' and
+   default footer is 'tstfoot2.htm' and
+   default tablestyle is { bgcolor-'#ccccFF', cellpadding-4  } .
+
+group group_test3
+  multi_choice, single_choice_radio, single_choice_listbox, single_choice_dropdown.
+
+frame group_test3_style
+   default caption is 'Form 3' and
+   default columns is 4 and
+   default body is 'test3.htm' and
+   default footer is 'tstfoot3.htm' and
+   default tablestyle is { bgcolor-'#ccFFcc'  } .
+
+
+% Multiple choice question.
+
+question multi_choice
+  A multi-choice question ;
+  choose some of choices
+  because I need to test a multi-choice question .
+
+frame multi_choice_style ;
+  default rows is 6 and
+  default prefill is {cheese,eggs} .
+
+% Single choice radio button question.
+
+question single_choice_radio
+  A single-choice radio-button question ;
+  choose one of choices
+  because I need to test a single-choice radio-button question .
+
+frame single_choice_radio_style ;
+  default method is radio and
+  default prefill is apples and
+  default infix is br .
+
+% Single choice listbox question .
+
+question single_choice_listbox
+  A single-choice listbox question ;
+  choose one of choices
+  because I need to test a single-choice listbox question .
+
+frame single_choice_listbox_style ;
+  default rows is 6 and
+  default prefill is bananas .
+
+question single_choice_dropdown
+  A single-choice drop down listbox question ;
+  choose one of choices
+  because I need to test a single-choice drop down listbox question .
+
+% If you don't specify rows for the listbox it becomes a drop down list
+frame single_choice_dropdown_style ;
+  default prefill is doughnuts .
+
+% Input an atom
+
+question input_name
+  A name edit field ;
+  input name ;
+  because I need to test a name input field .
+
+frame input_name_style ;
+  default rows is 5 and
+  default cols is 40 and
+  default prefill is fred and
+  default maximum_length is 10 .
+
+% Input a number
+
+question input_number
+  A number input field ;
+  input number ;
+  browse file 'http:////www.lpa.co.uk//ppp_det.htm' .
+
+frame input_number_style ;
+  default prefill is 0.12345 and
+  default maximum_length is 5 and
+  default cols is 5 and
+  default lower_bound is -1000 and
+  default upper_bound is 1000 .
+
+% input an integer
+
+question input_integer
+  An integer input field ;
+  input integer ;
+  browse file 'http:////www.lpa.co.uk//flx_det.htm' .
+
+frame input_integer_style ;
+  default rows is 1 and
+  default cols is 3 and
+  default prefill is -5 and
+  default maximum_length is 3 and
+  default lower_bound is -10 and
+  default upper_bound is 10 .
+
+% input a set
+
+question input_set
+  A set input field ;
+  input set ;
+  browse file 'http:////www.lpa.co.uk//fln.htm' .
+
+frame input_set_style ;
+   default rows is 5 and
+   default cols is 40 and
+   default prefill is choices .
+
+group choices
+  apples, bananas, cheese, doughnuts, eggs, fish .
+
+</PRE>
+
+<A HREF="ind_top.htm" TARGET="_top">Visit the LPA Home Page!</A><P>
+
+</BODY>
+</HTML>

@@ -12,16 +12,168 @@
   <wsdl:message name="IModuloIa_tamanhoRede_OutputMessage">
     <wsdl:part name="parameters" element="tns:tamanhoRedeResponse" />
   </wsdl:message>
+  <wsdl:message name="IModuloIa_amigosTag_InputMessage">
+    <wsdl:part name="parameters" element="tns:amigosTag" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_amigosTag_OutputMessage">
+    <wsdl:part name="parameters" element="tns:amigosTagResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_sugerirAmigos_InputMessage">
+    <wsdl:part name="parameters" element="tns:sugerirAmigos" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_sugerirAmigos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:sugerirAmigosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_maven_InputMessage">
+    <wsdl:part name="parameters" element="tns:maven" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_maven_OutputMessage">
+    <wsdl:part name="parameters" element="tns:mavenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_amigosComuns_InputMessage">
+    <wsdl:part name="parameters" element="tns:amigosComuns" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_amigosComuns_OutputMessage">
+    <wsdl:part name="parameters" element="tns:amigosComunsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_caminhoForte_InputMessage">
+    <wsdl:part name="parameters" element="tns:caminhoForte" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_caminhoForte_OutputMessage">
+    <wsdl:part name="parameters" element="tns:caminhoForteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_caminhoCurto_InputMessage">
+    <wsdl:part name="parameters" element="tns:caminhoCurto" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_caminhoCurto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:caminhoCurtoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_grauMedioSeparacao_InputMessage">
+    <wsdl:part name="parameters" element="tns:grauMedioSeparacao" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_grauMedioSeparacao_OutputMessage">
+    <wsdl:part name="parameters" element="tns:grauMedioSeparacaoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_debug_InputMessage">
+    <wsdl:part name="parameters" element="tns:debug" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_debug_OutputMessage">
+    <wsdl:part name="parameters" element="tns:debugResponse" />
+  </wsdl:message>
   <wsdl:portType name="IModuloIa">
     <wsdl:operation name="tamanhoRede">
       <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/tamanhoRede" message="tns:IModuloIa_tamanhoRede_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/tamanhoRedeResponse" message="tns:IModuloIa_tamanhoRede_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="amigosTag">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/amigosTag" message="tns:IModuloIa_amigosTag_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/amigosTagResponse" message="tns:IModuloIa_amigosTag_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="sugerirAmigos">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/sugerirAmigos" message="tns:IModuloIa_sugerirAmigos_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/sugerirAmigosResponse" message="tns:IModuloIa_sugerirAmigos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="maven">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/maven" message="tns:IModuloIa_maven_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/mavenResponse" message="tns:IModuloIa_maven_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="amigosComuns">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/amigosComuns" message="tns:IModuloIa_amigosComuns_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/amigosComunsResponse" message="tns:IModuloIa_amigosComuns_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="caminhoForte">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/caminhoForte" message="tns:IModuloIa_caminhoForte_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/caminhoForteResponse" message="tns:IModuloIa_caminhoForte_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="caminhoCurto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/caminhoCurto" message="tns:IModuloIa_caminhoCurto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/caminhoCurtoResponse" message="tns:IModuloIa_caminhoCurto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="grauMedioSeparacao">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/grauMedioSeparacao" message="tns:IModuloIa_grauMedioSeparacao_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/grauMedioSeparacaoResponse" message="tns:IModuloIa_grauMedioSeparacao_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="debug">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/debug" message="tns:IModuloIa_debug_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/debugResponse" message="tns:IModuloIa_debug_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IModuloIa" type="tns:IModuloIa">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="tamanhoRede">
       <soap:operation soapAction="http://tempuri.org/IModuloIa/tamanhoRede" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="amigosTag">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/amigosTag" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sugerirAmigos">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/sugerirAmigos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="maven">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/maven" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="amigosComuns">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/amigosComuns" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="caminhoForte">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/caminhoForte" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="caminhoCurto">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/caminhoCurto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="grauMedioSeparacao">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/grauMedioSeparacao" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="debug">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/debug" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

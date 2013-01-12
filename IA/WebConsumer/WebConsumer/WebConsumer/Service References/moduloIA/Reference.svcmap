@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="b4c38da2-3944-456a-a7fd-14fce8124a28" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ff4c07d4-80be-4772-abae-cffabc718e75" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,9 +22,9 @@
     <MetadataSource Address="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="moduloIA.xsd" MetadataType="Schema" ID="e9879f6a-7c19-4c6c-9122-67a95577775b" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd0" />
-    <MetadataFile FileName="moduloIA.wsdl" MetadataType="Wsdl" ID="b3956022-4d4f-4ac7-820b-7434715df1eb" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?wsdl" />
-    <MetadataFile FileName="moduloIA1.xsd" MetadataType="Schema" ID="b0d96757-fdf1-40c5-83a0-c2c93c23736f" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd1" />
+    <MetadataFile FileName="moduloIA.xsd" MetadataType="Schema" ID="6a5d8e30-4d82-4006-a33b-7e3c26b45325" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd0" />
+    <MetadataFile FileName="moduloIA.wsdl" MetadataType="Wsdl" ID="6f876352-c2e0-4e9c-9922-d3b29ead513b" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?wsdl" />
+    <MetadataFile FileName="moduloIA1.xsd" MetadataType="Schema" ID="1ec1651a-9354-47d1-94fb-fb3a5b6a915a" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd1" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

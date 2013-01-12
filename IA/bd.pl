@@ -51,6 +51,17 @@ tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 redeNivel2(U,R):-user(U),findall(X,ligado(U,X),R).
 
 redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
+
+
+%para criar o grafo
+grafoNivel3(U,R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(X,R2),append(R1,R2,R).
+
+ligacaoCompl(_,[],[]).
+ligacaoCompl(U1,[U2|L],R):-lig(U1,U2,Nr),add([U1,U2,Nr],R1,R),ligacaoCompl(U1,L,R1),!.
+
+ligacaoAmigos([],[]).
+ligacaoAmigos([U|L],R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(L,R2),append(R1,R2,R).
+
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 

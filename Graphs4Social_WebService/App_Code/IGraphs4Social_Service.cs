@@ -22,18 +22,53 @@ public class Grafo
     {
 
         //  Carrega o user "dono" do grafo
-        //Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(username);
+        Users.Add(new User(username));
         
         //  Carrega as ligações do user
-        IList<Graphs4Social_AR.Ligacao> ligacoes = Graphs4Social_AR.Ligacao.LoadAllByUserName(username);
-        
+        //  IList<string> ligacoes = RedeNivel2(userdono,U)
+        IList<Graphs4Social_AR.Ligacao> ligacoesDono = Graphs4Social_AR.Ligacao.LoadAllByUserName(username);
+
         //  Carrega as ligações dos amigos do user
-        IList<Graphs4Social_AR.Ligacao> ligacoesAmigos = new List<Graphs4Social_AR.Ligacao>();
+        IList<Graphs4Social_AR.Ligacao> ligacoesAmigos;
 
-        foreach (Graphs4Social_AR.Ligacao ligacao in ligacoes)
+
+
+
+
+        int i=1;
+
+        foreach (Graphs4Social_AR.Ligacao ligacao in ligacoesDono)
         {
-            ligacao.
+            string usernameAmigo = ligacao.UserLigado.Username;
 
+            //  Aqui cria os amigos do "dono" e adiciona-os
+            Users.Add(new User(usernameAmigo));
+
+            //  Cria a Ligacao
+            Ligacoes.Add(new Ligacao(0, i, username, usernameAmigo));
+            
+
+            i++;
+        }
+
+
+        
+
+        // RedeNivel3-RedeNivel2
+        IList<string> ligacoesNaoDirectas = new List<string>();
+
+        foreach (Graphs4Social_AR.Ligacao ligacao in ligacoesDono){
+
+            string usernameAmigo = ligacao.UserLigado.Username;
+
+            ligacoesAmigos = Graphs4Social_AR.Ligacao.LoadAllByUserName(username);
+
+            foreach(User userAmigo in Users){
+                if(!userAmigo.Username.Equals(usernameAmigo)){
+                    liga
+
+                }
+            }
         }
 
         NrNos = 1 + ligacoes.Count;
@@ -55,20 +90,19 @@ public class User
     public double Z { get; set; }
 
     [DataMember]
-    public string Avatar { get; set; }
+    public string Username { get; set; }
 
     [DataMember]
-    public IList<string> Tags { get; set; }
+    public IList<Graphs4Social_AR.Tag> Tags { get; set; }
 
     [DataMember]
     public IList<string> Profile { get; set; }
 
     public User(string username)
     {
-
-        Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(username);
+        Username = username;
         Profile = Graphs4Social_AR.User.LoadProfileByUser(username);
-        
+        Tags = Graphs4Social_AR.Tag.LoadAllByUsername(username);
     }
 }
 
@@ -76,12 +110,40 @@ public class User
 public class Ligacao
 {
     [DataMember]
-    public string Informacao { get; set; }
+    public int Id1 { get; set; }
+
+    [DataMember]
+    public int Id2 { get; set; }
+
+
+    [DataMember]
+    public int Peso { get; set; }
+
+    [DataMember]
+    public int Forca { get; set; }
+
+    
 
     [DataMember]
     public string Tag { get; set; }
 
-    public Ligacao(int id1, int id2, string username1, string username2);
+    public Ligacao(int id1, int id2, string username1, string username2){
+        Id1 = id1;
+        Id2 = id2;
+
+        //  Para já não utilizado
+        Peso = 1;
+
+        //  Força e Tag
+        Graphs4Social_AR.Ligacao lig = new Graphs4Social_AR.Ligacao();
+
+        if(lig.TagRelacao != null){
+
+            Tag = lig.TagRelacao.Nome;
+
+        }
+
+        Forca = lig.ForcaDeLigacao;
 }
 
 [ServiceContract]

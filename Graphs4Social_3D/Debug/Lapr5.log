@@ -1,17 +1,34 @@
-﻿  lapr5.cpp
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(509): warning C4101: 'larguraNorte' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(511): warning C4101: 'nof' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(509): warning C4101: 'larguraEste' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(509): warning C4101: 'larguraOeste' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(509): warning C4101: 'larguraSul' : unreferenced local variable
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(818): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(825): warning C4018: '<' : signed/unsigned mismatch
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(829): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(871): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(874): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
-c:\users\leniker\desktop\lapr v\graphs4social_3d\lapr5.cpp(1083): warning C4101: 'names' : unreferenced local variable
-  Lapr5.vcxproj -> C:\Users\leniker\Desktop\LAPR V\Graphs4Social_3D\Debug\Lapr5.exe
+﻿Build started 12-01-2013 12:25:31.
+     1>Project "D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Lapr5.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\freealut-1.1.0-bin\include" /I"C:\Program Files (x86)\OpenAL 1.1 SDK\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt lapr5.cpp
+         lapr5.cpp
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(17): warning C4005: 'BUFSIZE' : macro redefinition
+                 d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\grafos.h(19) : see previous definition of 'BUFSIZE'
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(570): warning C4101: 'larguraNorte' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(572): warning C4101: 'nof' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(570): warning C4101: 'larguraEste' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(570): warning C4101: 'larguraOeste' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(570): warning C4101: 'larguraSul' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(878): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(885): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(889): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(945): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(948): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(1178): warning C4101: 'names' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(1769): warning C4101: 'i' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(1771): warning C4101: 'height' : unreferenced local variable
+     1>d:\trabalhos\trabalhos-isep\3º ano\1º semestre\laprv\trabalho-bitbucket\graphs4social_3d\lapr5.cpp(1771): warning C4101: 'width' : unreferenced local variable
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Debug\Lapr5.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files (x86)\OpenAL 1.1 SDK\libs\Win32" /LIBPATH:"C:\Program Files (x86)\freealut-1.1.0-bin\lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib alut.lib OpenAL32.lib alut.lib OpenAL32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Debug\Lapr5.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Debug\Lapr5.lib" /MACHINE:X86 /SAFESEH Debug\grafos.obj
+         Debug\lapr5.obj
+         Lapr5.vcxproj -> D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Debug\Lapr5.exe
+     1>Done Building Project "D:\Trabalhos\Trabalhos-ISEP\3º Ano\1º Semestre\LAPRV\Trabalho-bitbucket\Graphs4Social_3D\Lapr5.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.21

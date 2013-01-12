@@ -12,18 +12,28 @@ public interface IModuloIa
 	[OperationContract]
 	int tamanhoRede(int nivel,string user);
 
+    [OperationContract]
     string amigosTag(string user, string tags);
 
+    [OperationContract]
     string sugerirAmigos(string user);
 
+    [OperationContract]
     string maven(string tag);
 
+    [OperationContract]
     string amigosComuns(string user1, string user2 );
 
+    [OperationContract]
     string caminhoForte(string userOrigem, string userDestino);
 
+    [OperationContract]
     string caminhoCurto(string userOrigem, string userDestino);
 
+    [OperationContract]
     float grauMedioSeparacao(string userOrigem, string userDestino);
+
+    [OperationContract]
+    string debug();
 
 }

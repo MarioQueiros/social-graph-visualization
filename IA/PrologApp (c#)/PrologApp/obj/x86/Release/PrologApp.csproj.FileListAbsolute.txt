@@ -1,6 +1,0 @@
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Release\PrologApp.exe
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Release\PrologApp.pdb
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\bin\x86\Release\LPA.DLL
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\obj\x86\Release\PrologApp.exe
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\obj\x86\Release\PrologApp.pdb
-C:\Users\Administrador\Documents\LaprV\IA\PrologApp (c#)\PrologApp\obj\x86\Release\PrologApp.csprojResolveAssemblyReference.cache

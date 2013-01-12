@@ -14,6 +14,7 @@ using namespace std;
 #define rad(X)   (double)((X)*M_PI/180)
 #define NO		1
 #define ARCO	10000
+#define BUFSIZE 512
 
 // luzes e materiais
 const GLfloat mat_ambient[][4] = {
@@ -68,7 +69,8 @@ GLint width = 640;
 GLint check = 1;
 string username;
 string pass;
-int state = 1;
+int state = 0;
+int valido = 0;
 
 typedef struct {
 	ALuint buffer, source;
@@ -811,74 +813,64 @@ void drawString(GLfloat x, GLfloat y, GLfloat z, GLfloat scale, char* msg)
 		glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, msg[i]);
 }
 
-void RenderString(float x, float y, void *font, const char* string, RGB const& rgb)
-{  
-  char *c;
+void bitmapString(char *str, double x, double y)
+{
+	int i,n;
 
-  glColor3f(rgb.r, rgb.g, rgb.b); 
-  glRasterPos2f(x, y);
+	// fonte pode ser:
+	// GLUT_BITMAP_8_BY_13
+	// GLUT_BITMAP_9_BY_15
+	// GLUT_BITMAP_TIMES_ROMAN_10
+	// GLUT_BITMAP_TIMES_ROMAN_24
+	// GLUT_BITMAP_HELVETICA_10
+	// GLUT_BITMAP_HELVETICA_12
+	// GLUT_BITMAP_HELVETICA_18
+	//
+	// int glutBitmapWidth  	(	void *font , int character);
+	// devolve a largura de um car√°cter
+	//
+	// int glutBitmapLength 	(	void *font , const unsigned char *string );
+	// devolve a largura de uma string (soma da largura de todos os caracteres)
 
-  glutBitmapString(font, string);
-
-
-  glLoadIdentity();
-
-glPushMatrix();
-
-glTranslatef(0,0,-sdepth);
-
-glRotatef(-stheta, 1.0, 0.0, 0.0);
-glRotatef(sphi, 0.0, 0.0, 1.0);
-
-glRotatef(rotateX,0,1,1);
-glRotatef(rotateY,1,0,0);
-
-glTranslatef(-0.5,-0.5,-0.5);
-
-glPopMatrix();
-
-glRasterPos2i(2, 2);
-
-glColor4b(255, 255, 255, 255);
-glutBitmapString(GLUT_BITMAP_HELVETICA_18, string);
-
+	n = (int)strlen(str);
+	glRasterPos2d(x,y);
+	for (i=0;i<n;i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,(int)str[i]);
 }
 
-void Square (int x, int y)
+char *convertstringtochar(string str)
 {
-	//material(azul);
+	char * ch= new char[str.length()+1];
+	strcpy (ch,str.c_str());
+	return ch;
+}
 
-	if(estado.posMouse.flag==1){
-		glDisable(GL_LIGHTING);
-		glPushMatrix();
-		glLoadIdentity();
-		glViewport(x,y,300,300);
-		//glViewport(tooltip.posX,tooltip.posY,tooltip.dimX,tooltip.dimY);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		//glOrtho(-tooltip.dimX,tooltip.dimX,-tooltip.dimY,tooltip.dimY,0,100);
-		glOrtho(-300,300,-300,300,0,100);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		//glDisable(GL_DEPTH_TEST);
-
-		glColor3f(1.0f,1.0f,1.0f);
-		glBegin(GL_POLYGON);
-			glVertex2f(0,0);
-			glVertex2f(-300,0);
-			glVertex2f(-300,-300);
-			glVertex2f(0,-300);
-		glEnd();
-		glPopMatrix();
-
-		RenderString(0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Hello", RGB(1.0f, 0.0f, 0.0f));
-
-		//glDepthMask(GL_TRUE);
-		//glDisable(GL_BLEND);
-		myReshape2(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
+char *convertstringtocharCode(string str)
+{
+	string s = "";
+	for(int i=0; i<str.size();i++){
+		s += "*";
 	}
+	char * ch = new char[str.length()+1];
+	strcpy (ch,s.c_str());
+	return ch;
+}
 
-	
+void desenhaTextBox(GLenum mode ,int wi, int wf, int hi, int hf, int name)
+{
+	if (mode == GL_SELECT){
+		glPushName(name);
+		glBegin(GL_POLYGON);
+	}
+	else{
+		glBegin(GL_LINE_LOOP);
+	}
+	glVertex2f(wi,hi);
+	glVertex2f(wf, hi);
+	glVertex2f(wf, hf);
+	glVertex2f(wi, hf);
+	glEnd();
+	glPopName();
 }
 
 void display(void)
@@ -933,6 +925,29 @@ void display(void)
 
 	glFlush();
 	glutSwapBuffers();
+}
+
+void Reshape2(int width, int height)
+{
+	// glViewport(botom, left, width, height)
+	// define parte da janela a ser utilizada pelo OpenGL
+
+	glViewport(0, 0, (GLint) width, (GLint) height);
+
+
+	// Matriz Projeccao
+	// Matriz onde se define como o mundo e apresentado na janela
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// gluOrtho2D(left,right,bottom,top); 
+	// projeccao ortogonal 2D, com profundidade (Z) entre -1 e 1
+	gluOrtho2D(0, width, 0, height);
+
+	// Matriz Modelview
+	// Matriz onde s√£o realizadas as tranformacoes dos modelos desenhados
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void bitmapString(char *str, double x, double y)
@@ -990,25 +1005,68 @@ void Draw(void)
 	glPushMatrix();
 
 	glColor3f(0.7,0.7,0.7);
-	bitmapString("User:",10, height/1.5);
+	bitmapString("User:", 10, glutGet(GLUT_WINDOW_HEIGHT)/1.5);
+
 	if(state==1){
-		glColor3f(1.0,0.0,0.0);
+		glColor3f(0.7,0.7,0.7);
+		desenhaTextBox(GL_SELECT, 150, 350, glutGet(GLUT_WINDOW_HEIGHT)/1.4, glutGet(GLUT_WINDOW_HEIGHT)/1.5, 1);
+		glColor3f(0.0,0.0,0.0);
+		bitmapString(convertstringtochar(username), 160, glutGet(GLUT_WINDOW_HEIGHT)/1.48);
 	}else{
 		glColor3f(0.7,0.7,0.7);
+		bitmapString(convertstringtochar(username), 160, glutGet(GLUT_WINDOW_HEIGHT)/1.48);
+		desenhaTextBox(GL_RENDER, 150, 350, glutGet(GLUT_WINDOW_HEIGHT)/1.4, glutGet(GLUT_WINDOW_HEIGHT)/1.5, 1);
 	}
-	desenhaTextBox(150,350, height/1.4, height/1.5);
-	glColor3f(0.7,0.7,0.7);
-	bitmapString(convertstringtochar(username),160, height/1.45);
 
 	glColor3f(0.7,0.7,0.7);
-	bitmapString("Password:", 10, height/1.7);
+	bitmapString("Password:", 10, glutGet(GLUT_WINDOW_HEIGHT)/1.8);
+
+	if(state==2){
+		glColor3f(0.7,0.7,0.7);
+		desenhaTextBox(GL_SELECT, 150, 350, glutGet(GLUT_WINDOW_HEIGHT)/1.66, glutGet(GLUT_WINDOW_HEIGHT)/1.8, 2);
+		glColor3f(0.0,0.0,0.0);
+		bitmapString(convertstringtocharCode(pass), 160, glutGet(GLUT_WINDOW_HEIGHT)/1.8);
+	}else{
+		glColor3f(0.7,0.7,0.7);
+		bitmapString(convertstringtocharCode(pass), 160, glutGet(GLUT_WINDOW_HEIGHT)/1.8);
+		desenhaTextBox(GL_RENDER, 150, 350, glutGet(GLUT_WINDOW_HEIGHT)/1.66, glutGet(GLUT_WINDOW_HEIGHT)/1.8, 2);
+	}
 
 	glColor3f(0.7,0.7,0.7);
-	desenhaTextBox(150,350, height/1.6, height/1.7);
+	desenhaTextBox(GL_SELECT, 150, 300, glutGet(GLUT_WINDOW_HEIGHT)/2.0, glutGet(GLUT_WINDOW_HEIGHT)/2.2, 3);
+	glColor3f(0.0,0.0,0.0);
+	bitmapString("Iniciar", 200, glutGet(GLUT_WINDOW_HEIGHT)/2.16);
+
+	if(valido == -1){
+		glColor3f(0.7,0.7,0.7);
+		bitmapString("Utilizador invalido!", 150, glutGet(GLUT_WINDOW_HEIGHT)/2.8);
+	}else if(valido == -2){
+		glColor3f(0.7,0.7,0.7);
+		bitmapString("Introduza o nome do utilizador e a password!", 150, glutGet(GLUT_WINDOW_HEIGHT)/2.8);
+	}
+	else if(valido == -3){
+		glColor3f(0.7,0.7,0.7);
+		bitmapString("Introduza a password!", 150, glutGet(GLUT_WINDOW_HEIGHT)/2.8);
+	}
+	else if(valido == -4){
+		glColor3f(0.7,0.7,0.7);
+		bitmapString("Introduza o nome do utilizador!", 150, glutGet(GLUT_WINDOW_HEIGHT)/2.8);
+	}
 
 	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
+}
+
+void setProjection(int x, int y, GLboolean picking)
+{
+	glLoadIdentity();
+	if (picking) { // se est· no modo picking, lÍ viewport e define zona de picking
+		GLint vport[4];
+		glGetIntegerv(GL_VIEWPORT, vport);
+		gluPickMatrix(x, glutGet(GLUT_WINDOW_HEIGHT)  - y, 4, 4, vport); // Inverte o y do rato para corresponder ‡ jana
+	}
+	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
 }
 
 void setProjectionLogin(int x, int y, GLboolean picking)
@@ -1284,7 +1342,7 @@ void Timer(int value)
 			estado.camera.velv = VELOCIDADE_VERTICAL;
 			k = colisaoLivre();
 
-			nz = estado.camera.eye.z + k * estado.camera.velv * sin(estado.camera.dir_lat);
+			nz = estado.camera.eye.z + k * sin(estado.camera.dir_lat);
 			estado.camera.eye.z = nz;
 
 			estado.camera.velv = 0;
@@ -1297,13 +1355,20 @@ void Timer(int value)
 			k = colisaoLivre();
 
 			if(estado.camera.center[2]>=4){
-				nz = estado.camera.eye.z - k * estado.camera.velv * sin(estado.camera.dir_lat);
+				nz = estado.camera.eye.z - k * sin(estado.camera.dir_lat);
 				estado.camera.eye.z = nz;
 			}
 			estado.camera.velv = 0;
 		}
 	}
 	redisplayAll();
+}
+
+void TimerLogin(int value)
+{
+	GLuint curr = glutGet(GLUT_ELAPSED_TIME);
+	glutTimerFunc(estado.timer, TimerLogin, 0);
+	glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -1418,11 +1483,34 @@ void loginKey(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+	case 8:
+		if(state==1 && username.size() > 0)
+		{
+			username.erase(username.size()-1);
+		}
+		else if(state==2 && pass.size() > 0)
+		{
+			pass.erase(pass.size()-1);
+		}
+		break;
+	case 9:
+		if(state==1)
+		{
+			state=2;
+		}
+		else if(state==2 || state==0)
+		{
+			state=1;
+		}
+		break;
 	case 27 :
 		exit(0);
 		break;
 	default:
-		username +=key;
+		if(state==1)
+			username +=key;
+		if(state==2)
+			pass += key;
 		break;
 	}
 	glutPostRedisplay();
@@ -1432,10 +1520,17 @@ void specialLogin(int key, int x, int y)
 {
 	switch(key){
 	case GLUT_KEY_UP :
-		state = 1;
+		if(state==2){
+			state=1;
+		}
 		break;
 	case GLUT_KEY_DOWN :
-		state=2;
+		if(state==0){
+			state=1;
+		}
+		else if(state==1){
+			state=2;
+		}
 		break;
 	}
 }
@@ -1528,6 +1623,29 @@ void Reshape(int w, int h)
 	height = h;
 }
 
+void Reshape2(int width, int height)
+{
+	// glViewport(botom, left, width, height)
+	// define parte da janela a ser utilizada pelo OpenGL
+
+	glViewport(0, 0, (GLint) width, (GLint) height);
+
+
+	// Matriz Projeccao
+	// Matriz onde se define como o mundo e apresentado na janela
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// gluOrtho2D(left,right,bottom,top); 
+	// projeccao ortogonal 2D, com profundidade (Z) entre -1 e 1
+	gluOrtho2D(0, width, 0, height);
+
+	// Matriz Modelview
+	// Matriz onde s√£o realizadas as tranformacoes dos modelos desenhados
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 void motionRotate(int x, int y)
 {
 #define DRAG_SCALE	0.01
@@ -1608,6 +1726,56 @@ void motionDrag(int x, int y)
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glutPostRedisplay();
+}
+
+void Square (int x, int y,int w,int h)
+{
+	//material(azul);
+	//glEnable(GL_BLEND);
+	//glDepthMask(GL_FALSE);
+
+	glDisable(GL_LIGHTING);
+	glPushMatrix();
+	glLoadIdentity();
+	glViewport(x,y,250,250);
+	//glViewport(tooltip.posX,tooltip.posY,tooltip.dimX,tooltip.dimY);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-tooltip.dimX,tooltip.dimX,-tooltip.dimY,tooltip.dimY,0,100);
+	glOrtho(-250,250,-250,250,0,100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_POLYGON);
+		glVertex2f(0,0);
+		glVertex2f(-250,0);
+		glVertex2f(-250,-250);
+		glVertex2f(0,-250);
+	glEnd();
+	glPopMatrix();
+
+	//glDepthMask(GL_TRUE);
+	//glDisable(GL_BLEND);
+  /*
+  glPushMatrix();
+
+  glTranslatef(estado.camera.center[0],estado.camera.center[1],estado.camera.center[2]);
+
+  glBegin (GL_QUADS);
+	  //glTexCoord2i(0, 0); 
+	  glVertex3f ( u[0] + v[0],  u[1] + v[1],  u[2] + v[2]);
+	  //glTexCoord2i(1, 0); 
+	  glVertex3f (-u[0] + v[0], -u[1] + v[1], -u[2] + v[2]);
+	  //glTexCoord2i(1, 1); 
+	  glVertex3f (-u[0] - v[0], -u[1] - v[1], -u[2] - v[2]);
+	  //glTexCoord2i(0, 1); 
+	  glVertex3f ( u[0] - v[0],  u[1] - v[1],  u[2] - v[2]);
+  glEnd ();
+
+  glPopMatrix();
+  */ 
 }
 
 int picking(int x, int y)
@@ -1829,6 +1997,7 @@ void mouse(int btn, int state, int x, int y)
 			estado.eixoTranslaccao=picking(x,y);
 			if(estado.eixoTranslaccao)
 				glutMotionFunc(motionDrag);
+
 			//cout << "Right down - objecto:" << estado.eixoTranslaccao << endl;
 		}
 		else{
@@ -1854,53 +2023,153 @@ void mouseToolTip(int x, int y){
 
 }
 
-void main(int argc, char **argv)
+void processaUser()
 {
-	alutInit (&argc, argv);
-	InitAudio();
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(width, height);  
-	glutCreateWindow("Graphs4Social");
-	glutReshapeFunc(myReshape);
-	glutDisplayFunc(display);
-	glutTimerFunc(estado.timer,Timer,0);
-	glutKeyboardFunc(keyboard);
-	glutKeyboardUpFunc(keyboardUp);
-	glutSpecialFunc(Special);
-	glutSpecialUpFunc(SpecialKeyUp);
-	glutMouseFunc(mouse);
+	if(username.compare("leniker")==0 && pass.compare("gomes")==0)
+	{
+		glutDestroyWindow(1);
+		glutInitWindowPosition(0, 0);
+		glutInitWindowSize(width,height);		glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
 
-	glutPassiveMotionFunc(mouseToolTip);
+		if (glutCreateWindow("Graphs4Social") == GL_FALSE)
+			exit(1);
+		glutReshapeFunc(myReshape);
+		glutDisplayFunc(display);
+		glutTimerFunc(estado.timer,Timer,0);
+		glutKeyboardFunc(keyboard);
+		glutKeyboardUpFunc(keyboardUp);
+		glutSpecialFunc(Special);
+		glutSpecialUpFunc(SpecialKeyUp);
+		glutMouseFunc(mouse);
+		myInit();
+		imprime_ajuda();
 
-	myInit();
-	imprime_ajuda();
+		// criar a sub window topSubwindow
+		estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
+		myInit();
+		glutReshapeFunc(redisplayTopSubwindow);
+		glutDisplayFunc(displayTopSubwindow);
+		valido = 1;
+	}else{
+		valido = -1;
+	}
+}
 
-	// criar a sub window topSubwindow
-	estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
-	myInit();
-	glutReshapeFunc(redisplayTopSubwindow);
-	glutDisplayFunc(displayTopSubwindow);
+void processHits(GLint hits, GLuint buffer[])
+{
+	int i;
+	unsigned int j;
+	GLuint names, *ptr, name=0;
 
-	glutMainLoop();
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < hits; i++) {  /* for each hit  */
+		names = *ptr;
+		ptr+=3;
+
+		for (j = 0; j < names; j++) {  /* for each name */
+			name += *ptr;
+			ptr++;
+		}
+		if(name == 1){
+			state = 1;
+		}
+		if(name == 2){
+			state = 2;
+		}
+		if(name == 3){
+			if(username.compare("")==0  && pass.compare("")==0){
+				valido = -2;
+			}else if(pass.compare("")==0){
+				valido = -3;
+			}else if(username.compare("")==0){
+				valido = -4;
+			}else{
+				processaUser();
+			}
+		}
+		ptr++;
+	}
+}
+
+void escolheTextbox(int button, int state, int x, int y)
+{
+	GLuint selectBuf[BUFSIZE];
+	GLint hits;
+
+	if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+
+	glSelectBuffer(BUFSIZE, selectBuf);
+	(void) glRenderMode(GL_SELECT);
+
+	glInitNames();
+
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	setProjectionLogin(x,y,GL_TRUE);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	desenhaTextBox(GL_SELECT, 150,350, glutGet(GLUT_WINDOW_HEIGHT)/1.4, glutGet(GLUT_WINDOW_HEIGHT)/1.5,1);
+	desenhaTextBox(GL_SELECT, 150,350, glutGet(GLUT_WINDOW_HEIGHT)/1.66, glutGet(GLUT_WINDOW_HEIGHT)/1.8,2);
+	desenhaTextBox(GL_SELECT, 150,300, glutGet(GLUT_WINDOW_HEIGHT)/2.0, glutGet(GLUT_WINDOW_HEIGHT)/2.2,3);
+	glPopMatrix();
+	glFlush();
+
+	hits = glRenderMode(GL_RENDER);
+	processHits(hits, selectBuf);
+	Reshape2(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
+	glutPostRedisplay();
 }
 
 /*
 void main(int argc, char **argv)
 {
+alutInit (&argc, argv);
+InitAudio();
 glutInit(&argc, argv);
-glutInitWindowPosition(0, 0);
-glutInitWindowSize(width,height);
-glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
-if (glutCreateWindow("Graphs4Social") == GL_FALSE)
-exit(1);
-// callbacks de janelas/desenho
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(width, height);  
+glutCreateWindow("Graphs4Social");
+glutReshapeFunc(myReshape);
+glutDisplayFunc(display);
 glutTimerFunc(estado.timer,Timer,0);
-glutReshapeFunc(Reshape2);
-glutDisplayFunc(Draw);
-glutKeyboardFunc(loginKey);
-glutSpecialFunc(specialLogin);
-// COMECAR...
+glutKeyboardFunc(keyboard);
+glutKeyboardUpFunc(keyboardUp);
+glutSpecialFunc(Special);
+glutSpecialUpFunc(SpecialKeyUp);
+glutMouseFunc(mouse);
+
+	glutPassiveMotionFunc(mouseToolTip);
+
 myInit();
+imprime_ajuda();
+
+// criar a sub window topSubwindow
+estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
+myInit();
+glutReshapeFunc(redisplayTopSubwindow);
+glutDisplayFunc(displayTopSubwindow);
+
 glutMainLoop();
 }*/
+
+void main(int argc, char **argv)
+{
+	glutInit(&argc, argv);
+	glutInitWindowPosition(width/2.0, 0);
+	glutInitWindowSize(width,height);
+	glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB);
+	if (glutCreateWindow("Graphs4Social") == GL_FALSE)
+		exit(1);
+	// callbacks de janelas/desenho
+	glutTimerFunc(estado.timer,TimerLogin,0);
+	glutMouseFunc(escolheTextbox);
+	glutReshapeFunc(Reshape2);
+	glutDisplayFunc(Draw);
+	glutKeyboardFunc(loginKey);
+	glutSpecialFunc(specialLogin);
+	myInit();
+	glutMainLoop();
+}

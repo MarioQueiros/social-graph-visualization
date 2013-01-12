@@ -226,5 +226,3 @@ run2 :-
 	write('insira o nome do user a verificar: (termine com ponto .)'),nl,read(X),
 	ligado(X,_),!,nl,write('Existe').
 
-
-

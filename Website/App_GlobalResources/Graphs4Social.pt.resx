@@ -270,4 +270,16 @@
   <data name="Inicio_EstadoOutro2" xml:space="preserve">
     <value> hoje</value>
   </data>
+  <data name="Error_Link" xml:space="preserve">
+    <value>Voltar para a página principal</value>
+  </data>
+  <data name="Error_Texto1" xml:space="preserve">
+    <value>O conteúdo encontra-se inacessível</value>
+  </data>
+  <data name="Error_Texto2" xml:space="preserve">
+    <value>A página que procuras não pode ser mostrada de momento.</value>
+  </data>
+  <data name="Error_Texto3" xml:space="preserve">
+    <value>Poderá estar momentaneamente indisponível, o link pode ter expirado ou poderás não ter permissão para aceder a esta página.</value>
+  </data>
 </root>

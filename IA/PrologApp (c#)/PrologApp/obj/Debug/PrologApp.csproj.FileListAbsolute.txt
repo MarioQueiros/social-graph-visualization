@@ -1,5 +1,0 @@
-C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\Debug\PrologApp.exe
-C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\Debug\PrologApp.pdb
-C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\bin\Debug\LPA.DLL
-C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\obj\Debug\PrologApp.exe
-C:\Users\Administrador\Documents\Visual Studio 2012\Projects\PrologApp\PrologApp\obj\Debug\PrologApp.pdb

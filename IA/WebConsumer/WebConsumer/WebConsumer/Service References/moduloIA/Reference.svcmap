@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="b4c38da2-3944-456a-a7fd-14fce8124a28" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="moduloIA.xsd" MetadataType="Schema" ID="e9879f6a-7c19-4c6c-9122-67a95577775b" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd0" />
+    <MetadataFile FileName="moduloIA.wsdl" MetadataType="Wsdl" ID="b3956022-4d4f-4ac7-820b-7434715df1eb" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?wsdl" />
+    <MetadataFile FileName="moduloIA1.xsd" MetadataType="Schema" ID="b0d96757-fdf1-40c5-83a0-c2c93c23736f" SourceId="1" SourceUrl="http://wvm035.dei.isep.ipp.pt/IA/moduloIA.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

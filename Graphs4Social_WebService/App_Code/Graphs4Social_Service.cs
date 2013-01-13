@@ -14,6 +14,7 @@ public class Graphs4Social_Service : IGraphs4Social_Service
     public string carregaGrafo(string username)
     {
         Grafo grafo = new Grafo(username);
+        return grafo.toString();
     }
 
 

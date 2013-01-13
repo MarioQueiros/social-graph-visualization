@@ -1,1 +1,5 @@
-2013/01/12-11:12:31.903 e78 Delete type=3 #1
+2013/01/13-15:30:35.632 1ac0 Recovering log #15
+2013/01/13-15:30:35.632 1ac0 Level-0 table #18: started
+2013/01/13-15:30:35.670 1ac0 Level-0 table #18: 1679 bytes OK
+2013/01/13-15:30:35.825 1ac0 Delete type=0 #15
+2013/01/13-15:30:35.827 1ac0 Delete type=3 #13

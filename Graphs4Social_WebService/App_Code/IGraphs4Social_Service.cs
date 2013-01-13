@@ -9,13 +9,12 @@ using Graphs4Social_AR;
 [DataContract]
 public class Grafo
 {
-    [DataMember]
     public int NrNos { get; set; }
-    [DataMember]
+
     public int NrArcos { get; set; }
-    [DataMember]
+
     public IList<User> Users { get; set; }
-    [DataMember]
+
     public IList<Ligacao> Ligacoes { get; set; }
 
     public Grafo(string username)
@@ -29,7 +28,14 @@ public class Grafo
         Users[0].X = 0;
         Users[0].Y = 0;
         Users[0].Z = 0;
-
+        //
+        double numTags = Users[0].Tags.Count;
+        double numTagsTotal = Graphs4Social_AR.Tag.LoadAllTag().Count;
+        //
+        double minraio = 3;
+        double maxraio = 7.5;
+        double raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
+        Users[0].Raio = raio;
         //  Carrega as ligações do user
         //  IList<string> ligacoes = RedeNivel2(userdono,U)
 
@@ -88,7 +94,7 @@ public class Grafo
         Random valor = new Random();
 
         // Cota - NAO ESQUECER - NR LIGACOES DIRECTAS - PROLOG
-        int cota = 0;
+        double cota = 0;
 
         while(notDone){
             foreach (Ligacao ligacao in Ligacoes)
@@ -114,6 +120,11 @@ public class Grafo
                     }
                     //
                     Users[ligacao.Id2].Z = cota;
+                    //
+                    numTags = Users[ligacao.Id2].Tags.Count;
+                    //
+                    raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
+                    Users[ligacao.Id2].Raio = raio;
                 }
                 else
                     tentativas = 4;
@@ -124,7 +135,7 @@ public class Grafo
                     {
                         if (!(Ligacoes[j].Id1 == ligacao.Id1 && Ligacoes[j].Id2 == ligacao.Id2))
                         {
-                            if (this.intersecta(Users[Ligacoes[j].Id1], Users[Ligacoes[j].Id2], Users[ligacao.Id1], Users[ligacao.Id2]))
+                            if (this.intersecta(Users[Ligacoes[j].Id1], Users[Ligacoes[j].Id2], Users[ligacao.Id1], Users[ligacao.Id2], Users[ligacao.Id2].Raio))
                             {
                                 tentativas++;
                                 j = 0;
@@ -155,7 +166,7 @@ public class Grafo
 
     }
 
-    public bool intersecta(User userDono1, User userLigado1, User userDono2, User userLigado2)
+    public bool intersecta(User userDono1, User userLigado1, User userDono2, User userLigado2, double raio)
     {
         if (userLigado1.Definido)
         {
@@ -168,7 +179,7 @@ public class Grafo
             double ub_t = (userLigado1.X - userDono1.X) * (userDono1.Y - userDono2.Y) - (userLigado1.Y - userDono1.Y) * (userDono1.X - userDono2.X);
             double u_b = (userLigado2.Y - userDono2.Y) * (userLigado1.X - userDono1.X) - (userLigado2.X - userDono2.X) * (userLigado1.Y - userDono1.Y);
 
-            double raio = 2.5;
+
             double hip = Math.Sqrt(Math.Pow(raio, 2) + Math.Pow(raio, 2));
 
             if (u_b != 0)
@@ -544,7 +555,8 @@ public class Grafo
             txt += "\n";
             txt += user.X + " ";
             txt += user.Y + " ";
-            txt += user.Z;
+            txt += user.Z + " ";
+            txt += user.Raio;
             txt += "||";
             txt += user.Username + "||[";
 
@@ -557,7 +569,7 @@ public class Grafo
                 else
                 {
                     txt += "|" + text;
-                }
+                } 
             }
 
 
@@ -595,26 +607,21 @@ public class Grafo
 }
 
 
-[DataContract]
 public class User
 {
-    [DataMember]
     public double X { get; set; }
 
-    [DataMember]
     public double Y { get; set; }
 
-    [DataMember]
     public double Z { get; set; }
 
-    [DataMember]
     public string Username { get; set; }
 
-    [DataMember]
     public IList<Graphs4Social_AR.Tag> Tags { get; set; }
 
-    [DataMember]
     public IList<string> Profile { get; set; }
+
+    public double Raio { get; set; }
 
     public bool Definido { get; set; }
 
@@ -644,7 +651,6 @@ public class Ligacao
 
     
 
-    [DataMember]
     public string Tag { get; set; }
 
     public Ligacao(int id1, int id2, string username1, string username2)
@@ -672,9 +678,6 @@ public class Ligacao
 [ServiceContract]
 public interface IGraphs4Social_Service
 {
-    [OperationContract]
-    void DoWork();
-
     [OperationContract]
     string carregaGrafo(string username);
 

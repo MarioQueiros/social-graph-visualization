@@ -17,7 +17,15 @@
 #define	CHAO_DIMENSAO	100
 #define	OBJECTO_ALTURA	0.8
 #define BUFSIZE 100
+#define SCALE_HOMER               0.05
 
+
+//texturas
+#define NOME_TEXTURA_CHAO         "Chao.jpg"
+
+#define NUM_TEXTURAS              2
+#define ID_TEXTURA_CHAO           1
+#define JANELA_TOP                0
 
 typedef struct No{
 	float x,y,z,largura;

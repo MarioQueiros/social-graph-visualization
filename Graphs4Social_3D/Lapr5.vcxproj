@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -58,7 +58,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -70,6 +70,9 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;alut.lib;OpenAL32.lib;alut.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files %28x86%29\OpenAL 1.1 SDK\libs\Win32;C:\Program Files %28x86%29\freealut-1.1.0-bin\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LinkStatus>
+      </LinkStatus>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -97,9 +100,23 @@
   <ItemGroup>
     <ClCompile Include="grafos.cpp" />
     <ClCompile Include="lapr5.cpp" />
+    <ClCompile Include="math.cpp" />
+    <ClCompile Include="mdlviewer.cpp" />
+    <ClCompile Include="readjpeg.c" />
+    <ClCompile Include="studio_render.cpp" />
+    <ClCompile Include="studio_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="grafos.h" />
+    <ClInclude Include="jconfig.h" />
+    <ClInclude Include="jmorecfg.h" />
+    <ClInclude Include="jpeglib.h" />
+    <ClInclude Include="mathlib.h" />
+    <ClInclude Include="mdlviewer.h" />
+    <ClInclude Include="studio.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Chao.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -53,15 +53,6 @@ redeNivel2(U,R):-user(U),findall(X,ligado(U,X),R).
 redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
 
 
-%para criar o grafo
-grafoNivel3(U,R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(X,R2),append(R1,R2,R).
-
-ligacaoCompl(_,[],[]).
-ligacaoCompl(U1,[U2|L],R):-lig(U1,U2,Nr),add([U1,U2,Nr],R1,R),ligacaoCompl(U1,L,R1),!.
-
-ligacaoAmigos([],[]).
-ligacaoAmigos([U|L],R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(L,R2),append(R1,R2,R).
-
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
@@ -80,7 +71,7 @@ somaL([LA|LB],V,RV,[LA|RS]):-append([LA],V,XV),somaL(LB,XV,RV,RS).
 %User, Lista Tags, Amigos
 amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).
 
-traduz([T|TR],[F|FR]):-traduzir(T,F),!,tag(F,_),traduz(TR,FR).
+traduz([T|TR],[F|FR]):-traduzir(T,F),tag(F,_),!,traduz(TR,FR).
 traduz([T|TR],[T|R]):-tag(T,_),traduz(TR,R).
 traduz([],[]).
 
@@ -171,7 +162,6 @@ add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
 
-
 deletelist([], _, []).                  
 deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
 deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
@@ -226,12 +216,8 @@ string_to_list(S,L):-
     eread(L) <~ S2.
 
 
-
 %contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
 %contaPassos([],0).
-
-runTamanhoNivel2(U):-tamanho2(U,X),write(X).
-runTamanhoNivel3(U):-tamanho3(U,X),write(X).
 	
 %para criar o grafo
 grafoNivel3(U,R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(X,R2),append(R1,R2,R).

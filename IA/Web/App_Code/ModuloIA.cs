@@ -60,12 +60,17 @@ public class moduloIA : IModuloIa
         return float.Parse(carregaPL(op).Trim());
     }
 
+    public string grafoNivel3(string user)
+    {
+        return carregaPL("grafoNivel3(" + user + ",R)");
+    }
+
     public string debug()
     {
-        //return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
+        return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
         //return Process.GetProcesses()[0].Modules[0].FileName;
-        const string op = "grauMedio(R)";
-        return carregaPL(op);
+        /*const string op = "grauMedio(R)";
+        return carregaPL(op);*/
     }
 
     private string carregaPL(string op)
@@ -94,35 +99,13 @@ public class moduloIA : IModuloIa
             }
         }
 
-        String exe = dir + "PRO386W.EXE";
-        String arg = "consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
-        // String arg = "/V1 consult('"+dir+"exe.pl').";
+        const string exe = dir + "PRO386W.EXE";
+        const string arg = "consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
 
         var processStartInfo = new ProcessStartInfo(exe, arg) { UseShellExecute = false };
         var xs = Process.Start(processStartInfo);
         xs.WaitForExit(5000);
-        //System.Threading.Thread.Sleep(4000);
-
-        /*processStartInfo = new ProcessStartInfo("C:\\inetpub\\wwwroot\\chamaProlog.exe") { UseShellExecute = false };
-        Process.Start(processStartInfo);
-        System.Threading.Thread.Sleep(1500);*/
-
-
-        /* Process p  = new Process();
-        p.StartInfo = processStartInfo;
-        p.PriorityClass=ProcessPriorityClass.RealTime;
-        var x = p.ToString();
-        p.Start();
-        System.Threading.Thread.Sleep(1500);
-        p.Kill();
-        return x;*/
-
-        /* cmd = "/c \"" + exe + " " + arg + "\"";
-         var procStartInfo = new ProcessStartInfo("cmd",cmd);
-         Process.Start(procStartInfo);
-         String[] temp = {cmd};
-         System.IO.File.WriteAllLines(dir +"DEBUG.TXT", temp);*/
-
+  
 
         string text = System.IO.File.ReadAllText(dir + "output.txt");
         return text;
@@ -140,7 +123,7 @@ public class moduloIA : IModuloIa
         // processStartInfo.UseShellExecute = false;
         // System.Diagnostics.Process.Start(processStartInfo);
 
-        ///* String[] temp = { exe + " " + arg };
+        // String[] temp = { exe + " " + arg };
         // System.IO.File.WriteAllLines(@"W:\PL\DEBUG.TXT", temp);*/
 
         // System.Diagnostics.Process.Start(processStartInfo);

@@ -1,0 +1,508 @@
+SETUTL
+
+%   Author : Lawrence Byrd + R.A.O'Keefe
+%   Purpose: Set manipulation utilities
+
+Sets are represented as lists with no repeated elements.
+
+In some cases, where efficiency is mandatory, ordered sets should be
+preferred: the ORDSET package provides such predicates.
+
+________________________________________________________________________
+
+add_element/3
+
+add an element to a set
+
+	add_element(Element, Set1, Set2)
+
+	+Element	<term>
+	+Set1		<list>
+	-Set2		<variable>
+	
+
+	Set2 is Set1 + {Element} where + denotes the union of sets.
+
+
+	Examples
+
+		?- add_element(a, [a,b,c,d], S).
+		S = [a,b,c,d]
+
+		?- add_element(a, [e,f,g], S).
+		S = [a,e,f,g]
+
+		?- add_element(a, [], S).
+		S = [a].
+
+________________________________________________________________________
+
+del_element/3
+
+delete an element from a set
+
+	del_element(Element, Set1, Set2)
+
+	+Element	<term>
+	+Set1		<list>
+	-Set2		<variable>
+	
+
+	Set2 is Set1 \ {Element} where \ denotes the sets difference.
+
+
+	Examples
+
+		?- del_element(a, [a,b,c,d], S).
+		S = [b,c,d]
+
+		?- del_element(a, [e,f,g], S).
+		S = [e,f,g]
+
+		?- del_element(a, [], S).
+		S = [].
+
+________________________________________________________________________
+
+disjoint/1
+
+test for the absence of repeated elements
+
+	disjoint(Set)
+
+	+Set		<list>
+
+	disjoint(Set) is true when Set is a list that contains no
+	repeated elements.
+
+	Examples
+
+		?- disjoint([]).
+		yes
+
+		?- disjoint([a,b,c]).
+		yes
+
+		?- disjoint([a,b,c,a]).
+		no
+
+________________________________________________________________________
+
+disjoint/2
+
+test whether two sets are disjoint, i.e., when two sets have no
+elements in common
+
+	disjoint(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+	disjoint(Set1, Set2) is true when the intersection of Set1 and Set2
+	is the empty set.
+
+	Examples
+
+		?- disjoint([], []).
+		yes
+
+		?- disjoint([a,b,c], [d,e,f]).
+		yes
+		
+		?- disjoint([a,b,c], [c,d,e]).
+		no
+		
+		?- disjoint([a,b,c], []).
+		yes
+
+________________________________________________________________________
+
+intersect/2
+
+check whether two sets intersect
+
+	intersect(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+	intersect(Set1, Set2) is true when the intersection of Set1
+	and Set2 is not empty, i.e., Set1 and Set2 are sharing at
+	least one element.
+
+	Examples
+
+		?- intersect([a,b,d], [a,b,e,f]).
+		yes
+
+		?- intersect([a,b,c], [d,e,f]).
+		no
+
+		?- intersect([a,b,c], []).
+		no
+
+		?- intersect([], []).
+		no
+
+________________________________________________________________________
+
+intersect/3
+
+compute the intersection of two sets
+
+	intersect(Set1, Set2, Intersection)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Intersection	<list> or <variable>
+
+	intersect(Set1, Set2, Intersection) is true when Intersection
+	is the intersection of Set1 and Set2, *taken in a particular
+	order*.  In fact it is precisely the elements of Set1 taken
+	in that order, with elements not in Set2 deleted.
+	If Set1 contains duplicates, so may Intersection.
+
+	Examples
+
+		?- intersect([a,b,d], [a,b,e,f], I).
+		I = [a,b]
+
+		?- intersect([a,b,c], [d,e,f], I).
+		I = []
+
+		?- intersect([a,b,c], [], I).
+		I = []
+
+		?- intersect([], [], I).
+		I = []
+
+		?- intersect([a,b,c], [f,a,c], [a,c]).
+		yes
+
+		?- intersect([a,b,c], [f,a,c], [c,a]).
+		no
+
+________________________________________________________________________
+
+listtoset/2
+
+convert a list of elements to a set (i.e. removes duplicates)
+
+	listtoset(List, Set)
+
+	+List		<list>
+	-Set		<variable>
+
+	listtoset(List, Set) is true when List and Set are lists, and
+	Set has the same elements as List in the same order, except
+	that Set contains no duplicates.
+
+	Examples
+
+		?- listtoset([a,b,c], S).
+		S = [a,b,c]
+
+		?- listtoset([a,b,c,a,a,b,c], S).
+		S = [a,b,c]
+		
+		?- listtoset([], S).
+		S = []
+
+________________________________________________________________________
+
+memberchk/2
+
+check a member of a list
+
+	memberchk(Element, List)
+
+	+Element	<term>
+	+List		<list>
+
+	memberchk(Element, List) checks whether Element is a member
+	of List.
+
+	memberchk/2 is deterministic and as such is supposedly more
+	efficient than member/2 when the work amounts just to member
+	checking. 
+
+	The result of memberchk/2 is irrelevant if the input modes
+	for Element and List are not respected.
+
+	Examples
+
+		?- memberchk(a, [a,b,a,d])
+		yes
+
+		?- memberchk(c, [a,b,d])
+		no
+	
+		?- memberchk(a, [])
+		no
+
+________________________________________________________________________
+
+nonmember/2
+
+check if an element does not occur in a set
+
+	nonmember(Element, Set)
+
+	+Element	<term>
+	+Set		<list>
+
+	The term Element is not a member of the set Set. The checking
+	for membership is made using == and not =, this means that
+	for non-ground terms strict equality is used.
+
+	nonmember(X,S) is not quite the same as \+ member(X,S).
+
+	Examples
+
+		?- nonmember(a, [b,c,d]).
+		yes
+
+		?- nonmember(a, [b,a,c,a,d]).
+		no
+
+		?- nonmember(a(X), [a(u), b(c)]).
+		X = _
+
+		?- nonmember(a(u), [a(u), b(c)]).
+		no
+
+		?- nonmember(a(X), [a(X), b(C)]).
+		no
+
+		?- nonmember(a(X), [a(Y), b(C)]).
+		X = _,
+		Y = _,
+		C = _
+
+________________________________________________________________________
+
+pairfrom/4
+
+generate pairs of elements from a list
+
+	pairfrom(Set, Element1, Element2, Residue)
+
+	?Set		<list> or <variable>
+	?Element1	<term> or <variable>
+	?Element2	<term> or <variable>
+	?Residue	<list> or <variable>
+
+	pairfrom(Set, Element1, Element2, Residue) is true when Set
+	is a list, Element1 occurs in list, Element2 occurs in list
+	anywhere after Element1, and Residue is everything in Set but
+	the two Elements. The point of this is to select pairs of elements
+	from a set without selecting the same pair twice in different
+	orders. 
+
+	Example
+
+		?- pairfrom([a,b,c], Elem1, Elem2, Residue).
+		Elem1 = a ,
+		Elem2 = b ,
+		Residue = [c] ;
+
+		Elem1 = a ,
+		Elem2 = c ,
+		Residue = [b] ;
+
+		Elem1 = b ,
+		Elem2 = c ,
+		Residue = [a] ;
+
+		no
+
+________________________________________________________________________
+
+select/3
+
+pick up an element in a set and computes the residue
+
+	select(Element, Set, Residue)
+
+	?Element	<term> or <variable>
+	?Set		<list> or <variable>
+	?Residue	<list> or <variable>
+
+	select(Element, Set, Residue) is true when Set is a list,
+	Element occurs in Set, and Residue is everything in Set
+	except Element (things stay in the same order).
+
+	select/3 offers the same functionality as the LPA 386-PROLOG
+	buil-in predicate: remove/3.
+
+	Example
+
+		?- select(E, [a,b,c], R).
+		E = a ,
+		R = [b,c] ;
+
+		E = b ,	
+		R = [a,c] ;
+
+		E = c ,
+		R = [a,b] ;
+
+		no
+
+________________________________________________________________________
+
+seteq/2
+
+check whether two sets are equivalent, i.e., they contain the same
+elements 
+
+	seteq(Set1, Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+
+	seteq(Set1, Set2) is true when each Set is a subset of the
+	other. 
+
+	Examples
+
+		?- seteq([], []).
+		yes
+
+		?- seteq([a,b,c], [c,a,a,b,b,c]).
+		yes
+
+		?- seteq([a,b,c], [c,a,d,e]).
+		no.
+
+________________________________________________________________________
+
+subset/2
+
+check whether a set is a subset of another
+
+
+	subset(+Set1, +Set2)
+
+	+Set1		<list>
+	+Set2		<list>
+
+
+	subset(+Set1, +Set2) is true when each member of Set1 occurs
+	in Set2.
+
+	Examples
+
+		?- subset([a,b], [a,b,d,e]).
+		yes
+
+		?- subset([], [a,c]).
+		yes
+
+		?- subset([a,b], [a,c]).
+		no
+
+		?- subset([a], []).
+		no
+
+________________________________________________________________________
+
+subtract/3
+
+compute the set difference between two sets
+
+	substract(Set1, Set2, Difference)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Difference	<list> or <variable>
+
+	Difference is the set of elements in Set1 but not in Set2.
+
+
+	Examples
+
+		?- subtract([a,b], [c,d], S).
+		S = [a,b]
+
+		?- subtract([a,b], [a,c,d], S).
+		S = [b]
+
+		?- subtract([a,b], [a,b], S).
+		S = []
+
+		?- subtract([a,b], [], S).
+		S = [a,b]
+
+		?- subtract([], [a,b], S).
+		S = []
+
+________________________________________________________________________
+
+symdiff/3
+
+compute the symetric difference between two sets
+
+	symdiff(Set1, Set2, Difference)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Difference	<list> or <variable>
+
+
+	symdiff(Set1, Set2, Diff) is true when Diff is the symetric
+	difference of Set1 and Set2. I.e., Diff contains the elements
+	present in either Set1 or Set2 but not in both.
+
+	The following although inefficient is a definition of the
+	symetrical difference in terms of union, intersection and
+	subtraction. 
+
+	symdiff(Set1, Set2, Diff) :-
+		union(Set1, Set2, Union),
+		intersect(Set1, Set2, Intersect),
+		subtract(Union, Intersect, Diff).
+
+	Examples
+
+		?- symdiff([], [], S).
+		S = []
+
+		?- symdiff([a,b], [d,e], S).
+		S = [a,b,d,e]
+
+		?- symdiff([a,b], [a,c], S).
+		S = [b,c]
+
+		?- symdiff([a,b], [a,b], S).
+		S = []
+
+________________________________________________________________________
+
+union/3
+
+compute the union of two sets
+
+	union(Set1, Set2, Union)
+
+	+Set1		<list>
+	+Set2		<list>
+	?Union		<list> or <variable>
+
+	union(Set1, Set2, Union) is true when subtract(Set1, Set2,
+	Diff) and append(Diff, Set2, Union), that is, when Union is
+	the elements of Set1 that do not occur in Set2, followed by
+	all the elements of Set2.
+
+	Examples
+
+		?- union([], [], S).
+		S = []
+
+		?- union([a,b], [a,b], S).
+		S = [a,b]
+
+		?- union([a,b,c], [c,d,e,a], S).
+		S = [b,c,d,e,a]
+

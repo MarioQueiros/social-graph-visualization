@@ -1,0 +1,505 @@
+<HTML>
+
+<HEAD>
+<TITLE>Source Code: Forest Yield</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="white.css"></LINK>
+</HEAD>
+
+<BODY>
+
+<H2>Source Code: Forest Yield</H2>
+<H3>YIELD.KSL Listing</H3>
+<PRE>
+/*
+    Forest Yield Example
+
+    This example implements a simple expert system that recommends a
+    species of tree seed, where to get the seed from, the normal yield
+    of the seed and how that yield should be varied according to a
+    description of the location, soil and conditions that hold where the
+    seed is to be planted.
+
+    Description
+    -----------
+    The problem is structured around a backward-chaining relation that
+    defines which attributes are needed to recommend a particular seed.
+    These attributes include the location of the site, its soil-type,
+    elevation, exposure and climate. When the program is testing for the
+    existance of a given set of attribute values the questions relating
+    to those attributes are asked automatically. After a suitable seed
+    has been found, the best provenance for the seed and its expected
+    yield, given the location, are calculated.
+
+    The top-level goal ensures that all the possible solutions are
+    returned.
+
+    Running The Example
+    -------------------
+    The forest yield example asks a series of questions and then reports
+    the recommended species of tree based on the given answers. To run the
+    example enter the following goal at the command line:
+
+    ?- run .
+
+    Flex Technical Points
+    ---------------------
+    The following flex technical points are demonstrated in this example:
+
+    1. The automatic asking of questions when an attribute is tested.
+
+    2. The use of group ordering in testing the answer to questions
+
+    3. The difference between setting values for logical and global
+       variables.
+
+*/
+
+% The following templates aid the readability of the code
+
+template valid_species_yield
+   valid ^ and ^ combination .
+
+template species_yields
+   can find ^ with yields ^ and ^ .
+
+template notes1
+   obtain seed for ^ from ^ .
+
+template notes2
+   compute ^ for ^ .
+
+template notes3
+   ^ returns a variance of ^ .
+
+template output
+  output ^, ^, ^ and ^ to the screen .
+
+
+% The following top-level action gets as many species and yield
+% combinations that conform to the answers given.
+
+action  run ;
+   do  restart
+   and '~&gt;'( start, Text )
+   and if Text is `` then write( '&lt;b&gt;No species in this knowledge base matches the data entered.&lt;//b&gt;' )
+       else write( Text )
+       end if .
+
+action start ;
+   do  for every valid Species and Yield combination
+                 and   obtain seed for Species from Provenance
+                 and   compute Variance for Provenance
+       do output Species, Provenance, Yield and Variance to the screen
+   end for .
+
+% The questions are defined in the following section
+
+question site
+   Which region is the site located in ? ;
+   choose one of site_types .
+
+group site_types
+   'North Scotland',
+   'East Scotland',
+   'West Scotland' .
+
+question soil
+   Which type of soil can be found at the site ? ;
+   choose one of soil_types .
+
+group soil_types
+   'Brown earth',
+   'Gley',
+   'Peat',
+   'Podsol',
+   'Ironpan',
+   'Intergrade',
+   'Bog',
+   'Alluvium',
+   'Skeletal' .
+
+question elevation
+   At which elevation zone is the site located ? ;
+   choose one of 'Lower',
+                 'Upper' .
+
+question exposure
+   In which range does the site exposure lie ? ;
+   choose one of exposure_types
+   because 'Low' = TOPEX &lt; 30, and 'High' = TOPEX &gt; 60 .
+
+group exposure_types
+   'Low', 'Moderate', 'High'.
+
+question gley
+   Which type of gley is it ? ;
+   choose one of 'Surface water gley',
+                 'Flushed gley',
+                 'Unflushed gley',
+                 'Peaty gley' .
+
+question status
+   What is the status of the peaty gley ? ;
+   choose one of 'Good',
+                 'Poor' .
+
+question peat
+   Which type of peat is it ? ;
+   choose one of 'Flushed peat',
+                 'Unflushed peat',
+                 'Basin peat',
+                 'Hill peat' .
+
+question bog
+   Which type of bog is it ? ;
+   choose one of 'Flushed bog',
+                 'Unflushed bog' .
+
+question moisture
+   What is the predominant climate of the site  ;
+   choose one of 'Wet',
+                 'Dry' .
+
+question grass
+   Which grass is local to the site ? ;
+   choose one of 'Heather',
+                 'Blue moor grass' .
+
+question plough
+   Which method of ploughing is used ? ;
+   choose one of 'Complete',
+                 'Spaced line' .
+
+question flush
+   Is the flush local or not ? ;
+   choose one of 'Local',
+                 'Non-local' .
+
+% This section defines the main species and their yield class (both
+% lower and upper) according to:
+%
+% i.   Site location
+% ii.  Site elevation
+% iii. Soil type
+% iv.  Soil sub-type
+% v.   Other miscellaneous factors
+
+% Given the site location, the specific yield can be
+% chosen from the upper yield or the lower yield.
+
+
+relation valid Species and Yield combination
+   if  can find Species with yields Yield1 and Yield2
+   and if   the elevation is 'Lower'
+       then the Yield is Yield1
+       else the Yield is Yield2
+       end if .
+
+% The species and expected yields (both upper and lower)
+% are determined by the following relation
+
+% The relation is split into three main sections:
+% 1. The North of Scotland
+
+relation can find 'Sitka spruce' with yields 15 and 12
+   if  the site is 'North Scotland'
+   and the soil is 'Brown earth' .
+
+relation can find 'Scots pine' with yields 8 and 7
+   if  the site is 'North Scotland'
+   and the soil is 'Podsol'
+   and the moisture is 'Dry' .
+
+relation can find 'Lodgepole pine' with yields 10 and 9
+   if  the site is 'North Scotland'
+   and the soil is 'Podsol'
+   and the moisture is 'Wet' .
+
+relation can find 'Scots pine' with yields 9 and 7
+   if  the site is 'North Scotland'
+   and the soil is 'Ironpan'
+   and the moisture is 'Dry' .
+
+relation can find 'Lodgepole pine' with yields 11 and 9
+   if  the site is 'North Scotland'
+   and the soil is 'Ironpan'
+   and the moisture is 'Wet' .
+
+relation can find 'Sitka spruce' with yields 18 and 12
+   if  the site is 'North Scotland'
+   and the soil is 'Gley'
+   and the gley is 'Surface water gley' .
+
+relation can find 'Sitka spruce' with yields 12 and 11
+   if  the site is 'North Scotland'
+   and the soil is 'Gley'
+   and the gley is 'Flushed gley' .
+
+relation can find 'Lodgepole pine' with yields 10 and 8
+   if  the site is 'North Scotland'
+   and the soil is 'Gley'
+   and the gley is 'Unflushed gley' .
+
+relation can find 'Sitka spruce' with yields 14 and 11
+   if  the site is 'North Scotland'
+   and the soil is 'Peat'
+   and the peat is 'Flushed peat'
+   and the grass is 'Blue moor grass' .
+
+relation can find 'Lodgepole pine' with yields 10 and 8
+   if  the site is 'North Scotland'
+   and the soil is 'Peat'
+   and the peat is 'Flushed peat'
+   and the grass is 'Heather' .
+
+relation can find 'Lodgepole pine' with yields 10 and 7
+   if  the site is 'North Scotland'
+   and the soil is 'Peat'
+   and the peat is 'Unflushed peat' .
+
+% 2. The East of Scotland
+
+% Note the use of group ordering in testing the answer to the exposure
+% question in the following clause
+
+relation can find 'Sitka spruce' with yields 14 and 12
+   if  the site is 'East Scotland'
+   and the soil is 'Brown earth'
+   and the exposure is at or above 'Moderate' according to exposure_types.
+
+relation can find 'Douglas fir' with yields 14 and 12
+   if  the site is 'East Scotland'
+   and the soil is 'Brown earth'
+   and the exposure is below 'Moderate' according to exposure_types .
+
+relation can find 'Grand fir' with yields 16 and 14
+   if  the site is 'East Scotland'
+   and the soil is 'Brown earth' .
+
+relation can find 'Hybrid larch' with yields 10 and 8
+   if  the site is 'East Scotland'
+   and the soil is 'Brown earth' .
+
+relation can find 'Broadleaved' with yields 8 and 8
+   if  the site is 'East Scotland'
+   and the soil is 'Brown earth' .
+
+relation can find 'Sitka spruce' with yields 12 and 10
+   if  the site is 'East Scotland'
+   and the soil is { 'Podsol' or 'Ironpan' or 'Intergrade' }
+   and the plough is 'Complete' .
+
+relation can find 'Lodgepole pine' with yields 10 and 8
+   if  the site is 'East Scotland'
+   and the soil is { 'Podsol' or 'Ironpan' or 'Intergrade' }
+   and the plough is not 'Complete' .
+
+relation can find 'Sitka spruce' with yields 14 and 10
+   if  the site is 'East Scotland'
+   and [ the soil is 'Gley' and
+         the gley is { 'Surface water gley' or 'Flushed gley' }
+         or
+         the soil is 'Peat' and
+         the peat is 'Flushed peat' ]
+   and the grass is not 'Heather' .
+
+relation can find 'Lodgepole pine' with yields 10 and 8
+   if  the site is 'East Scotland'
+   and [ the soil is 'Gley' and
+         the gley is { 'Surface water gley' or 'Flushed gley' }
+         or
+         the soil is 'Peat' and
+         the peat is 'Flushed peat' ]
+   and the grass is 'Heather' .
+
+relation can find 'Sitka spruce' with yields 12 and 10
+   if  the site is 'East Scotland'
+   and the soil is 'Gley'
+   and the gley is 'Unflushed gley'
+   and the grass is not 'Heather' .
+
+relation can find 'Lodgepole pine' with yields 10 and 8
+   if  the site is 'East Scotland'
+   and the soil is 'Gley'
+   and the gley is 'Unflushed gley'
+   and the grass is 'Heather' .
+
+relation can find 'Sitka spruce' with yields 10 and 9
+   if  the site is 'East Scotland'
+   and the soil is 'Peat'
+   and the peat is 'Unflushed peat'
+   and the flush is 'Local' .
+
+relation can find 'Lodgepole pine' with yields 8 and 8
+   if  the site is 'East Scotland'
+   and the soil is 'Peat'
+   and the peat is 'Unflushed peat'
+   and the flush is not 'Local' .
+
+relation can find 'Lodgepole pine' with yields 6 and 6
+   if  the site is 'East Scotland'
+   and the soil is 'Skeletal' .
+
+relation can find 'Scots pine' with yields 6 and 6
+   if  the site is 'East Scotland'
+   and the soil is 'Skeletal' .
+
+% 4. The West of Scotland
+
+relation can find 'Sitka spruce' with yields 16 and 14
+   if  the site is 'West Scotland'
+   and the soil is 'Brown earth' .
+
+relation can find 'Sitka spruce' with yields 14 and 12
+   if  the site is 'West Scotland'
+   and the soil is { 'Podsol' or 'Ironpan' or 'Intergrade' } .
+
+relation can find 'Sitka spruce' with yields 18 and 16
+   if  the site is 'West Scotland'
+   and [ the soil is 'Gley' and
+         the gley is { 'Surface water gley' or 'Flushed gley' }
+         or
+         the soil is 'Peat' and
+         the peat is 'Basin peat'
+         or
+         the soil is 'Alluvium' ] .
+
+relation can find 'Sitka spruce' with yields 14 and 12
+   if  the site is 'West Scotland'
+   and [ the soil is 'Gley' and
+         the gley is 'Peaty gley' and
+         the status is 'Good'
+         or
+         the soil is 'Bog' and
+         the bog is 'Flushed bog' ] .
+
+relation can find 'Sitka spruce' with yields 12 and 10
+   if  the site is 'West Scotland'
+   and [ the soil is 'Gley' and
+         the gley is 'Peaty gley' and
+         the status is 'Poor'
+         or
+         the soil is 'Bog' and
+         the bog is 'Unflushed bog'
+         or
+         the soil is 'Peat' and
+         the peat is 'Hill peat' ]
+   and the moisture is 'Wet' .
+
+relation can find 'Lodgepole pine' with yields 8 and 6
+   if  the site is 'West Scotland'
+   and [ the soil is 'Gley' and
+         the gley is 'Peaty gley' and
+         the status is 'Poor'
+         or
+         the soil is 'Bog' and
+         the bog is 'Unflushed bog'
+         or
+         the soil is 'Peat' and
+         the peat is 'Hill peat' ]
+   and the moisture is 'Dry' .
+
+% This section determines the provenance for a given
+% species according to the conservancy and soil type.
+
+relation obtain seed for 'Sitka spruce' from 'Queen Charlotte Island'
+   if  the site is not 'South Scotland'
+   or  the site is 'South Scotland'
+   and the ss_half is not 'Western half' .
+
+relation obtain seed for 'Sitka spruce' from 'Washington'
+   if  the site is 'South Scotland'
+   and the ss_half is 'Western half' .
+
+relation obtain seed for 'Lodgepole pine' from 'Alaska'
+   if  the site is 'North Scotland'
+   and the exposure is 'Low' .
+
+relation obtain seed for 'Lodgepole pine' from 'Southern Inland'
+   if  the site is 'North Scotland'
+   and the soil is 'Peat'
+   and the exposure is 'Moderate' .
+
+relation obtain seed for 'Lodgepole pine' from 'Skeena River'
+   if  the site is 'North Scotland'
+   and the soil is not 'Peat'
+   and the exposure is 'Moderate' .
+
+relation obtain seed for 'Lodgepole pine' from 'South Coastal'
+   if  the site is 'North Scotland'
+   and the exposure is 'High' .
+
+% Note, the following relation must use "is" to set the value for "P" to
+% the given value. This is because "P" is a "logical" variable.
+% If instead of "P" we had "p", we would need to use "becomes" to assign
+% the value for the variant "p" to the given value.
+% Beware! If we used "p" and "is" this is interpreted as a check that the
+% value of "p" is the same as the given value.
+
+relation obtain seed for 'Lodgepole pine' from P
+   if  the site is 'East Scotland'
+   and if   the soil is 'Peat' and
+            the peat is 'Unflushed peat' and
+            the elevation is 'Upper'
+       then P is 'South Coastal'
+       else P is { 'Southern Inland' or
+                   'Skeena River' }
+       end if .
+
+relation obtain seed for 'Lodgepole pine' from P
+   if  the site is 'West Scotland'
+   and P is { 'South Coastal'   or
+              'Southern Inland' or
+              'Skeena River'    or
+              'North Coastal' } .
+
+% in this program the provenances for seeds other than 'Sitka spruce' or
+% 'Lodgepole pine' are unspecified
+
+relation obtain seed for Species from 'Unspecified Location...'
+   if the Species is not { 'Sitka spruce' or 'Lodgepole pine' } .
+
+% The following section calculates the variance in the expected
+% yield class according to both the exposure of the location and the
+% provenance of the seed
+
+relation compute TotalVariance for Provenance
+   if  the exposure returns a variance of ExposureVariance
+   and Provenance returns a variance of ProvenanceVariance
+   and TotalVariance is ExposureVariance + ProvenanceVariance .
+
+relation 'Low'             returns a variance of  2 .
+
+relation 'High'            returns a variance of -2 .
+
+relation 'Southern Inland' returns a variance of -1 .
+
+relation 'Skeena River'    returns a variance of -1 .
+
+relation 'North Coastal'   returns a variance of -2 .
+
+relation Reason            returns a variance of 0
+   if the Reason is not { 'Low'             or
+                          'High'            or
+                          'Southern Inland' or
+                          'Skeena River'    or
+                          'North Coastal' } .
+
+% The following actions output a recommended species of pine to the
+% current output
+
+action output Species, Provenance, Yield and Variance to the screen ;
+   do  nl
+   and write( '&lt;b&gt;Recommended species: &lt;//b&gt;' )  and write( Species )    and write( '&lt;//br&gt;'  )
+   and write( '&lt;b&gt;Provenance:          &lt;//b&gt;' ) and write( Provenance )  and write( '&lt;//br&gt;'  )
+   and write( '&lt;b&gt;Normal yield (+/-):  &lt;//b&gt;' ) and write( Yield )       and write( '&lt;//br&gt;'  )
+   and write( '&lt;b&gt;Yield revision:      &lt;//b&gt;' )  and write( Variance )   and write( '&lt;//br&gt;' ) .
+
+
+</PRE>
+
+<A HREF="ind_top.htm" TARGET="_top">Visit the LPA Home Page!</A><P>
+
+</BODY>
+</HTML>

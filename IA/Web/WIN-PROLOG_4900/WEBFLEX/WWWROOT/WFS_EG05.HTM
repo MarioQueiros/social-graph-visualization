@@ -1,0 +1,388 @@
+<HTML>
+
+<HEAD>
+<TITLE>Source Code: Fuzzy Car Evaluation</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html;charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="white.css"></LINK>
+</HEAD>
+
+<BODY>
+
+<H2>Source Code: Fuzzy Car Evaluation</H2>
+<H3>FUZCAR.KSL Listing</H3>
+<PRE>
+/*
+    Fuzzy Car Evaluation - Dave and Alan Westwood 1999
+    ==================================================
+
+    Using the age, engine capacity, cost, efficiency (in terms of Miles
+    Per Gallon) top speed and capacity of a car, this program calculates
+    an overall rating of how suitable the car is for purchasing.
+
+    A fuzzy variable is defined for each of the car qualities.
+    A matrix of fuzzy rules is then given for each fuzzy variable, which
+    relates the fuzzy_sets of the fuzzy variables to a suitability value.
+
+    The program calculate_car_suitability/1 takes the raw data for each
+    car and puts this through the fuzzy program to generate the cars
+    suitability value. The final result is returned as a list containing
+    the name of each car and its score sorted so that the best car is at
+    the front of the list.
+
+    To run the example enter the following goal at the Prolog command
+    line:
+
+    ?- run .
+
+
+    Using the provided data, this will output the following table of cars
+    and their suitability values:
+
+        nissan     34.97
+          ford     34.93
+      mercedes     33.33
+          mini     28.33
+       daimler     27.75
+
+*/
+
+% the top-level program for calculating and then printing the values
+action run
+   do  restart
+   and ask_for_car
+   and calculate_car_suitability0
+   and sort( carlist, RevSortSuitable, {3} )
+   and reverse( RevSortSuitable, SortSuitable )
+   and write_list( SortSuitable ).
+
+do ensure_loaded( system( flint ) ).
+
+% test utility to display names of cars - works with frames and instances
+action test
+   do  check that C is a type of car
+   and write(C) and nl and fail .
+
+/*
+relation write_list( List )
+   if for all member(Item,List)
+       do write( Item ) and nl
+      end for .
+*/
+
+relation write_list( List )
+   if write( '&lt;p&gt;&lt;table border=1 bgcolor="#CCCCCC"&gt;' ) and
+      write( '&lt;caption&gt;Results&lt;//caption&gt;' ) and
+      write( '&lt;th&gt;Cars&lt;//th&gt;&lt;th&gt;Suitability&lt;//th&gt;' ) and
+      for all member(Car-Suitability,List)
+       do write( '&lt;tr&gt;&lt;td&gt;' ) and
+          write( Car ) and
+          write( '&lt;//td&gt;&lt;td&gt;' ) and
+          fwrite( f,8,2,Suitability ) and
+          write( '&lt;//td&gt;&lt;//tr&gt;' )
+      end for
+   and write( '&lt;//table&gt;&lt;//p&gt;&lt;br&gt;' ).
+
+action ask_for_car
+   do  ask car_questions
+   and check that Car is new_car_q
+   and Car is a new car
+   and the        age of Car becomes new_car_age
+   and the         cc of Car becomes new_car_cc
+   and the       cost of Car becomes new_car_cost
+   and the        mpg of Car becomes new_car_mpg
+   and the  top_speed of Car becomes new_car_top_speed
+   and the  condition of Car becomes new_car_condition
+   and test_finished_or_more .
+
+group car_questions
+   new_car_q, new_car_age, new_car_cc, new_car_cost, new_car_mpg, new_car_top_speed, new_car_condition, are_you_finished .
+
+frame car_questions_style
+   default columns is 2 and
+   default caption is 'Enter car details' and
+   default tablestyle is { bgcolor-'#FFCCFF', border-1 } .
+
+relation test_finished_or_more
+   if  are_you_finished is no .
+
+relation test_finished_or_more
+   if  are_you_finished is yes
+   and ask_for_car .
+
+% for statement goes through all types of cars and calculates their suitability
+% answers are stored in the global variable: carlist
+
+action calculate_car_suitability0
+   do  for every Car is a type of car
+        do calculate_car_suitability1( Car, Suitability )
+           and include Car-Suitability in carlist
+       end for .
+
+action calculate_car_suitability1( Car, Suitability )
+   do  check that Car is a type of car
+   and check that the       age of Car is      Age
+   and check that the        cc of Car is        CC
+   and check that the      cost of Car is      Cost
+   and check that the       mpg of Car is       MPG
+   and check that the top_speed of Car is  TopSpeed
+   and check that the condition of Car is Condition
+   and calculate_car_suitability( Age, CC, Cost, MPG, TopSpeed, Condition, Suitability ) .
+
+% calculate a single car suitability value
+action calculate_car_suitability( Age, CC, Cost, MPG, TopSpeed, Condition, Suitability )
+   do  fuzzy_reset_membership
+   and fuzzy_variable_value( age,         Age)
+   and fuzzy_variable_value( cc,          CC)
+   and fuzzy_variable_value( cost,        Cost)
+   and fuzzy_variable_value( mpg,         MPG)
+   and fuzzy_variable_value( top_speed,   TopSpeed)
+   and fuzzy_variable_value( condition,   Condition)
+   and fuzzy_propagate( {age_rules,cc_rules,cost_rules,mpg_rules, top_speed_rules,condition_rules} )
+   and fuzzy_variable_value( suitability, Suitability ).
+
+fuzzy_variable age;
+  ranges from 0 to 10 ;
+  fuzzy_set very_new       is  \ shaped and linear at 1, 3    ;
+  fuzzy_set new            is /\ shaped and linear at 1, 3, 5 ;
+  fuzzy_set average        is /\ shaped and linear at 3, 5, 7 ;
+  fuzzy_set old            is /\ shaped and linear at 5, 7, 9 ;
+  fuzzy_set very_old       is /  shaped and linear at    7, 9 .
+
+fuzzy_variable cc;
+  ranges from 0 to 3000 ;
+  fuzzy_set very_small     is  \ shaped and linear at  500, 1000       ;
+  fuzzy_set small          is /\ shaped and linear at  500, 1000, 1500 ;
+  fuzzy_set average        is /\ shaped and linear at 1000, 1500, 2000 ;
+  fuzzy_set large          is /\ shaped and linear at 1500, 2000, 2500 ;
+  fuzzy_set very_large     is /  shaped and linear at       2000, 2500 .
+
+fuzzy_variable cost;
+  ranges from 0 to 20000 ;
+  fuzzy_set very_cheap     is  \ shaped and linear at  1000,  5000        ;
+  fuzzy_set cheap          is /\ shaped and linear at  2000,  5000, 10000 ;
+  fuzzy_set average        is /\ shaped and linear at  4970, 10061, 14969 ;
+  fuzzy_set expensive      is /\ shaped and linear at 10000, 15000, 18000 ;
+  fuzzy_set very_expensive is /  shaped and linear at        15000, 18000 .
+
+fuzzy_variable mpg;
+  ranges from 0 to 60 ;
+  fuzzy_set very_low       is  \ shaped and linear at 10, 20     ;
+  fuzzy_set low            is /\ shaped and linear at 10, 20, 30 ;
+  fuzzy_set average        is /\ shaped and linear at 20, 30, 40 ;
+  fuzzy_set high           is /\ shaped and linear at 30, 40, 50 ;
+  fuzzy_set very_high      is /  shaped and linear at     40, 50 .
+
+fuzzy_variable top_speed;
+  ranges from 0 to 140 ;
+  fuzzy_set very_slow      is  \ shaped and linear at 20,  40      ;
+  fuzzy_set slow           is /\ shaped and linear at 20,  40,  60 ;
+  fuzzy_set average        is /\ shaped and linear at 40,  70, 100 ;
+  fuzzy_set fast           is /\ shaped and linear at 80, 100, 120 ;
+  fuzzy_set very_fast      is /  shaped and linear at     100, 120 .
+
+fuzzy_variable condition;
+  ranges from 0 to 100 ;
+  fuzzy_set very_bad       is  \ shaped and linear at 10, 30     ;
+  fuzzy_set bad            is /\ shaped and linear at 10, 30, 30 ;
+  fuzzy_set average        is /\ shaped and linear at 30, 50, 70 ;
+  fuzzy_set good           is /\ shaped and linear at 50, 70, 90 ;
+  fuzzy_set very_good      is /  shaped and linear at     70, 90 .
+
+fuzzy_variable suitability;
+  ranges from 0 to 60 ;
+  fuzzy_set bad            is  \ shaped and linear at 10, 20     ;
+  fuzzy_set poor           is /\ shaped and linear at 10, 20, 30 ;
+  fuzzy_set average        is /\ shaped and linear at 20, 30, 40 ;
+  fuzzy_set good           is /\ shaped and linear at 30, 40, 50 ;
+  fuzzy_set excellent      is /  shaped and linear at     40, 50  .
+
+/*
+;
+  defuzzify using all memberships
+             and   mirror rule
+             and   shrinking .
+
+*/
+
+% a fuzzy matrix is defined for each fuzzy variable
+
+fuzzy_matrix age_rules
+   age		  -&gt;	suitability ;
+
+   very_new	  -&gt;	excellent ;
+   new		  -&gt;	good ;
+   average	  -&gt;	average ;
+   old		  -&gt;	poor ;
+   very_old	  -&gt;	bad .
+
+fuzzy_matrix cc_rules
+   cc		  -&gt;	suitability ;
+
+   very_large	  -&gt;	excellent ;
+   large	  -&gt;	good ;
+   average	  -&gt;	average ;
+   small	  -&gt;	poor ;
+   very_small	  -&gt;	bad .
+
+fuzzy_matrix cost_rules
+   cost  	  -&gt;	suitability ;
+
+   very_cheap	  -&gt;	excellent ;
+   cheap	  -&gt;	good ;
+   average	  -&gt;	average ;
+   expensive	  -&gt;	poor ;
+   very_expensive -&gt;	bad .
+
+fuzzy_matrix mpg_rules
+   mpg		  -&gt;	suitability ;
+
+   very_high	  -&gt;	excellent ;
+   high		  -&gt;	good ;
+   average	  -&gt;	average ;
+   low		  -&gt;	poor ;
+   very_low	  -&gt;	bad .
+
+fuzzy_matrix top_speed_rules
+   top_speed	  -&gt;	suitability ;
+
+   very_fast	  -&gt;	excellent ;
+   fast		  -&gt;	good ;
+   average	  -&gt;	average ;
+   slow		  -&gt;	poor ;
+   very_slow	  -&gt;	bad .
+
+fuzzy_matrix condition_rules
+   condition	  -&gt;	suitability ;
+
+   very_good	  -&gt;	excellent ;
+   good		  -&gt;	good ;
+   average	  -&gt;	average ;
+   bad		  -&gt;	poor ;
+   very_bad	  -&gt;	bad .
+
+question new_car_q
+   what is this new type of car?;
+   input name .
+
+question new_car_age
+   what is the age of the car ('0-10') ?;
+   input integer .
+
+frame new_car_age_style
+   default cols is 2 and
+   default maximum_length is 2 and
+   default lower_bound is 0 and
+   default upper_bound is 10 .
+
+question new_car_cc
+   what is the cc of the car ('0-3000') ?;
+   input integer .
+
+frame new_car_cc_style
+   default cols is 4 and
+   default maximum_length is 4 and
+   default lower_bound is 0 and
+   default upper_bound is 3000 .
+
+
+question new_car_cost
+   what is the cost of the car('0-2000') ?;
+   input integer .
+
+frame new_car_cost_style
+   default cols is 4 and
+   default maximum_length is 4 and
+   default lower_bound is 0 and
+   default upper_bound is 2000 .
+
+question new_car_mpg
+   what is the mpg of the car ('0-60') ?;
+   input integer .
+
+frame new_car_mpg_style
+   default cols is 2 and
+   default maximum_length is 2 and
+   default lower_bound is 0 and
+   default upper_bound is 60 .
+
+question new_car_top_speed
+   what is the top speed of the car ('0-140') ?;
+   input integer .
+
+frame new_car_top_speed_style
+   default cols is 3 and
+   default maximum_length is 3 and
+   default lower_bound is 0 and
+   default upper_bound is 140 .
+
+question new_car_condition
+   what is the condition of the car ('0-100') ?;
+   input integer .
+
+frame new_car_condition_style
+   default cols is 3 and
+   default maximum_length is 3 and
+   default lower_bound is 0 and
+   default upper_bound is 100 .
+
+question are_you_finished
+   Do you want to add another car? ;
+   choose one of yes, no .
+
+frame are_you_finished_style
+   default method is radio .
+
+frame car ;
+   default       age is     5 and
+   default        cc is  1000 and
+   default      cost is 10000 and
+   default       mpg is    50 and
+   default top_speed is    90 and
+   default condition is    65 .
+
+frame nissan  is a car
+   default       age is     1 and
+   default        cc is  1000 and
+   default      cost is  5500 and
+   default       mpg is    55 and
+   default top_speed is    90 and
+   default condition is    90 .
+
+frame daimler is a car
+   default       age is     4 and
+   default        cc is  2000 and
+   default      cost is 18000 and
+   default       mpg is    20 and
+   default top_speed is   110 and
+   default condition is    80 .
+
+frame mercedes is a car
+   default       age is     3 and
+   default        cc is  2500 and
+   default      cost is 20000 and
+   default       mpg is    10 and
+   default top_speed is   100 and
+   default condition is    85 .
+
+frame mini     is a car
+   default       age is    10 and
+   default        cc is   800 and
+   default      cost is   500 and
+   default       mpg is    50 and
+   default top_speed is    80 and
+   default condition is    50 .
+
+frame ford     is a car
+   default       age is     5 and
+   default        cc is  1200 and
+   default      cost is 10000 and
+   default       mpg is    40 and
+   default top_speed is   115 and
+   default condition is    70 .
+
+</PRE>
+
+<A HREF="ind_top.htm" TARGET="_top">Visit the LPA Home Page!</A><P>
+
+</BODY>
+</HTML>

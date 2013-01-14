@@ -1,0 +1,86 @@
+#ini
+{
+    COLOR: #ffff88;
+    background-color: #006600;
+}
+
+#stylez
+{
+    color: #ff88ff;
+    background-color: #660066;
+}
+#title
+{
+   font-family: sans-serif;
+}
+#contents
+{
+    font-family: sans-serif;
+}
+
+BODY
+{
+    COLOR: white;
+    
+    background-color: black;
+    font-size: 10pt;
+}
+A:link
+{
+    COLOR: #00FF00
+}
+A:visited
+{
+    COLOR: #00FF00
+}
+A:active
+{
+    COLOR: red
+}
+
+H1
+{
+    color: #ffff99;
+    font-family: sans-serif;
+}
+H2
+{
+    COLOR: #ffffff;
+    FONT-FAMILY: sans-serif
+}
+H3
+{
+    COLOR: #ffff33;
+    FONT-FAMILY: sans-serif
+}
+H4
+{
+    COLOR: #ffcc33;
+    FONT-FAMILY: sans-serif
+}
+
+TD
+{
+    font-size: 10pt;
+    FONT-FAMILY: courier-new, monospace;
+    vertical-align: top;
+    padding: 8;
+}
+
+CODE
+{
+    COLOR: #00ccff;
+    FONT-FAMILY: courier-new, monospace;
+    FONT-STYLE: italic
+}
+
+PRE
+{
+/*    COLOR: #ffff99;*/
+    FONT-FAMILY: courier-new, monospace
+}
+
+CAPTION
+{
+    COLOR: #ffffff
+}

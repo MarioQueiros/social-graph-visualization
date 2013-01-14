@@ -1,0 +1,42 @@
+WIN-PROLOG Version 4.900
+========================
+
+Welcome to the Dialog Editor toolkit for WIN-PROLOG 4.900
+This toolkit requires that you have previously installed WIN-PROLOG. If you have
+not already done so please read the information on your WIN-PROLOG Master Disk 
+on how to install your WIN-PROLOG system.
+
+Loading and Running the Dialog Editor 
+-------------------------------------
+The Dialog Editor will have been automatically added to your WIN-PROLOG 'Run'
+menu. To run the dialog editor simply select the 'Run/Dialog Editor' menu
+option. A detailed description of the dialog editor's functions can be found
+in the 'WIN-PROLOG User Guide'.
+
+
+Bugs, Problems and Errors
+-------------------------
+
+----- Start of List -----
+
+No known bugs.
+
+----- End of List -----
+
+Please report any suspected bugs that do not appear in the above list to
+LPA:
+
+Contact Details
+---------------
+
+        Info:           info_team@lpa.co.uk
+        Sales:          sale_team@lpa.co.uk
+        Support:        tech_team@lpa.co.uk
+
+        Phone:          +44 (0) 20 8871 2016
+        Fax:            +44 (0) 20 8874 0449
+        Web:            http://www.lpa.co.uk
+
+        Logic Programming Associates Ltd
+        Studio 30, Royal Victoria Patriotic Building
+        Trinity Road, London, SW18 3SX, England.

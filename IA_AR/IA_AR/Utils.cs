@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace IA_AR
 {
-    class Utils
+    public class Utils
     {
-   
+
         protected int myID;
 
         public int ID
@@ -148,10 +148,10 @@ namespace IA_AR
             {
                 //if (myTx == null)
                 //  Retirado pois, após uma operação, não se conseguia criar uma connection
-                    myTx = GetConnection(true).BeginTransaction();
+                myTx = GetConnection(true).BeginTransaction();
             }
             catch (SqlException ex)
-           { 
+            {
 
                 throw new ApplicationException("Erro BD", ex);
             }
@@ -176,5 +176,228 @@ namespace IA_AR
                 cnx.Close();
             }
         }
+
+        public int insertTraducao(string orig, string final)
+        {
+            BeginTransaction();
+            orig = orig.ToLower();
+            final = final.ToLower();
+            var sql = new SqlCommand
+            {
+                CommandText = "INSERT INTO IA_traduzir(orig,final) VALUES(@ORIG,@FINAL)",
+                Transaction = CurrentTransaction
+            };
+
+            IDataParameter param = sql.Parameters.Add("@ORIG", SqlDbType.VarChar);
+            param.Value = orig;
+
+            param = sql.Parameters.Add("@FINAL", SqlDbType.VarChar);
+            param.Value = final;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+        public int deleteTraducao(string orig)
+        {
+            BeginTransaction();
+            orig = orig.ToLower();
+            var sql = new SqlCommand();
+            sql.CommandText = "DELETE FROM IA_traduzir WHERE orig=@ORIG";
+            sql.Transaction = CurrentTransaction;
+
+            IDataParameter param = sql.Parameters.Add("@ORIG", SqlDbType.VarChar);
+            param.Value = orig;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+        public int insertLig(string orig, string destino, int forca)
+        {
+            if (forca < 0)
+                return -1;
+            orig = orig.ToLower();
+            destino = destino.ToLower();
+            BeginTransaction();
+            var sql = new SqlCommand();
+            sql.CommandText = "INSERT INTO IA_lig (orig,dest,forca) VALUES(@ORIG,@DEST,@FORCA)";
+            sql.Transaction = CurrentTransaction;
+
+            IDataParameter param = sql.Parameters.Add("@ORIG", SqlDbType.VarChar);
+            param.Value = orig;
+
+            param = sql.Parameters.Add("@DEST", SqlDbType.VarChar);
+            param.Value = destino;
+
+            param = sql.Parameters.Add("@FORCA", SqlDbType.Int);
+            param.Value = forca;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+        public int deleteLig(string orig, string destino)
+        {
+            BeginTransaction();
+            orig = orig.ToLower();
+            destino = destino.ToLower();
+
+            var sql = new SqlCommand
+                          {
+                              CommandText = "DELETE FROM IA_lig WHERE orig=@ORIG AND dest=@DEST",
+                              Transaction = CurrentTransaction
+                          };
+
+            IDataParameter param = sql.Parameters.Add("@ORIG", SqlDbType.VarChar);
+            param.Value = orig;
+
+            param = sql.Parameters.Add("@DEST", SqlDbType.VarChar);
+            param.Value = destino;
+            
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+        }
+
+
+        public int insertUser(string user)
+        {
+            BeginTransaction();
+            user = user.ToLower();
+            var sql = new SqlCommand
+            {
+                CommandText = "INSERT INTO IA_user(registo) VALUES(@USER)",
+                Transaction = CurrentTransaction
+            };
+
+            IDataParameter param = sql.Parameters.Add("@USER", SqlDbType.VarChar);
+            param.Value = user;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+
+        public int insertTag(string nome, string listaUser)
+        {
+
+            nome = nome.ToLower();
+            listaUser = listaUser.ToLower();
+
+
+            BeginTransaction();
+            var sql = new SqlCommand();
+            sql.CommandText = "INSERT INTO IA_tag (nome,listaUser) VALUES(@NOME,@LISTAUSER)";
+            sql.Transaction = CurrentTransaction;
+
+            IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
+            param.Value = nome;
+
+            param = sql.Parameters.Add("@LISTAUSER", SqlDbType.VarChar);
+            param.Value = listaUser;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+        public int deleteTag(string nome)
+        {
+            BeginTransaction();
+            nome = nome.ToLower();
+
+            var sql = new SqlCommand
+            {
+                CommandText = "DELETE FROM IA_tag WHERE nome=@NOME",
+                Transaction = CurrentTransaction
+            };
+
+            IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
+            param.Value = nome;
+            
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+        }
+
+        /*public int insertIntoTag(string nome, string user)
+        {
+
+            nome = nome.ToLower();
+            user = user.ToLower();
+
+            DataSet dataSetLigacao = ExecuteQuery(GetConnection(false),"SELECT * FROM IA_tag WHERE nome = '" + nome+"'");
+
+
+            //dataSetLigacao.
+
+            var listaUser="";
+
+
+            BeginTransaction();
+            var sql = new SqlCommand();
+            sql.CommandText = "INSERT INTO IA_tag (nome,listaUser) VALUES(@NOME,@LISTAUSER)";
+            sql.Transaction = CurrentTransaction;
+
+            IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
+            param.Value = nome;
+
+            param = sql.Parameters.Add("@LISTAUSER", SqlDbType.VarChar);
+            param.Value = listaUser;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+
+        }
+
+        public int deleteFromTag(string nome)
+        {
+            BeginTransaction();
+            nome = nome.ToLower();
+
+            var sql = new SqlCommand
+            {
+                CommandText = "DELETE FROM IA_tag WHERE nome=@NOME",
+                Transaction = CurrentTransaction
+            };
+
+            IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
+            param.Value = nome;
+
+            int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+
+            CommitTransaction();
+
+            return rowsAfectadas;
+        }*/
+
+
     }
 }

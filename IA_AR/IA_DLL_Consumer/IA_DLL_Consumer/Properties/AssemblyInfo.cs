@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IA_AR")]
+[assembly: AssemblyTitle("IA_DLL_Consumer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IA_AR")]
+[assembly: AssemblyProduct("IA_DLL_Consumer")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("482ce297-d668-4b16-99dc-3a9d5b0ddca0")]
+[assembly: Guid("99cddb4a-80ab-4205-8068-e72234ac3738")]
 
 // Version information for an assembly consists of the following four values:
 //

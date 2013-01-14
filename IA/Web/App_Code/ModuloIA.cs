@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
+using System.Diagnostics;
+using System.Security;
 
 public class moduloIA : IModuloIa
 {
@@ -11,82 +8,129 @@ public class moduloIA : IModuloIa
     {
         if (nivel != 2 && nivel != 3)
             return 0;
-        var cmd = "runTamanhoNivel" + nivel + "(" + user + ").\n";
+        var op = "tamanho" + nivel + "(" + user + ",R)";
 
-        try
-        {
-            var prolog = new LPA.IntServer("", 0, 1, 0);
-            string s = prolog.InitGoal("load_files(prolog(sql)).\n");
-            s = prolog.CallGoal();
-            prolog.ExitGoal();
+        string r = carregaPL(op);
 
-            s = prolog.InitGoal(cmd);
-            s = prolog.CallGoal();
-            var r = int.Parse(s.Substring(8));
-            prolog.ExitGoal();
-            return r;
-        }catch(Exception except)
-        {
-            return -1;
-        }
+        return int.Parse(r.Trim());
+    }
+
+    public string redeNivel(int nivel, string user)
+    {
+        if (nivel != 2 && nivel != 3)
+            return "-1";
+        var op = "redeNivel" + nivel + "(" + user + ",R)";
+
+        return carregaPL(op);
     }
 
     public string amigosTag(string user, string tags)
     {
-        throw new NotImplementedException();
+        return carregaPL("amigosTag(" + user + ",[" + tags + "],R)");
     }
 
     public string sugerirAmigos(string user)
     {
-        throw new NotImplementedException();
+        return carregaPL("sugereAmigos(" + user + ",R)");
     }
 
     public string maven(string tag)
     {
-        throw new NotImplementedException();
+        return carregaPL("maven(" + tag + ",R)");
     }
 
     public string amigosComuns(string user1, string user2)
     {
-        throw new NotImplementedException();
+        return carregaPL("grafoComum(" + user1 + "," + user2 + ",R)");
     }
 
     public string caminhoForte(string userOrigem, string userDestino)
     {
-        throw new NotImplementedException();
+        return carregaPL("camForte(" + userOrigem + "," + userDestino + ",R)");
     }
 
     public string caminhoCurto(string userOrigem, string userDestino)
     {
-        throw new NotImplementedException();
+        return carregaPL("camCurto(" + userOrigem + "," + userDestino + ",R)");
     }
 
-    public float grauMedioSeparacao(string userOrigem, string userDestino)
+    public float grauMedioSeparacao()
     {
-        throw new NotImplementedException();
+        const string op = "grauMedio(R)";
+        return float.Parse(carregaPL(op).Trim());
+    }
+
+    public string grafoNivel3(string user)
+    {
+        return carregaPL("grafoNivel3(" + user + ",R)");
     }
 
     public string debug()
     {
-        //return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
-        var cmd = "runTamanhoNivel" + 2 + "(" + "bruno" + ").\n";
+        return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
+        //return Process.GetProcesses()[0].Modules[0].FileName;
+        /*const string op = "grauMedio(R)";
+        return carregaPL(op);*/
+    }
+
+    private string carregaPL(string op)
+    {
+
+        const string dir = "C:\\inetpub\\wwwroot\\PL\\";
+        var cmd = "run:-iniDb,tell('" + dir + "output.txt')," + op + ",write(R),endDb,nl,told,exit(0).";
+
+        string[] lines = { ":-ensure_loaded('" + dir + "bd').", cmd, ":-run." };
 
         try
         {
-            var prolog = new LPA.IntServer("", 0, 1, 0);
-            string s = prolog.InitGoal("load_files(prolog(sql)).\n");
-            s = prolog.CallGoal();
-            prolog.ExitGoal();
-
-            s = prolog.InitGoal(cmd);
-            s = prolog.CallGoal();
-            var r =s.Substring(8);
-            prolog.ExitGoal();
-            return r;
+            System.IO.File.WriteAllLines(dir + "exe.pl", lines);
         }
-        catch (Exception except)
+        catch (Exception e)
         {
-            return except.Message;
+            System.Threading.Thread.Sleep(2000);
+            try
+            {
+                System.IO.File.WriteAllLines(dir + "exe.pl", lines);
+            }
+            catch (Exception es)
+            {
+                System.Threading.Thread.Sleep(4000);
+                System.IO.File.WriteAllLines(dir + "exe.pl", lines);
+            }
         }
+
+        const string exe = dir + "PRO386W.EXE";
+        const string arg = "consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
+
+        var processStartInfo = new ProcessStartInfo(exe, arg) { UseShellExecute = false };
+        var xs = Process.Start(processStartInfo);
+        xs.WaitForExit(5000);
+  
+
+        string text = System.IO.File.ReadAllText(dir + "output.txt");
+        return text;
+
+
+        //teste iis local c/ drive mapeada em W
+        // var cmd = "run:-iniDb,tell('W:\\PL\\output.txt')," + op + ",write(R),endDb,nl,told,exit(0).";
+        // string[] lines = { ":-ensure_loaded('W:\\PL\\bd').", cmd, ":-run." };
+        // System.IO.File.WriteAllLines(@"W:\\PL\\exe.pl", lines);
+
+        // String exe = "W:\\PL\\PRO386W.EXE";
+        // //String arg = "/V1 consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
+        // String arg = "consult('W:\\PL\\exe.pl').";
+        // var processStartInfo = new System.Diagnostics.ProcessStartInfo(exe, arg);
+        // processStartInfo.UseShellExecute = false;
+        // System.Diagnostics.Process.Start(processStartInfo);
+
+        // String[] temp = { exe + " " + arg };
+        // System.IO.File.WriteAllLines(@"W:\PL\DEBUG.TXT", temp);*/
+
+        // System.Diagnostics.Process.Start(processStartInfo);
+
+        // System.Threading.Thread.Sleep(1500);
+
+        // string text = System.IO.File.ReadAllText(@"W:\PL\output.txt");
+        // return text;
     }
 }

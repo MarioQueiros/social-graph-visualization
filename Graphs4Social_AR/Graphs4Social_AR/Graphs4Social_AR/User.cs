@@ -38,6 +38,12 @@ namespace Graphs4Social_AR
             _idUserLigado = -1;
         }
 
+        public User(DataRow user)
+        {
+            this._uniqueIdentifierUserId = Convert.ToString(user["UserId"]);
+            this._username = Convert.ToString(user["UserName"]);
+        }
+
         // O Website não vai precisar de um construtor com dados string mas sim de um user com dados
         //      de um DataRow
         //
@@ -177,6 +183,21 @@ namespace Graphs4Social_AR
             }
         }
 
+        //Load todos utilizadores
+        public static IList<User> LoadAllUsers()
+        {
+            IList<User> users = new List<User>();
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Users");
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                if (ds.Tables[0].Rows.Count < 1) { }
+                else
+                {
+                    users.Add(new User(ds.Tables[0].Rows[i]));
+                }
+            }
+            return users;
+        }
 
 
         // Load de um User através do Username

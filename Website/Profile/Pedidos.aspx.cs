@@ -50,19 +50,19 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         btt1.Visible = false;
         dropi.Visible = false;
         int forca = -1;
-        if (Request.QueryString["user"] != null && Request.QueryString["forca"] != null && Request.QueryString["tag"] !=null)
+        if (Request.QueryString["user"] != null && Request.QueryString["forca"] != null && Request.QueryString["tag"] != null)
         {
             try
             {
-                
+
 
                 label3.Text = rm.GetString("Master_Pedidos", ci);
 
                 FillTagsCombo(Request.QueryString["user"]);
                 forca = Convert.ToInt32(Request.QueryString["forca"]);
-                
+
                 bool a = Graphs4Social_AR.Ligacao.AceitarPedido(Profile.UserName, Request.QueryString["user"], Convert.ToInt32(Request.QueryString["forca"]), Request.QueryString["tag"]);
-                
+
                 Label1.Visible = true;
 
                 IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(Request.QueryString["user"]);
@@ -79,8 +79,9 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     }
                 }
 
-                if((ci.Name.Equals("pt") && (linguagem.Equals("Português") || linguagem.Equals("Portuguese")))
-                    ||(ci.Name.Equals("en-US") && (linguagem.Equals("Inglês") || linguagem.Equals("English")))){
+                if ((ci.Name.Equals("pt") && (linguagem.Equals("Português") || linguagem.Equals("Portuguese")))
+                    || (ci.Name.Equals("en-US") && (linguagem.Equals("Inglês") || linguagem.Equals("English"))))
+                {
 
                     foreach (string element in profile)
                     {
@@ -95,7 +96,9 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                     }
 
-                }else{
+                }
+                else
+                {
 
                     foreach (string element in profile)
                     {
@@ -112,7 +115,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                             else if (element.Equals("Tell you Later") || element.Equals("Digo Depois"))
                                 sexo = rm.GetString("Editar_Digote", ci);
                             else if (element.Equals("Undecided") || element.Equals("Indeciso"))
-                                sexo = rm.GetString("Editar_Indeciso",ci);
+                                sexo = rm.GetString("Editar_Indeciso", ci);
                             else
                                 sexo = rm.GetString("Editar_Indeciso", ci);
 
@@ -121,8 +124,6 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     }
 
                 }
-
-                
 
                 if (!imagem.Equals(""))
                 {
@@ -153,7 +154,18 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 Label2.Visible = true;
             }
 
-            
+
+        }
+        else if (Request.QueryString["user"] != null && Request.QueryString["rej"] != null)
+        {
+            try
+            {
+                Graphs4Social_AR.Ligacao.RejeitarPedido(Profile.UserName, Request.QueryString["user"]);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
         }
         else
         {
@@ -163,7 +175,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
             FillTagsCombo("Default");
             if (!IsPostBack)
             {
-                
+
 
                 IList<User> list = Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName);
 
@@ -191,10 +203,12 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                     IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(list[i].Username);
 
                     System.Web.UI.WebControls.Image img1 = new System.Web.UI.WebControls.Image();
-                    
-                    foreach(string elemento in profile){
 
-                        if(elemento.Contains("Imagem:")){
+                    foreach (string elemento in profile)
+                    {
+
+                        if (elemento.Contains("Imagem:"))
+                        {
                             img1.ImageUrl = "~/Images/" + elemento.Split(':')[1];
 
                             break;
@@ -303,12 +317,15 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 dropi.Visible = false;
 
             }
-
-
-            
+        }
+        if (!IsPostBack && Request.QueryString["user"] != null && Request.QueryString["rej"] != null)
+        {
+            lblRejeitado.Visible = true;
+            lblRejeitado.Text = rm.GetString("Pedido_Rejeitado", ci);
+            tituloRej.Visible = true;
+            tituloRej.Text = rm.GetString("Pedido_TitRej", ci);
         }
 
-        
     }
 
     private void FillTagsCombo(string username)

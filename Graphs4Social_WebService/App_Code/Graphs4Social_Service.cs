@@ -7,13 +7,11 @@ using System.Text;
 
 public class Graphs4Social_Service : IGraphs4Social_Service
 {
-    public void DoWork()
-    {
-    }
 
     public string carregaGrafo(string username)
     {
         Grafo grafo = new Grafo(username);
+        return grafo.toString();
     }
 
 

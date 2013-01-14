@@ -63,36 +63,60 @@ public partial class Profile_Tags : System.Web.UI.Page
 
     protected void saveTags(string text)
     {
-            string s = text;
+        string s = text;
 
-        
-            string[] array = s.Split(',');
 
-            IList<string> list = new List<string>();
-            if (array.Length < 2)
+        string[] array = s.Split(',');
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i].Equals(""))
             {
-                list.Add(array[0]);
+                Graphs4Social_AR.Tag tag = Graphs4Social_AR.Tag.AdicionarTag(array[i]);
             }
-            else
+        }
+
+        IList<string> list = new List<string>();
+        if (array.Length < 2)
+        {
+            list.Add(array[0]);
+        }
+        else
+        {
+            foreach (string str in array)
             {
-                foreach (string str in array)
-                {
-                    list.Add(str);
-                }
+                list.Add(str);
             }
-            IList<Graphs4Social_AR.Tag> al = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
+        }
+        IList<Graphs4Social_AR.Tag> al = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
 
-            IList<string> alist = new List<string>();
+        IList<string> alist = new List<string>();
 
-            foreach (Graphs4Social_AR.Tag t in al)
-            {
+        foreach (Graphs4Social_AR.Tag t in al)
+        {
 
-                alist.Add(t.Nome);
+            alist.Add(t.Nome);
 
-            }
+        }
 
-            Graphs4Social_AR.Tag.RefreshTagsUser(alist, list, Profile.UserName);
-        
+        Graphs4Social_AR.Tag.RefreshTagsUser(alist, list, Profile.UserName);
+
     }
 
+    protected string setUserTags()
+    {
+
+        IList<Graphs4Social_AR.Tag> tags = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
+
+        string s = "";
+
+        foreach (Graphs4Social_AR.Tag t in tags)
+        {
+            s += "'" + t.Nome + "', ";
+        }
+        s += "";
+
+        return s;
+
+    }
 }

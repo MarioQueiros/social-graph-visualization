@@ -315,4 +315,55 @@
   <data name="Register_UseForm" xml:space="preserve">
     <value>Use the form below to create a new account.</value>
   </data>
+  <data name="Gerir_Aceitar" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="Gerir_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Gerir_Nome" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Gerir_Qtd" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Gerir_Rejeitar" xml:space="preserve">
+    <value>Reject</value>
+  </data>
+  <data name="Gerir_SemTags" xml:space="preserve">
+    <value>No tags to aprove!</value>
+  </data>
+  <data name="Gerir_SubTit1" xml:space="preserve">
+    <value>Tags to Aprove</value>
+  </data>
+  <data name="Gerir_SubTit2" xml:space="preserve">
+    <value>Actual Tags</value>
+  </data>
+  <data name="Gerir_Titulo" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Gerir_Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="GerirC_Amigos" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="GerirC_Nome" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="GerirC_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="GerirC_Titulo" xml:space="preserve">
+    <value>Account Manager</value>
+  </data>
+  <data name="Pedido_Rejeitado" xml:space="preserve">
+    <value>Request rejected sucessfully.</value>
+  </data>
+  <data name="Pedido_TitRej" xml:space="preserve">
+    <value>Friendship Requests</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>User not found!</value>
+  </data>
 </root>

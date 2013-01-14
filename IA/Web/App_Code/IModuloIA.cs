@@ -37,6 +37,9 @@ public interface IModuloIa
     float grauMedioSeparacao();
 
     [OperationContract]
+    string grafoNivel3(string user);
+
+    [OperationContract]
     string debug();
 
 }

@@ -72,19 +72,39 @@ public partial class SiteMaster : MasterPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (IsPostBack)
+        {
+            try
+            {
+                string s = ((TextBox)loginView3.FindControl("pesquisarText")).Text;
+                if (s != "")
+                {
+                    Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(s);
+                    if (user == null)
+                        Response.Redirect("~/NotFound.aspx?nf=1");
+                    else
+                        Response.Redirect("~/Profile/Inicio.aspx?user=" + s);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
         chooseLanguage();
         created.Text = rm.GetString("Created_By", ci);
 
         if (!Profile.IsAnonymous)
         {
-           
+
             ((Label)loginView.FindControl("Label6")).Text = rm.GetString("Master_Welcome", ci);
             ((Label)loginView2.FindControl("Label2")).Text = rm.GetString("Master_Pedidos", ci);
             ((Label)loginView2.FindControl("Label3")).Text = rm.GetString("Master_Editar", ci);
             ((Label)loginView2.FindControl("Label4")).Text = rm.GetString("Master_Tags", ci);
             ((Label)loginView2.FindControl("Label5")).Text = rm.GetString("Master_Gerir", ci);
             ((Label)loginView2.FindControl("Label7")).Text = rm.GetString("Master_Download", ci);
-            
+
             /*HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
 
             hl.HRef += "?user=" + Profile.UserName;*/
@@ -96,7 +116,7 @@ public partial class SiteMaster : MasterPage
 
         }
 
-        
+
     }
 
     private void chooseLanguage()
@@ -122,7 +142,8 @@ public partial class SiteMaster : MasterPage
 
     }
 
-    public void search(){
+    public void search()
+    {
         if (!Page.IsPostBack)
         {
             /*string aux = ((TextBox)loginView3.FindControl("pesquisarText")).Text;
@@ -141,5 +162,5 @@ public partial class SiteMaster : MasterPage
             }*/
         }
     }
-    
+
 }

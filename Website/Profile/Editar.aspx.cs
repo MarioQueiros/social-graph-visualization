@@ -102,11 +102,11 @@ public partial class Profile_Editar : System.Web.UI.Page
     {
         if (!(Profile.Imagem.Contains("Feminino") || Profile.Imagem.Contains("Female") || Profile.Imagem.Contains("Masculino") || Profile.Imagem.Contains("Male") || Profile.Imagem.Contains("Undecided") || Profile.Imagem.Contains("Indeciso") || Profile.Imagem.Contains("Tell") || Profile.Imagem.Contains("Digo")))
         {
-            if (Profile.Imagem.Contains("anonymous"))
+            if (Profile.Imagem.Contains("hostage"))
             {
                 r1.Checked = true;
             }
-            else if (Profile.Imagem.Contains("Atlas_RobotPortal"))
+            else if (Profile.Imagem.Contains("scientist"))
             {
                 r2.Checked = true;
             }
@@ -126,7 +126,7 @@ public partial class Profile_Editar : System.Web.UI.Page
             {
                 r6.Checked = true;
             }
-            else if (Profile.Imagem.Contains("P-Body_RobotPortal"))
+            else if (Profile.Imagem.Contains("urban"))
             {
                 r7.Checked = true;
             }
@@ -340,7 +340,7 @@ public partial class Profile_Editar : System.Web.UI.Page
         }
         else if (r2.Checked)
         {
-            Profile.Imagem = "Atlas_RobotPortal.png";
+            Profile.Imagem = "hostage.png";
         }
         else if (r3.Checked)
         {
@@ -352,7 +352,7 @@ public partial class Profile_Editar : System.Web.UI.Page
         }
         else if (r5.Checked)
         {
-            Profile.Imagem = "girl.png";
+            Profile.Imagem = "scientist.png";
         }
         else if (r6.Checked)
         {
@@ -360,7 +360,7 @@ public partial class Profile_Editar : System.Web.UI.Page
         }
         else if (r7.Checked)
         {
-            Profile.Imagem = "P-Body_RobotPortal.png";
+            Profile.Imagem = "urban.png";
         }
         else if (r8.Checked)
         {

@@ -85,38 +85,12 @@
         </asp:PlaceHolder>
     </section>
 
-    <section id="externalLoginsForm">
-        
-        <asp:ListView runat="server"
-            ItemType="Microsoft.AspNet.Membership.OpenAuth.OpenAuthAccountData"
-            SelectMethod="GetExternalLogins" DeleteMethod="RemoveExternalLogin" DataKeyNames="ProviderName,ProviderUserId">
-        
-            <LayoutTemplate>
-                <h3>Registered external logins</h3>
-                <table>
-                    <thead><tr><th>Service</th><th>User Name</th><th>Last Used</th><th>&nbsp;</th></tr></thead>
-                    <tbody>
-                        <tr runat="server" id="itemPlaceholder"></tr>
-                    </tbody>
-                </table>
-            </LayoutTemplate>
-            <ItemTemplate>
-                <tr>
-                    
-                    <td><%#: Item.ProviderDisplayName %></td>
-                    <td><%#: Item.ProviderUserName %></td>
-                    <td><%#: ConvertToDisplayDateTime(Item.LastUsedUtc) %></td>
-                    <td>
-                        <asp:Button runat="server" Text="Remove" CommandName="Delete" CausesValidation="false" 
-                            ToolTip='<%# "Remove this " + Item.ProviderDisplayName + " login from your account" %>'
-                            Visible="<%# CanRemoveExternalLogins %>" />
-                    </td>
-                    
-                </tr>
-            </ItemTemplate>
-        </asp:ListView>
+<section>
 
-        <h3>Add an external login</h3>
-        <uc:OpenAuthProviders runat="server" ReturnUrl="~/Account/Manage.aspx" />
-    </section>
+    <asp:PlaceHolder>
+        <asp:ChangePassword runat="server" ></asp:ChangePassword>
+    </asp:PlaceHolder>
+
+</section>
+
 </asp:Content>

@@ -142,6 +142,7 @@ namespace Graphs4Social_AR
             Tag tag = Tag.LoadTagByNome(nome);
             if (tag == null)
             {
+                tag = new Tag(false);
                 tag.Nome = nome;
                 tag.Save();
 
@@ -153,7 +154,7 @@ namespace Graphs4Social_AR
         //
         //
         // Mudar o estado da Tag
-        public bool MudarEstadoTag(int estado)
+        public bool MudarEstadoTagInt(int estado)
         {
             if (estado > -2 && estado < 2)
             {
@@ -308,19 +309,22 @@ namespace Graphs4Social_AR
         }
         //
         //
-        public static Tag LoadTagByEstado(int estado)
+        public static IList<Tag> LoadTagsByEstado(int estado)
         {
             DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag WHERE ESTADO='" + estado + "' AND ELIMINADO ='" + 0 + "'");
-            if (ds.Tables[0].Rows.Count < 1)
-                return null;
-            else
-                return new Tag(ds.Tables[0].Rows[0], false);
+            IList<Tag> tags = new List<Tag>();
+            foreach(DataRow row in ds.Tables[0].Rows)
+            {
+                tags.Add(new Tag(row, false));
+            }
+
+            return tags;
         }
         //
         //
         public static IList<Tag> LoadAllTag()
         {
-            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag WHERE ELIMINADO ='"+0+"'");
+            DataSet ds = ExecuteQuery(GetConnection(false), "SELECT * FROM Tag WHERE ELIMINADO ='"+0+"' AND ESTADO='"+1+"'");
 
             IList<Tag> lista = new List<Tag>();
 
@@ -417,9 +421,11 @@ namespace Graphs4Social_AR
                 {
 
                     tag = Tag.LoadTagById((int)row["ID_TAG"]);
-                    if(!tag.Eliminado)
-                        lista.Add(tag);
-
+                    if (tag != null)
+                    {
+                        if (!tag.Eliminado)
+                            lista.Add(tag);
+                    }
                     idTag = (int)row["ID_TAG"];
                 }
             }
@@ -530,9 +536,9 @@ namespace Graphs4Social_AR
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
-                    
-                    int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
+                    int rowsAfectadas = ExecuteTransactedNonQuery(sql);
+                    CommitTransaction();
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
 
                     if (rowsAfectadas > 0)
@@ -551,14 +557,11 @@ namespace Graphs4Social_AR
                 }
                 else
                 {
-                    sql.CommandText = "UPDATE TagRelacao SET QUANTIDADE=@QUANT, ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
+                    sql.CommandText = "UPDATE TagRelacao SET ESTADO=@ESTADO, ELIMINADO=@ELIMINADO WHERE ID_REL=@ID_REL";
 
                     sql.Transaction = CurrentTransaction;
 
-                    IDataParameter param = sql.Parameters.Add("@QUANT", SqlDbType.Int);
-                    param.Value = Quantidade;
-
-                    param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
+                    IDataParameter param = sql.Parameters.Add("@ESTADO", SqlDbType.Int);
                     param.Value = Estado;
 
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
@@ -568,7 +571,7 @@ namespace Graphs4Social_AR
                     param.Value = myID;
                     
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
-
+                    CommitTransaction();
                     // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
 
                     if (rowsAfectadas > 0)
@@ -580,10 +583,6 @@ namespace Graphs4Social_AR
                         Gravado = false;
                     }
                 }
-
-
-
-
             }
             else
             {
@@ -606,8 +605,8 @@ namespace Graphs4Social_AR
                 if (novaEntrada)
                 {
 
-                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO) "
-                        + "VALUES(@NOME,@ESTADO,@ELIMINADO)";
+                    sql.CommandText = "INSERT INTO Tag(NOME,ESTADO,ELIMINADO,QUANTIDADE) "
+                        + "VALUES(@NOME,@ESTADO,@ELIMINADO,@QUANTIDADE)";
                     sql.Transaction = CurrentTransaction;
 
                     IDataParameter param = sql.Parameters.Add("@NOME", SqlDbType.VarChar);
@@ -619,10 +618,15 @@ namespace Graphs4Social_AR
                     param = sql.Parameters.Add("@ELIMINADO", SqlDbType.Int);
                     param.Value = Eliminado ? 1 : 0;
 
+                    param = sql.Parameters.Add("@QUANTIDADE", SqlDbType.Int);
+                    param.Value = Quantidade;
+
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
-                    // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+                    CommitTransaction();
 
+                    // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+                    
                     if (rowsAfectadas > 0)
                     {
                         Gravado = true;
@@ -657,8 +661,10 @@ namespace Graphs4Social_AR
                     
                     int rowsAfectadas = ExecuteTransactedNonQuery(sql);
 
-                    // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+                    CommitTransaction();
 
+                    // Através do rowsAfectadas conseguiremos saber se foi gravado ou não
+                    
                     if (rowsAfectadas > 0)
                     {
                         Gravado = true;
@@ -668,10 +674,7 @@ namespace Graphs4Social_AR
                         Gravado = false;
                     }
                 }
-
             }
-
-            CommitTransaction();
         }
 
 

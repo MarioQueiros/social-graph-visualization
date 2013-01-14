@@ -10,6 +10,19 @@
 
             });
 
+            $("#<%= btt1.ClientID %>").click(function () {
+                var v = $("#MainContent_btt1").attr("onclick");
+
+                var f = v.split(",");
+
+                var s = f[4].replace('"', '');
+                var s1 = s.replace('"', '');
+
+                var nome = s1.split("=");
+
+                window.location = "Pedidos.aspx?user=" + nome[1] + "&rej=true";
+            });
+
             $("#dialog").dialog({
                 autoOpen: false,
                 buttons: {
@@ -44,7 +57,7 @@
         </tr>
     </table>
     <asp:Button ID="btt" runat="server" OnClientClick="return false;" />
-    <asp:Button ID="btt1" runat="server" UseSubmitBehavior="false" OnClick="btt1_Click" />
+    <asp:Button ID="btt1" runat="server" OnClientClick="return false;" />
     <asp:DropDownList ID="dropi" runat="server" AutoPostBack="True" />
     <asp:Image ID="img" runat="server" />
     <asp:Label ID="Label1" runat="server" Visible="false"></asp:Label>
@@ -52,7 +65,8 @@
     <br />
     <br />
     <asp:Label ID="Label2" runat="server" Visible="false" Style="font-weight: 700"></asp:Label>
-
+    <h1><asp:Label ID="tituloRej" runat="server" Visible="false" Style="font-weight: 700"></asp:Label></h1>
+    <asp:Label ID="lblRejeitado" runat="server" Visible="false" Style="font-weight:700"></asp:Label>
     <div id="dialog" title="Força Ligação">
         Escolha a força da ligação:<br />
         <select id="dropdown">

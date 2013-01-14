@@ -132,7 +132,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <img class="avatar" src="../Images/Atlas_RobotPortal.png" onclick="avatarClick(2);" />
+                                                        <img class="avatar" src="../Images/hostage.png" onclick="avatarClick(2);" />
                                                         <input name="avatar" runat="server" type="radio" id="r2" /></td>
                                                 </tr>
                                             </table>
@@ -163,7 +163,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <img class="avatar" src="../Images/girl.png" onclick="avatarClick(5);" />
+                                                        <img class="avatar" src="../Images/scientist.png" onclick="avatarClick(5);" />
                                                         <input name="avatar" runat="server" type="radio" id="r5" /></td>
                                                 </tr>
                                             </table>
@@ -183,7 +183,7 @@
                                             <table class="tableavatar">
                                                 <tr>
                                                     <td>
-                                                        <img class="avatar" src="../Images/P-Body_RobotPortal.png" onclick="avatarClick(7);" />
+                                                        <img class="avatar" src="../Images/urban.png" onclick="avatarClick(7);" />
                                                         <input name="avatar" runat="server" type="radio" id="r7" /></td>
                                                 </tr>
                                             </table>

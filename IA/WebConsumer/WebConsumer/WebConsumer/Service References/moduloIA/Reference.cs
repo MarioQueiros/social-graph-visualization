@@ -69,6 +69,12 @@ namespace WebConsumer.moduloIA {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grauMedioSeparacao", ReplyAction="http://tempuri.org/IModuloIa/grauMedioSeparacaoResponse")]
         System.Threading.Tasks.Task<float> grauMedioSeparacaoAsync();
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grafoNivel3", ReplyAction="http://tempuri.org/IModuloIa/grafoNivel3Response")]
+        string grafoNivel3(string user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grafoNivel3", ReplyAction="http://tempuri.org/IModuloIa/grafoNivel3Response")]
+        System.Threading.Tasks.Task<string> grafoNivel3Async(string user);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/debug", ReplyAction="http://tempuri.org/IModuloIa/debugResponse")]
         string debug();
         
@@ -173,6 +179,14 @@ namespace WebConsumer.moduloIA {
         
         public System.Threading.Tasks.Task<float> grauMedioSeparacaoAsync() {
             return base.Channel.grauMedioSeparacaoAsync();
+        }
+        
+        public string grafoNivel3(string user) {
+            return base.Channel.grafoNivel3(user);
+        }
+        
+        public System.Threading.Tasks.Task<string> grafoNivel3Async(string user) {
+            return base.Channel.grafoNivel3Async(user);
         }
         
         public string debug() {

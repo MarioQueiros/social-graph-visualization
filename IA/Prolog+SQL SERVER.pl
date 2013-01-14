@@ -21,13 +21,8 @@ criaTags:-findall(X,strTag(U,X),ST),findall(X,strTag(X,U),SN),criaTags(SN,ST).
 criaTags([N|NR],[S|SR]):-string_to_list(S,L),assert(tag(N,L)),criaTags(NR,SR).
 criaTags([],[]).
 
-/**************
-?- init_bd_conn.
-?- (...).
-?- end_bd_conn.
-***************/
 
-%Verificar 
+
 minimoMaven(3).
 percentagemMaven(1.25).
 
@@ -64,7 +59,7 @@ somaL([LA|LB],V,RV,[LA|RS]):-append([LA],V,XV),somaL(LB,XV,RV,RS).
 %User, Lista Tags, Amigos
 amigosTag(U,T,R):-ligacoes(U,L),traduz(T,LT),filtraAmigos(L,LT,R).
 
-traduz([T|TR],[F|FR]):-traduzir(T,F),!,tag(F,_),traduz(TR,FR).
+traduz([T|TR],[F|FR]):-traduzir(T,F),tag(F,_),!,traduz(TR,FR).
 traduz([T|TR],[T|R]):-tag(T,_),traduz(TR,R).
 traduz([],[]).
 
@@ -95,13 +90,6 @@ semelhante(U,F,[_|LT]):-semelhante(U,F,LT).
 semelhante(_,_,[]).
 
 
-%Ver Calculo Equilibrio vertices Estrela
-%Maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,TM,R).
-
-%calculaMaven(T,[U|UR],TV,UA,VA,R):-forca(T,U,TV,CL),CL>VA,!,calculaMaven(T,UR,TV,U,CL,R).
-%calculaMaven(T,[_|UR],TV,UA,VA,R):-calculaMaven(T,UR,RV,UA,VA,R).
-%calculaMaven(_,[],_,UA,_,UA).
-
 maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,F,TM),!,estrela(U,F,R).
 %Tag, users, forcas, total vertices
 calculaMaven(T,[U|UR],[F|FR],TV):-forca(T,U,TV,F),calculaMaven(T,UR,FR,TV).
@@ -112,12 +100,6 @@ forca(T,U,TV,R):-tag(T,L),deletelist(L,[U],LF),calculaForcaVertices(U,LF,RS),R i
 calculaForcaVertices(U,[A|L],R):-ligado(U,A),!,calculaForcaVertices(U,L,RS),R is RS + 1.
 calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
 calculaForcaVertices(_,[],0).
-
-%estrela(U,F,R):-estrela(U,F,F,R).
-
-%estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
-%estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
-%estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
 
 estrela(U,F,R):-estrela(U,F,U,F,R).
 %manipulados e originais, max actuais, resposta
@@ -209,13 +191,6 @@ string_to_list(S,L):-
     cat([S,`. `],S2, _ ),
     eread(L) <~ S2.
 
-
-
-%contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
-%contaPassos([],0).
-
-%runTamanhoNivel2(U):-tamanho2(U,X),write(X).
-%runTamanhoNivel3(U):-tamanho3(U,X),write(X).
 
 %para criar o grafo
 grafoNivel3(U,R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(X,R2),append(R1,R2,R).

@@ -29,7 +29,8 @@
 
         $(function () {
             $("#profiletab").tabs();
-        }); 
+        });
+        
     </script>
 
 </head>
@@ -62,7 +63,7 @@
                             <asp:LoginView ID="loginView3" runat="server" ViewStateMode="Disabled">
                                 <AnonymousTemplate></AnonymousTemplate>
                                 <LoggedInTemplate>
-                                    <asp:TextBox ID="pesquisarText" CssClass="pesquisarText" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="pesquisarText" runat="server" CssClass="pesquisarText" />
 
                                     <asp:HyperLink ID="pesquisarLink" runat="server" ImageUrl="~/Images/search.png"></asp:HyperLink>
                                 </LoggedInTemplate>

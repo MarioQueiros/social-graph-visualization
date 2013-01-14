@@ -318,4 +318,49 @@
   <data name="Register_UseForm" xml:space="preserve">
     <value>Use o formulário em baixo para criar uma nova conta.</value>
   </data>
+  <data name="Gerir_Aceitar" xml:space="preserve">
+    <value>Aceitar</value>
+  </data>
+  <data name="Gerir_Delete" xml:space="preserve">
+    <value>Apagar</value>
+  </data>
+  <data name="Gerir_Rejeitar" xml:space="preserve">
+    <value>Rejeitar</value>
+  </data>
+  <data name="Gerir_SemTags" xml:space="preserve">
+    <value>Sem tags para aprovar!</value>
+  </data>
+  <data name="Gerir_SubTit1" xml:space="preserve">
+    <value>Tags para aprovar</value>
+  </data>
+  <data name="Gerir_SubTit2" xml:space="preserve">
+    <value>Tags Actuais</value>
+  </data>
+  <data name="Gerir_Titulo" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Gerir_Choose" xml:space="preserve">
+    <value>Escolher</value>
+  </data>
+  <data name="GerirC_Amigos" xml:space="preserve">
+    <value>Amigos</value>
+  </data>
+  <data name="GerirC_Nome" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="GerirC_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="GerirC_Titulo" xml:space="preserve">
+    <value>Gerir Contas</value>
+  </data>
+  <data name="Pedido_Rejeitado" xml:space="preserve">
+    <value>Pedido rejeitado com sucesso.</value>
+  </data>
+  <data name="Pedido_TitRej" xml:space="preserve">
+    <value>Pedidos de Amizade</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>Utilizador não encontrado!</value>
+  </data>
 </root>

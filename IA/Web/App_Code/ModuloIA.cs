@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
+using System.Security;
 
 public class moduloIA : IModuloIa
 {
@@ -30,32 +26,32 @@ public class moduloIA : IModuloIa
 
     public string amigosTag(string user, string tags)
     {
-        throw new NotImplementedException();
+        return carregaPL("amigosTag(" + user + ",[" + tags + "],R)");
     }
 
     public string sugerirAmigos(string user)
     {
-        throw new NotImplementedException();
+        return carregaPL("sugereAmigos(" + user + ",R)");
     }
 
     public string maven(string tag)
     {
-        throw new NotImplementedException();
+        return carregaPL("maven(" + tag + ",R)");
     }
 
     public string amigosComuns(string user1, string user2)
     {
-        throw new NotImplementedException();
+        return carregaPL("grafoComum(" + user1 + "," + user2 + ",R)");
     }
 
     public string caminhoForte(string userOrigem, string userDestino)
     {
-        throw new NotImplementedException();
+        return carregaPL("camForte(" + userOrigem + "," + userDestino + ",R)");
     }
 
     public string caminhoCurto(string userOrigem, string userDestino)
     {
-        throw new NotImplementedException();
+        return carregaPL("camCurto(" + userOrigem + "," + userDestino + ",R)");
     }
 
     public float grauMedioSeparacao()
@@ -64,31 +60,77 @@ public class moduloIA : IModuloIa
         return float.Parse(carregaPL(op).Trim());
     }
 
+    public string grafoNivel3(string user)
+    {
+        return carregaPL("grafoNivel3(" + user + ",R)");
+    }
+
     public string debug()
     {
-        //return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
-        const string op = "grauMedio(R)";
-        return carregaPL(op).Trim();
+        return System.Web.Hosting.HostingEnvironment.ApplicationPhysicalPath;
+        //return Process.GetProcesses()[0].Modules[0].FileName;
+        /*const string op = "grauMedio(R)";
+        return carregaPL(op);*/
     }
 
     private string carregaPL(string op)
     {
-        var cmd = "run:-iniDb,tell('output.txt')," + op + ",endDb,write(R),nl,told,exit(0).";
 
-        string[] lines = { ":-ensure_loaded(bd).", cmd, ":-run." };
-        System.IO.File.WriteAllLines(@"C:\inetpub\wwwroot\IA\WIN-PROLOG_4900\exe.pl", lines);
+        const string dir = "C:\\inetpub\\wwwroot\\PL\\";
+        var cmd = "run:-iniDb,tell('" + dir + "output.txt')," + op + ",write(R),endDb,nl,told,exit(0).";
 
-        var process = new Process();
-        process.StartInfo.WorkingDirectory = "C:/inetpub/wwwroot/IA/WIN-PROLOG_4900/";
-        process.StartInfo.FileName = "PRO386W.EXE";
-        process.StartInfo.Arguments = "PRO386W.EXE /V1 consult('C:/inetpub/wwwroot/IA/WIN-PROLOG_4900/exe.pl')";
-        process.Start();
+        string[] lines = { ":-ensure_loaded('" + dir + "bd').", cmd, ":-run." };
 
-        process.WaitForExit(5000);
+        try
+        {
+            System.IO.File.WriteAllLines(dir + "exe.pl", lines);
+        }
+        catch (Exception e)
+        {
+            System.Threading.Thread.Sleep(2000);
+            try
+            {
+                System.IO.File.WriteAllLines(dir + "exe.pl", lines);
+            }
+            catch (Exception es)
+            {
+                System.Threading.Thread.Sleep(4000);
+                System.IO.File.WriteAllLines(dir + "exe.pl", lines);
+            }
+        }
 
-       // Process.Start(@"C:/inetpub/wwwroot/IA/WIN-PROLOG_4900/PRO386W.EXE", "PRO386W.EXE /V1 consult('C:/inetpub/wwwroot/IA/WIN-PROLOG_4900/exe.pl')");
+        const string exe = dir + "PRO386W.EXE";
+        const string arg = "consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
 
-        var text = System.IO.File.ReadAllText(@"C:\inetpub\wwwroot\IA\WIN-PROLOG_4900\output.txt");
+        var processStartInfo = new ProcessStartInfo(exe, arg) { UseShellExecute = false };
+        var xs = Process.Start(processStartInfo);
+        xs.WaitForExit(5000);
+  
+
+        string text = System.IO.File.ReadAllText(dir + "output.txt");
         return text;
+
+
+        //teste iis local c/ drive mapeada em W
+        // var cmd = "run:-iniDb,tell('W:\\PL\\output.txt')," + op + ",write(R),endDb,nl,told,exit(0).";
+        // string[] lines = { ":-ensure_loaded('W:\\PL\\bd').", cmd, ":-run." };
+        // System.IO.File.WriteAllLines(@"W:\\PL\\exe.pl", lines);
+
+        // String exe = "W:\\PL\\PRO386W.EXE";
+        // //String arg = "/V1 consult('C:\\inetpub\\wwwroot\\PL\\exe.pl').";
+        // String arg = "consult('W:\\PL\\exe.pl').";
+        // var processStartInfo = new System.Diagnostics.ProcessStartInfo(exe, arg);
+        // processStartInfo.UseShellExecute = false;
+        // System.Diagnostics.Process.Start(processStartInfo);
+
+        // String[] temp = { exe + " " + arg };
+        // System.IO.File.WriteAllLines(@"W:\PL\DEBUG.TXT", temp);*/
+
+        // System.Diagnostics.Process.Start(processStartInfo);
+
+        // System.Threading.Thread.Sleep(1500);
+
+        // string text = System.IO.File.ReadAllText(@"W:\PL\output.txt");
+        // return text;
     }
 }

@@ -15,6 +15,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="redeNivel">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="nivel" type="xs:int" />
+        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="redeNivelResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="redeNivelResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="amigosTag">
     <xs:complexType>
       <xs:sequence>
@@ -105,10 +120,7 @@
   </xs:element>
   <xs:element name="grauMedioSeparacao">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" name="userOrigem" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="userDestino" nillable="true" type="xs:string" />
-      </xs:sequence>
+      <xs:sequence />
     </xs:complexType>
   </xs:element>
   <xs:element name="grauMedioSeparacaoResponse">

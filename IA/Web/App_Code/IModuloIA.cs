@@ -13,6 +13,9 @@ public interface IModuloIa
 	int tamanhoRede(int nivel,string user);
 
     [OperationContract]
+    string redeNivel(int nivel, string user);
+
+    [OperationContract]
     string amigosTag(string user, string tags);
 
     [OperationContract]
@@ -31,7 +34,7 @@ public interface IModuloIa
     string caminhoCurto(string userOrigem, string userDestino);
 
     [OperationContract]
-    float grauMedioSeparacao(string userOrigem, string userDestino);
+    float grauMedioSeparacao();
 
     [OperationContract]
     string debug();

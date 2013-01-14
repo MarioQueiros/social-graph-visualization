@@ -12,6 +12,12 @@
   <wsdl:message name="IModuloIa_tamanhoRede_OutputMessage">
     <wsdl:part name="parameters" element="tns:tamanhoRedeResponse" />
   </wsdl:message>
+  <wsdl:message name="IModuloIa_redeNivel_InputMessage">
+    <wsdl:part name="parameters" element="tns:redeNivel" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_redeNivel_OutputMessage">
+    <wsdl:part name="parameters" element="tns:redeNivelResponse" />
+  </wsdl:message>
   <wsdl:message name="IModuloIa_amigosTag_InputMessage">
     <wsdl:part name="parameters" element="tns:amigosTag" />
   </wsdl:message>
@@ -65,6 +71,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/tamanhoRede" message="tns:IModuloIa_tamanhoRede_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/tamanhoRedeResponse" message="tns:IModuloIa_tamanhoRede_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="redeNivel">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/redeNivel" message="tns:IModuloIa_redeNivel_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/redeNivelResponse" message="tns:IModuloIa_redeNivel_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="amigosTag">
       <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/amigosTag" message="tns:IModuloIa_amigosTag_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/amigosTagResponse" message="tns:IModuloIa_amigosTag_OutputMessage" />
@@ -102,6 +112,15 @@
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="tamanhoRede">
       <soap:operation soapAction="http://tempuri.org/IModuloIa/tamanhoRede" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="redeNivel">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/redeNivel" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

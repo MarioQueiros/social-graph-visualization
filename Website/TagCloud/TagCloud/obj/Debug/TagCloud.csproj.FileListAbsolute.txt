@@ -1,0 +1,5 @@
+C:\Users\Tiago\Documents\LAPR5\Website\TagCloud\TagCloud\bin\Debug\TagCloud.dll
+C:\Users\Tiago\Documents\LAPR5\Website\TagCloud\TagCloud\bin\Debug\TagCloud.pdb
+C:\Users\Tiago\Documents\LAPR5\Website\TagCloud\TagCloud\obj\Debug\TagCloud.dll
+C:\Users\Tiago\Documents\LAPR5\Website\TagCloud\TagCloud\obj\Debug\TagCloud.pdb
+C:\Users\Tiago\Documents\LAPR5\Website\TagCloud\TagCloud\obj\Debug\TagCloud.csprojResolveAssemblyReference.cache

@@ -60,9 +60,6 @@ public partial class Account_Register : Page
     protected void RegisterUser_CreatedUser(object sender, EventArgs e)
     {
         FormsAuthentication.SetAuthCookie(RegisterUser.UserName, createPersistentCookie: false);
-
-        string continueUrl = RegisterUser.ContinueDestinationPageUrl;
-        
-        Response.Redirect(continueUrl);
+        Response.Redirect("~/Profile/Editar.aspx");
     }
 }

@@ -55,6 +55,11 @@ public partial class Profile_Inicio : System.Web.UI.Page
             subEstadoHumor.Text = rm.GetString("Editar_Button", ci);
             Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
             Label20.Text = rm.GetString("Inicio_Tags", ci);
+            Label21.Text = rm.GetString("Inicio_Estatisticas", ci);
+
+            gms.Text = rm.GetString("Inicio_GMS", ci);
+            tr2.Text = rm.GetString("Inicio_TR2", ci);
+            tr3.Text = rm.GetString("Inicio_TR3", ci);
 
             if (username == null)
             {
@@ -636,5 +641,26 @@ public partial class Profile_Inicio : System.Web.UI.Page
             tags.Add(rm.GetString("Inicio_NoTags", ci), 100);
         }
         return tags;
+    }
+
+    protected string GrauMedioSeparacao()
+    {
+        var proxy = new ModuloIA.ModuloIaClient();
+
+        return proxy.grauMedioSeparacao();
+    }
+
+    protected string TamanhoRede2()
+    {
+        var proxy = new ModuloIA.ModuloIaClient();
+
+        return proxy.tamanhoRede(2, Profile.UserName);
+    }
+
+    protected string TamanhoRede3()
+    {
+        var proxy = new ModuloIA.ModuloIaClient();
+
+        return proxy.tamanhoRede(3, Profile.UserName);
     }
 }

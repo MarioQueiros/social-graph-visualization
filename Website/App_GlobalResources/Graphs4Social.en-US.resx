@@ -366,4 +366,40 @@
   <data name="NotFound" xml:space="preserve">
     <value>User not found!</value>
   </data>
+  <data name="Master_Sugestao" xml:space="preserve">
+    <value>Friendship Sugestion</value>
+  </data>
+  <data name="Inicio_Estatisticas" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="Inicio_GMS" xml:space="preserve">
+    <value>Average degree of separation</value>
+  </data>
+  <data name="Inicio_TR2" xml:space="preserve">
+    <value>Network size level 2</value>
+  </data>
+  <data name="Inicio_TR3" xml:space="preserve">
+    <value>Network size level 3</value>
+  </data>
+  <data name="Master_Mavens" xml:space="preserve">
+    <value>Mavens</value>
+  </data>
+  <data name="Master_User" xml:space="preserve">
+    <value>Maven User:</value>
+  </data>
+  <data name="Maven_Erro" xml:space="preserve">
+    <value>Does not exist the Maven for the selected tag.</value>
+  </data>
+  <data name="PesquisarTags_Titulo" xml:space="preserve">
+    <value>Search friends by Tag</value>
+  </data>
+  <data name="PesquisarTags_Amigos" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="PesquisarTags_Button" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="PesquisarTags_Erro" xml:space="preserve">
+    <value>Not found any friends in common with the selected tag</value>
+  </data>
 </root>

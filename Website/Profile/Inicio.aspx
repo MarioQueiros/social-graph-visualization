@@ -115,6 +115,8 @@
                 <asp:Label ID="Label19" runat="server" Text=""></asp:Label></a></li>
             <li><a href="#tabs-2">
                 <asp:Label ID="Label20" runat="server" Text=""></asp:Label></a></li>
+            <li><a href="#tabs-3">
+                <asp:Label ID="Label21" runat="server" Text=""></asp:Label></a></li>
         </ul>
         <div id="tabs-1">
             <br />
@@ -149,6 +151,13 @@
             %>
 
 
+        </div>
+        <div id="tabs-3">
+            <asp:Label ID="gms" runat="server" Text=""></asp:Label> : <%= GrauMedioSeparacao() %>
+            </br></br>
+            <asp:Label ID="tr2" runat="server" Text=""></asp:Label> : <%= TamanhoRede2() %>     
+            <br /><br />
+            <asp:Label ID="tr3" runat="server" Text=""></asp:Label> : <%= TamanhoRede3() %>
         </div>
     </div>
 

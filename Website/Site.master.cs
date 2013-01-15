@@ -65,7 +65,7 @@ public partial class SiteMaster : MasterPage
             if ((string)ViewState[AntiXsrfTokenKey] != _antiXsrfTokenValue
                 || (string)ViewState[AntiXsrfUserNameKey] != (Context.User.Identity.Name ?? String.Empty))
             {
-                throw new InvalidOperationException("Validation of Anti-XSRF token failed.");
+                //throw new InvalidOperationException("Validation of Anti-XSRF token failed.");
             }
         }
     }
@@ -104,6 +104,8 @@ public partial class SiteMaster : MasterPage
             ((Label)loginView2.FindControl("Label4")).Text = rm.GetString("Master_Tags", ci);
             ((Label)loginView2.FindControl("Label5")).Text = rm.GetString("Master_Gerir", ci);
             ((Label)loginView2.FindControl("Label7")).Text = rm.GetString("Master_Download", ci);
+            ((Label)loginView2.FindControl("Label15")).Text = rm.GetString("Master_Sugestao", ci);
+            ((Label)loginView2.FindControl("Label14")).Text = rm.GetString("Master_Mavens", ci);
 
             /*HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
 

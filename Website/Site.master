@@ -122,10 +122,14 @@
                         <ul class="nav">
                             <li><a href="~/Profile/Pedidos.aspx" runat="server">
                                 <asp:Label ID="Label2" runat="server" Text=""></asp:Label></a></li>
+                            <li><a href="Profile/Sugestao.aspx" runat="server">
+                                <asp:Label ID="Label15" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Profile/Editar.aspx" id="editar" runat="server">
                                 <asp:Label ID="Label3" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Profile/Tags.aspx" runat="server">
                                 <asp:Label ID="Label4" runat="server" Text=""></asp:Label></a></li>
+                            <li><a href="~/Profile/Mavens.aspx" runat="server">
+                                <asp:Label ID="Label14" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Account/Manage.aspx" runat="server">
                                 <asp:Label ID="Label5" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="#" runat="server">

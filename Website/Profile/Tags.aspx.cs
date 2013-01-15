@@ -54,7 +54,7 @@ public partial class Profile_Tags : System.Web.UI.Page
 
         foreach (Graphs4Social_AR.Tag t in tags)
         {
-            s += "'" + t.Nome + "', ";
+            s += "'" + (t.Nome).Replace('_', ' ') + "', ";
         }
         s += "";
 
@@ -70,8 +70,9 @@ public partial class Profile_Tags : System.Web.UI.Page
 
         for (int i = 0; i < array.Length; i++)
         {
-            if (array[i].Equals(""))
+            if (!array[i].Equals(""))
             {
+                array[i] = array[i].Trim().Replace(" ", "_");
                 Graphs4Social_AR.Tag tag = Graphs4Social_AR.Tag.AdicionarTag(array[i]);
             }
         }
@@ -112,7 +113,7 @@ public partial class Profile_Tags : System.Web.UI.Page
 
         foreach (Graphs4Social_AR.Tag t in tags)
         {
-            s += "'" + t.Nome + "', ";
+            s += "'" + (t.Nome).Replace('_', ' ') + "', ";
         }
         s += "";
 

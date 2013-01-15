@@ -26,6 +26,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
+    <UseOfAtl>Dynamic</UseOfAtl>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -103,6 +104,8 @@
     <ClCompile Include="math.cpp" />
     <ClCompile Include="mdlviewer.cpp" />
     <ClCompile Include="readjpeg.c" />
+    <ClCompile Include="schema.xsd.c" />
+    <ClCompile Include="schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.c" />
     <ClCompile Include="schemas.microsoft.com.2003.10.Serialization.xsd.c" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="studio_render.cpp" />
@@ -119,6 +122,8 @@
     <ClInclude Include="mathlib.h" />
     <ClInclude Include="mdlviewer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="schema.xsd.h" />
+    <ClInclude Include="schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h" />
     <ClInclude Include="schemas.microsoft.com.2003.10.Serialization.xsd.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="studio.h" />
@@ -132,9 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Lapr5.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="tempuri.org.wsdl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

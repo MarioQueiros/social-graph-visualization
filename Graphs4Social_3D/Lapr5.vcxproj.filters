@@ -42,13 +42,19 @@
     <ClCompile Include="webservice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tempuri.org.xsd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="schema.xsd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="schemas.microsoft.com.2003.10.Serialization.xsd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tempuri.org.wsdl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tempuri.org.xsd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,13 +92,19 @@
     <ClInclude Include="Webservice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tempuri.org.xsd.h">
+    <ClInclude Include="schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="schema.xsd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="schemas.microsoft.com.2003.10.Serialization.xsd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tempuri.org.wsdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tempuri.org.xsd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,8 +117,5 @@
     <ResourceCompile Include="Lapr5.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="tempuri.org.wsdl" />
   </ItemGroup>
 </Project>

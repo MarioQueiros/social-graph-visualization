@@ -285,7 +285,9 @@ void myInit()
 	gluQuadricDrawStyle(modelo.quad, GLU_FILL);
 	gluQuadricNormals(modelo.quad, GLU_OUTSIDE);
 
-	leGrafo();
+	//A NAO ESQUECER
+	//leGrafo();
+	carregaGrafo("bruno");
 	mdlviewer_init("urban.mdl", modelo.urban);
 	mdlviewer_init("scientist.mdl", modelo.scientist);
 	mdlviewer_init("bugsbunny.mdl", modelo.bugsbunny);

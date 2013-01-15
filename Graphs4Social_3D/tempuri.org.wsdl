@@ -4,6 +4,8 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://wvm035.dei.isep.ipp.pt/Graphs4Social_WebService/Graphs4Social_Service.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://wvm035.dei.isep.ipp.pt/Graphs4Social_WebService/Graphs4Social_Service.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://wvm035.dei.isep.ipp.pt/Graphs4Social_WebService/Graphs4Social_Service.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/" />
+      <xsd:import schemaLocation="http://wvm035.dei.isep.ipp.pt/Graphs4Social_WebService/Graphs4Social_Service.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IGraphs4Social_Service_carregaGrafo_InputMessage">
@@ -12,16 +14,54 @@
   <wsdl:message name="IGraphs4Social_Service_carregaGrafo_OutputMessage">
     <wsdl:part name="parameters" element="tns:carregaGrafoResponse" />
   </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage">
+    <wsdl:part name="parameters" element="tns:carregaGrafoAmigosComum" />
+  </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage">
+    <wsdl:part name="parameters" element="tns:carregaGrafoAmigosComumResponse" />
+  </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_DoWork_InputMessage">
+    <wsdl:part name="parameters" element="tns:DoWork" />
+  </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_DoWork_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DoWorkResponse" />
+  </wsdl:message>
   <wsdl:portType name="IGraphs4Social_Service">
     <wsdl:operation name="carregaGrafo">
       <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/carregaGrafo" message="tns:IGraphs4Social_Service_carregaGrafo_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGraphs4Social_Service/carregaGrafoResponse" message="tns:IGraphs4Social_Service_carregaGrafo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="carregaGrafoAmigosComum">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComum" message="tns:IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComumResponse" message="tns:IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DoWork">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/DoWork" message="tns:IGraphs4Social_Service_DoWork_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGraphs4Social_Service/DoWorkResponse" message="tns:IGraphs4Social_Service_DoWork_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IGraphs4Social_Service" type="tns:IGraphs4Social_Service">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="carregaGrafo">
       <soap:operation soapAction="http://tempuri.org/IGraphs4Social_Service/carregaGrafo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="carregaGrafoAmigosComum">
+      <soap:operation soapAction="http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComum" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DoWork">
+      <soap:operation soapAction="http://tempuri.org/IGraphs4Social_Service/DoWork" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

@@ -27,14 +27,22 @@
 #define ID_TEXTURA_CHAO           1
 #define JANELA_TOP                0
 
+#include <string>
+#include <vector>
+using namespace std;
 
 typedef struct No{
 	float x,y,z,largura;
+	
+	string username;
+	vector<string> tags;
+	vector<string> profile;
 }No;
 
 typedef struct Arco{
 	int noi,nof;
 	float peso,largura;
+	string tagRelacao;
 }Arco;
 
 extern No nos[];
@@ -55,6 +63,6 @@ Arco criaArco(int, int, float, float);
 
 void gravaGrafo();
 void leGrafo();
-void carregaGrafo(char* username);
+bool carregaGrafo(char* username);
 
 #endif

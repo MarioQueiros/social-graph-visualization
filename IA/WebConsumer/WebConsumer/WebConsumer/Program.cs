@@ -12,19 +12,7 @@ namespace WebConsumer
       static  void Main(string[] args)
       {
           var proxy =new moduloIA.ModuloIaClient();
-
-          /* var x = "bruno";
-          var r = proxy.tamanhoRede(2, x);*/
-
-         /* var p = new Process();
-          p.StartInfo = new ProcessStartInfo("cmd", "notepad" + " " + "exe.txt")
-          {
-              UseShellExecute = false,
-              CreateNoWindow = false
-          };
-          p.Start();
-
-          p.WaitForExit();*/
+        
 
           Console.Write("A Pedir tamanho de rede, aguarde (deve ser 1)...\n");
           string r = proxy.tamanhoRede(2, "sara").ToString();
@@ -37,7 +25,7 @@ namespace WebConsumer
           Console.WriteLine("A pedir amigos tag, aguarde...(deve ser catia)");
           r = proxy.amigosTag("sara", "chelsea");
           Console.WriteLine(r);
-          
+
           Console.WriteLine("A pedir sugestoes amigos carlos, aguarde (deve ser vazio)...");
           r = proxy.sugerirAmigos("carlos");
           Console.WriteLine(r);
@@ -55,7 +43,7 @@ namespace WebConsumer
           Console.WriteLine(r);
 
           Console.WriteLine("A pedir amigosComuns, aguarde (mario,)...");
-          r = proxy.amigosComuns("bruno","carlos");
+          r = proxy.amigosComuns("bruno", "carlos");
           Console.WriteLine(r);
 
           Console.WriteLine("A pedir caminhoForte hugo-sara, aguarde (hugo,mario,bruno,catia,sara)...");
@@ -67,11 +55,19 @@ namespace WebConsumer
           Console.WriteLine(r);
 
           Console.WriteLine("A pedir GMS, aguarde(~3.1)...");
-          float f = proxy.grauMedioSeparacao();
-          Console.WriteLine(f);
+          r = proxy.grauMedioSeparacao();
+          Console.WriteLine(r);
 
           Console.WriteLine("A pedir grafoNivel3 carlos, aguarde([carlos,mario,2],[mario,carlos,1],...)");
           r = proxy.grafoNivel3("carlos");
+          Console.WriteLine(r);
+
+          Console.WriteLine("A pedir traducao blues, aguarde(chelsea)...");
+          r = proxy.grafoNivel3("carlos");
+          Console.WriteLine(r);
+
+          Console.WriteLine("A pedir 'erro', aguarde(-1)...");
+          r = proxy.traduzir("asdhaiwgfakueyfgkifh");
           Console.WriteLine(r);
 
           Console.WriteLine("\ntermine o programa...");

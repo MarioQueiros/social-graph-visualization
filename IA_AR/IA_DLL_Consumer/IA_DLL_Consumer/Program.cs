@@ -14,8 +14,13 @@ namespace IA_DLL_Consumer
             Console.Write("A iniciar teste...\n");
             var r = new IA_AR.Utils();
 
+
+            r.deleteTag("chelsea");
+
+
+
             Console.Write("Nova traducao c#...\n");
-            r.insertTraducao("C#", "csharp");
+            r.insertTraducao("TESTE#", "TESTEsharp");
 
             Console.Write("nova lig TesteOrig/Dest...\n");
             r.insertLig("TesTeOrig", "TestEdEstino", 5);
@@ -33,7 +38,7 @@ namespace IA_DLL_Consumer
             Console.ReadLine();
 
             Console.Write("A apagar traducao c#...\n");
-            r.deleteTraducao("c#");
+            r.deleteTraducao("TESTE#");
 
             Console.Write("A apagar lig  TesteOrig/Dest...\n");
             r.deleteLig("TesTeOrig", "TesTeOrig");

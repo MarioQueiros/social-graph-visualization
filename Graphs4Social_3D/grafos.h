@@ -22,9 +22,11 @@
 
 //texturas
 #define NOME_TEXTURA_CHAO         "Chao.jpg"
+#define NOME_TEXTURA_BILLBOARD	 "nuvem-wan-net_17-708174007.jpg"
 
 #define NUM_TEXTURAS              2
 #define ID_TEXTURA_CHAO           1
+#define ID_TEXTURA_BILLBOARD	  3
 #define JANELA_TOP                0
 
 

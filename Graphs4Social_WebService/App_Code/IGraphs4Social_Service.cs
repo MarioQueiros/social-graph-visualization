@@ -6,7 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using Graphs4Social_AR;
 
-
+ 
 [DataContract]
 public class Grafo
 {
@@ -32,8 +32,8 @@ public class Grafo
 
         Users = new List<User>();
         Ligacoes = new List<Ligacao>();
-        double numTags = 0;
-        double numTagsTotal = Graphs4Social_AR.Tag.LoadAllTag().Count;
+        int numTags = 0;
+        int numTagsTotal = Graphs4Social_AR.Tag.LoadAllTag().Count;
         //
         double minraio = 3;
         double maxraio = 7.5;
@@ -42,28 +42,36 @@ public class Grafo
 
         if (!username1.Equals(""))
         {
+            string pedidosuser = prologService.redeNivel(2, username);
+            string pedidosuser1 = prologService.redeNivel(2, username1);
+
+            char[] separator = new char[3];
+
+            separator[0] = ']';
+            separator[1] = ',';
+            separator[2] = '[';
+
+            char [] arraytemp = new char[pedidosuser.Length+pedidosuser1.Length];
+
+            IList<string> ligacoes = pedidosuser.Split(separator);
+            pedidosuser1.Split(separator).CopyTo(arraytemp, ligacoes.Count);
+
+            //ligacoes = arraytemp.ToList();
+
+
+
             //  Carrega o user "dono" do grafo
-            Users.Add(new User(username,0));
+            Users.Add(new User(username, 0, prologService,numTagsTotal));
             Users[0].Definido = true;
             Users[0].X = -100;
             Users[0].Y = -100;
-            Users[0].Z = prologService.tamanhoRede(2, username);
-            //
-            numTags = Users[1].Tags.Count;
-            //
-            Users[0].Raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
             //  Carrega as ligações do user
             //  IList<string> ligacoes = RedeNivel2(userdono,U)
 
-            Users.Add(new User(username1,1));
+            Users.Add(new User(username1, 1, prologService,numTagsTotal));
             Users[1].Definido = true;
             Users[1].X = 100;
             Users[1].Y = 100;
-            Users[1].Z = prologService.tamanhoRede(2, username1);
-            //
-            numTags = Users[1].Tags.Count;
-            //
-            Users[1].Raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
         }
         else
         {
@@ -87,7 +95,7 @@ public class Grafo
 
 
 
-            Ligacoes = Ligacao.trataListas(ligacoes,username);
+            Ligacoes = Ligacao.trataListas(ligacoes, username, prologService, numTagsTotal);
 
             foreach(Ligacao lig in Ligacoes)
             {
@@ -101,11 +109,6 @@ public class Grafo
             Users[0].Definido = true;
             Users[0].X = 0;
             Users[0].Y = 0;
-            Users[0].Z = prologService.tamanhoRede(2, username);
-            //
-            numTags = Users[0].Tags.Count;
-            //
-            Users[0].Raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
         }
 
 
@@ -115,56 +118,51 @@ public class Grafo
 
         int tentativas = 0;
         bool notDone = true;
+        bool flagBreak = false;
 
-        int max = 5 * NrArcos;
+        int max = 6 * NrArcos;
         Random valor = new Random();
 
 
         while (notDone)
         {
-            foreach (Ligacao ligacao in Ligacoes)
+            for(int k = 0;k<Ligacoes.Count;k++)
             {
-                if (!Users[ligacao.User2.Id].Definido)
+                if (!Users[Ligacoes[k].User2.Id].Definido)
                 {
                     if (valor.NextDouble() >= 0.5)
                     {
-                        Users[ligacao.User2.Id].X = valor.Next(10, max) * -1;
+                        Users[Ligacoes[k].User2.Id].X = valor.Next(10, max) * -1;
                     }
                     else
                     {
-                        Users[ligacao.User2.Id].X = valor.Next(10, max);
+                        Users[Ligacoes[k].User2.Id].X = valor.Next(10, max);
                     }
                     //
                     if (valor.NextDouble() >= 0.5)
                     {
-                        Users[ligacao.User2.Id].Y = valor.Next(10, max) * -1;
+                        Users[Ligacoes[k].User2.Id].Y = valor.Next(10, max) * -1;
                     }
                     else
                     {
-                        Users[ligacao.User2.Id].Y = valor.Next(10, max);
+                        Users[Ligacoes[k].User2.Id].Y = valor.Next(10, max);
                     }
-                    //
-                    Users[ligacao.User2.Id].Z = prologService.tamanhoRede(2, Users[ligacao.User2.Id].Username);
-                    //
-                    numTags = Users[ligacao.User2.Id].Tags.Count;
-                    //
-                    raio = minraio + ((maxraio - minraio) * (numTags / numTagsTotal));
-                    Users[ligacao.User2.Id].Raio = raio;
+                    
                 }
                 else
-                    tentativas = 4;
+                    tentativas = 49;
 
                 
                 for (int j = 0; j < NrArcos; j++)
                 {
-                    if (!(tentativas >= 5))
+                    if (!(tentativas >= 50))
                     {
-                        if (!(Ligacoes[j].User1.Id == ligacao.User1.Id && Ligacoes[j].User2.Id == ligacao.User2.Id))
+                        if (!(Ligacoes[j].User1.Id == Ligacoes[k].User1.Id && Ligacoes[j].User2.Id == Ligacoes[k].User2.Id))
                         {
-                            if (this.intersecta(Users[Ligacoes[j].User1.Id], Users[Ligacoes[j].User2.Id], Users[ligacao.User1.Id], Users[ligacao.User2.Id]))
+                            if (intersecta(Users[Ligacoes[j].User1.Id], Users[Ligacoes[j].User2.Id], Users[Ligacoes[k].User1.Id], Users[Ligacoes[k].User2.Id]))
                             {
                                 tentativas++;
-                                j = 0;
+                                flagBreak = true;
                                 break;
                             }
 
@@ -174,12 +172,20 @@ public class Grafo
                         break;
 
                 }
-                if (tentativas >= 5)
+                if (tentativas >= 50)
+                {
+                    flagBreak = false;
                     break;
+                }
+                else if (!flagBreak)
+                    Users[Ligacoes[k].User2.Id].Definido = true;
                 else
-                    Users[ligacao.User2.Id].Definido = true;
+                {
+                    flagBreak = false;
+                    k--;
+                }
             }
-            if (!(tentativas >= 5))
+            if (!(tentativas >= 50))
                 notDone = false;
             else
             {
@@ -206,6 +212,7 @@ public class Grafo
             double ub_t = (userLigado1.X - userDono1.X) * (userDono1.Y - userDono2.Y) - (userLigado1.Y - userDono1.Y) * (userDono1.X - userDono2.X);
             double u_b = (userLigado2.Y - userDono2.Y) * (userLigado1.X - userDono1.X) - (userLigado2.X - userDono2.X) * (userLigado1.Y - userDono1.Y);
 
+            double extra = 2;
 
 
             if (u_b != 0)
@@ -240,19 +247,69 @@ public class Grafo
                 if (flag)
                 {
                     if (userLigado2.Definido)
+                    {
+                        if (userDono1.X < x && x < userLigado1.X)
+                        {
+                            if (userDono1.Y < y && y < userLigado1.Y)
+                            {
+                                return true;
+                            }
+                            else if (userDono1.Y > y && y > userLigado1.Y)
+                            {
+                                return true;
+                            }
+                        }
+                        else if (userDono1.X > x && x > userLigado1.X)
+                        {
+                            if (userDono1.Y < y && y < userLigado1.Y)
+                            {
+                                return true;
+                            }
+                            else if (userDono1.Y > y && y > userLigado1.Y)
+                            {
+                                return true;
+                            }
+
+                        }
                         return false;
+                    }
                     else
                     {
-                        if ((userDono1.X == userLigado2.X && userDono1.Y == userLigado2.Y) || (userLigado1.X == userLigado2.X && userLigado1.Y == userLigado2.Y) || (userDono2.X == userLigado2.X && userDono2.Y == userLigado2.Y))
+                        if ((userDono1.X == userLigado2.X && userDono1.Y == userLigado2.Y)
+                            || (userLigado1.X == userLigado2.X && userLigado1.Y == userLigado2.Y)
+                            || (userDono2.X == userLigado2.X && userDono2.Y == userLigado2.Y))
                         {
                             return true;
                         }
-                        else if ((userDono2.X == userLigado1.X && userDono2.Y == userLigado1.Y) || (userDono2.X == userDono1.X && userDono2.Y == userDono1.Y))
+                        else if ((userDono2.X == userLigado1.X && userDono2.Y == userLigado1.Y))
                         {
-                            return false;
+                            if (intersectaCirculoCirculo(userDono1, userLigado2, extra))
+                            {
+                                return true;
+                            }
+                        }
+                        else if ((userDono2.X == userDono1.X && userDono2.Y == userDono1.Y))
+                        {
+                            if (intersectaCirculoCirculo(userDono2, userLigado2, extra))
+                            {
+                                return true;
+                            }
                         }
                         else
                         {
+
+                            if (intersectaCirculoCirculo(userDono2, userLigado2, extra))
+                            {
+                                return true;
+                            }
+                            if (intersectaCirculoCirculo(userDono1, userLigado2, extra))
+                            {
+                                return true;
+                            }
+                            if (intersectaCirculoCirculo(userLigado1, userLigado2, extra))
+                            {
+                                return true;
+                            }
                             if (userDono1.X < x && x < userLigado1.X)
                             {
                                 if (userDono1.Y < y && y < userLigado1.Y)
@@ -276,187 +333,55 @@ public class Grafo
                                 }
 
                             }
+                        }
 
 
-                            IList<double> pontosLigacao = this.criarRectanguloEspaco(userDono1, userLigado1);
+                        IList<double> pontosLigacao = this.criarRectanguloEspaco(userDono1, userLigado1, extra);
+                        //
+                        //  Topo    -   Esquerda     [0] - [1]
+                        //  Topo    -   Direita      [2] - [3]
+                        //  Baixo   -   Esquerda     [4] - [5]
+                        //  Baixo   -   Direita      [6] - [7]
+                        //
+                        //
+                        //
+                        if (interseccaoLinhaCirculo(userLigado2, extra, pontosLigacao[0], pontosLigacao[1], pontosLigacao[4], pontosLigacao[5]))
+                        {
+                            return true;
+                        }
+                        else if (interseccaoLinhaCirculo(userLigado2, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[6], pontosLigacao[7]))
+                        {
+                            return true;
+                        }
+                        //
+                        //
+                        //  Verificar se o circulo UserLigado1 intersecta nos limites do rectangulo formado pela nova ligacao
+                        //
+                        //
+                        if (!(userLigado1.X == userDono2.X && userLigado1.Y == userDono2.Y))
+                        {
+                            pontosLigacao = this.criarRectanguloEspaco(userDono2, userLigado2, extra);
                             //
                             //  Topo    -   Esquerda     [0] - [1]
                             //  Topo    -   Direita      [2] - [3]
                             //  Baixo   -   Esquerda     [4] - [5]
                             //  Baixo   -   Direita      [6] - [7]
                             //
-                            double minX = pontosLigacao[0];
-                            double maxX = pontosLigacao[0];
-                            //
-                            if (pontosLigacao[2] < minX)
-                            {
-                                minX = pontosLigacao[2];
-                            }
-                            if (pontosLigacao[2] > maxX)
-                            {
-                                maxX = pontosLigacao[2];
-                            }
                             //
                             //
-                            //
-                            if (pontosLigacao[4] < minX)
-                            {
-                                minX = pontosLigacao[4];
-                            }
-                            if (pontosLigacao[4] > maxX)
-                            {
-                                maxX = pontosLigacao[4];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[6] < minX)
-                            {
-                                minX = pontosLigacao[6];
-                            }
-                            if (pontosLigacao[6] > maxX)
-                            {
-                                maxX = pontosLigacao[6];
-                            }
-                            //
-                            //
-                            //
-                            //
-                            double minY = pontosLigacao[1];
-                            double maxY = pontosLigacao[1];
-                            //
-                            if (pontosLigacao[3] < minY)
-                            {
-                                minY = pontosLigacao[2];
-                            }
-                            if (pontosLigacao[3] > maxY)
-                            {
-                                maxY = pontosLigacao[2];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[5] < minY)
-                            {
-                                minY = pontosLigacao[5];
-                            }
-                            if (pontosLigacao[5] > maxY)
-                            {
-                                maxY = pontosLigacao[5];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[7] < minY)
-                            {
-                                minY = pontosLigacao[7];
-                            }
-                            if (pontosLigacao[7] > maxY)
-                            {
-                                maxY = pontosLigacao[7];
-                            }
-                            //
-                            //
-                            //
-                            //  Sabendo o max e min do X e do Y
-                            //
-                            //
-                            if (verificarEspaco(userLigado2.X, userLigado2.Y, userLigado2.Raio, maxX, maxY, minX, minY, 1))
+
+                            if (interseccaoLinhaCirculo(userLigado1, extra, pontosLigacao[0], pontosLigacao[1], pontosLigacao[4], pontosLigacao[5]))
                             {
                                 return true;
                             }
-                            //
-                            //
-                            //  Verificar se o circulo UserLigado1 intersecta nos limites do rectangulo formado pela nova ligacao
-                            //
-                            //
-                            pontosLigacao = this.criarRectanguloEspaco(userDono2, userLigado2);
-                            //
-                            //  Topo    -   Esquerda     [0] - [1]
-                            //  Topo    -   Direita      [2] - [3]
-                            //  Baixo   -   Esquerda     [4] - [5]
-                            //  Baixo   -   Direita      [6] - [7]
-                            //
-                            minX = pontosLigacao[0];
-                            maxX = pontosLigacao[0];
-                            //
-                            if (pontosLigacao[2] < minX)
-                            {
-                                minX = pontosLigacao[2];
-                            }
-                            if (pontosLigacao[2] > maxX)
-                            {
-                                maxX = pontosLigacao[2];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[4] < minX)
-                            {
-                                minX = pontosLigacao[4];
-                            }
-                            if (pontosLigacao[4] > maxX)
-                            {
-                                maxX = pontosLigacao[4];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[6] < minX)
-                            {
-                                minX = pontosLigacao[6];
-                            }
-                            if (pontosLigacao[6] > maxX)
-                            {
-                                maxX = pontosLigacao[6];
-                            }
-                            //
-                            //
-                            //
-                            //
-                            minY = pontosLigacao[1];
-                            maxY = pontosLigacao[1];
-                            //
-                            if (pontosLigacao[3] < minY)
-                            {
-                                minY = pontosLigacao[2];
-                            }
-                            if (pontosLigacao[3] > maxY)
-                            {
-                                maxY = pontosLigacao[2];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[5] < minY)
-                            {
-                                minY = pontosLigacao[5];
-                            }
-                            if (pontosLigacao[5] > maxY)
-                            {
-                                maxY = pontosLigacao[5];
-                            }
-                            //
-                            //
-                            //
-                            if (pontosLigacao[7] < minY)
-                            {
-                                minY = pontosLigacao[7];
-                            }
-                            if (pontosLigacao[7] > maxY)
-                            {
-                                maxY = pontosLigacao[7];
-                            }
-                            //
-                            //
-                            //
-                            if (verificarEspaco(userLigado1.X, userLigado1.Y, userLigado1.Raio, maxX, maxY, minX, minY, 1))
+                            else if (interseccaoLinhaCirculo(userLigado1, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[6], pontosLigacao[7]))
                             {
                                 return true;
                             }
                         }
-
                     }
+
+
                 }
                 else
                 {
@@ -472,8 +397,31 @@ public class Grafo
         }
     }
 
-    private bool interseccaoLinhaCirculo(User user, double raio, double user1X, double user1Y, double user2X, double user2Y)
+    private bool intersectaCirculoCirculo(User userDono, User userLigado, double extra)
     {
+        // Determine minimum and maximum radii where circles can intersect
+        double r_max = (userDono.Raio + extra) + (userLigado.Raio + extra);
+
+        // Determine actual distance between circle circles
+        double c1 = Math.Abs(userDono.X - userLigado.X);
+        //
+        double c2 = Math.Abs(userDono.Y - userLigado.Y);
+        //
+        double c_dist = Math.Sqrt(Math.Pow(c1, 2) + Math.Pow(c2, 2));
+
+        if (c_dist > r_max)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private bool interseccaoLinhaCirculo(User user, double extra, double user1X, double user1Y, double user2X, double user2Y)
+    {
+        double raio = user.Raio + extra;
 
         double a = (user2X - user1X) * (user2X - user1X) +
                  (user2Y - user1Y) * (user2Y - user1Y);
@@ -515,11 +463,11 @@ public class Grafo
         }
     }
 
-    private bool verificarEspaco(double x, double y, double raio, double maxX, double maxY, double minX, double minY, double extra)
+    private bool verificarEspaco(double x, double y, double raio, double maxX, double maxY, double minX, double minY)
     {
-        if (maxX >= ((x - raio) - extra) && minX <= ((x + raio) + extra))
+        if (maxX >= (x + raio) && minX <= (x - raio))
         {
-            if (maxY >= ((y - raio) - extra) && minY <= ((y + raio) - extra))
+            if (maxY >= (y + raio) && minY <= (y - raio))
             {
                 return true;
             }
@@ -527,22 +475,23 @@ public class Grafo
         return false;
     }
 
-    private IList<double> criarRectanguloEspaco(User userDono, User userLigado)
+    private IList<double> criarRectanguloEspaco(User userDono, User userLigado,double extra)
     {
-        double raio = 0;
+        double raio = extra;
         double hip = 0;
 
         if (userDono.Raio > userLigado.Raio)
         {
-            raio = userDono.Raio;
+            raio = raio + userDono.Raio;
             hip = Math.Sqrt(Math.Pow(userDono.Raio, 2) + Math.Pow(userDono.Raio, 2));
         }
         else
         {
-            raio = userLigado.Raio;
+            raio = raio + userLigado.Raio;
             hip = Math.Sqrt(Math.Pow(userLigado.Raio, 2) + Math.Pow(userLigado.Raio, 2));
         }
 
+        
 
         //  Intersecção de rectangulos formados pelas ligacoes no 3D
         //
@@ -812,8 +761,11 @@ public class User
     [DataMember]
     public bool Definido { get; set; }
 
-    public User(string username,int id)
+    public User(string username, int id, ModuloIAProlog.ModuloIaClient prologService,int numTagsTotal)
     {
+        double minraio = 3;
+        double maxraio = 7.5;
+
         Id = id;
         Username = username;
         //  A REPOR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -823,6 +775,13 @@ public class User
         Tags.Add(Graphs4Social_AR.Tag.LoadTagById(Graphs4Social_AR.Tag.LoadAllTag()[0].ID));
         Profile = new List<string>();
         Profile.Add("Sexo:Masculino");
+
+        Z = prologService.tamanhoRede(2, Username);
+        //
+        int numTags = Tags.Count;
+        //
+        Raio = minraio + ((maxraio - minraio) * (Convert.ToDouble(numTags) / Convert.ToDouble(numTagsTotal)));
+
     }
 }
 
@@ -858,7 +817,7 @@ public class Ligacao
         Forca = forca;
     }
 
-    public static IList<Ligacao> trataListas(IList<string> ligacoes1, string username)
+    public static IList<Ligacao> trataListas(IList<string> ligacoes1, string username, ModuloIAProlog.ModuloIaClient prologService, int numTagsTotal)
     {
         IList<string> ligacoes = new List<string>();
         IList<string> tags = new List<string>();
@@ -886,7 +845,7 @@ public class Ligacao
         IList<Ligacao> ligacoesRetornadas = new List<Ligacao>();
         IList<Ligacao> ligacoesDirectas = new List<Ligacao>();
 
-        users.Add(new User(username,0));
+        users.Add(new User(username,0,prologService,numTagsTotal));
         usernames.Add(username);
 
         int id = 1;
@@ -898,7 +857,7 @@ public class Ligacao
             if (!usernames.Contains(ligacoes[k + 1]))
             {
                 usernames.Add(ligacoes[k + 1]);
-                users.Add(new User(ligacoes[k + 1], id));
+                users.Add(new User(ligacoes[k + 1], id, prologService, numTagsTotal));
                 id++;
             }
 

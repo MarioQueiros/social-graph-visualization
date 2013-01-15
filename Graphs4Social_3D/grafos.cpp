@@ -1,6 +1,7 @@
 #include "grafos.h"
 #include <iostream>
 #include <fstream>
+#include "Webservice.h"
 
 #define __GRAFO__FILE__ "exemplo.grafo"
 
@@ -105,16 +106,15 @@ void leGrafo(){
 	}
 	myfile >> numNos;
 	for(int i=0; i<numNos;i++)
-		myfile >> nos[i].x >> nos[i].y >> nos[i].z;
+		myfile >> nos[i].x >> nos[i].y >> nos[i].z>>nos[i].largura;
 	myfile >> numArcos ;
 	for(int i=0; i<numArcos;i++)
 		myfile >> arcos[i].noi >> arcos[i].nof >> arcos[i].peso >> arcos[i].largura ;
-	myfile.close();
-	// calcula a largura de cada no = maior largura dos arcos que divergem/convergem desse/nesse no	
-	for(int i=0; i<numNos;i++){
-		nos[i].largura=0;
-		for(int j=0; j<numArcos; j++)
-			if ((arcos[j].noi == i || arcos[j].nof == i) && nos[i].largura < arcos[j].largura)
-				nos[i].largura = arcos[j].largura;
-	}		
+	myfile.close();	
 }
+
+void carregaGrafo(char* username){
+	string resposta = webServiceRequest(username);
+	//char * respostaArray = resposta.c_str;
+}
+

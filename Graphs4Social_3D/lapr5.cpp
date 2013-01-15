@@ -20,6 +20,8 @@ using namespace std;
 #define rad(X)   (double)((X)*M_PI/180)
 #define NO		1
 #define ARCO	10000
+#define PAREDE  100000
+#define DoD		2000
 
 extern "C" int read_JPEG_file(const char *, char **, int *, int *, int *);
 
@@ -83,6 +85,8 @@ string pass;
 int state = 0;
 int valido = 0;
 int linguagem=0;
+int name1 = -1;
+GLUquadricObj *quad = gluNewQuadric();
 
 typedef enum {
 	txUnknown	= 0,
@@ -206,8 +210,8 @@ void initEstado()
 	estado.eixo[0]=0;
 	estado.eixo[1]=0;
 	estado.eixo[2]=0;
-	estado.camera.eye.x = 5.0 * nos[0].x+20; 
-	estado.camera.eye.y = 5.0 * nos[0].y+20;
+	estado.camera.eye.x = 5.0 * nos[0].x + 20; 
+	estado.camera.eye.y = 5.0 * nos[0].y + 20;
 	estado.camera.eye.z = 5.0 * (nos[0].z + 10.0 + nos[0].largura + 1.25);
 	estado.light=GL_FALSE;
 	estado.apresentaNormais=GL_FALSE;
@@ -253,6 +257,30 @@ void createTextures(GLuint texID[])
 		printf("Textura %s not Found\n",NOME_TEXTURA_CHAO);
 		exit(0);
 	}
+
+	if(read_JPEG_file(NOME_TEXTURA_BILLBOARD, &image, &w, &h, &bpp))
+	{
+		glBindTexture(GL_TEXTURE_2D, texID[ID_TEXTURA_BILLBOARD]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST );
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, w, h, GL_RGB, GL_UNSIGNED_BYTE, image);
+	}else{
+		printf("Textura %s not Found\n",NOME_TEXTURA_BILLBOARD);
+		exit(0);
+	}
+
+	if(read_JPEG_file(NOME_TEXTURA_PAREDE, &image, &w, &h, &bpp))
+	{
+		glBindTexture(GL_TEXTURE_2D, texID[ID_TEXTURA_PAREDE]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST );
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, w, h, GL_RGB, GL_UNSIGNED_BYTE, image);
+	}else{
+		printf("Textura %s not Found\n",NOME_TEXTURA_PAREDE);
+		exit(0);
+	}
 	glBindTexture(GL_TEXTURE_2D, NULL);
 }
 
@@ -285,9 +313,7 @@ void myInit()
 	gluQuadricDrawStyle(modelo.quad, GLU_FILL);
 	gluQuadricNormals(modelo.quad, GLU_OUTSIDE);
 
-	//A NAO ESQUECER
-	//leGrafo();
-	carregaGrafo("bruno");
+	leGrafo();
 	mdlviewer_init("urban.mdl", modelo.urban);
 	mdlviewer_init("scientist.mdl", modelo.scientist);
 	mdlviewer_init("bugsbunny.mdl", modelo.bugsbunny);
@@ -337,7 +363,7 @@ void setProjection(int x, int y, GLboolean picking)
 		glGetIntegerv(GL_VIEWPORT, vport);
 		gluPickMatrix(x, glutGet(GLUT_WINDOW_HEIGHT)  - y, 4, 4, vport); // Inverte o y do rato para corresponder à jana
 	}
-	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,500);
+	gluPerspective(estado.camera.fov,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT) ,1,DoD);
 }
 
 void myReshape2(int w, int h)
@@ -491,13 +517,16 @@ void putLights(GLfloat* diffuse)
 
 void desenhaSolo()
 {
-#define STEP 100
+#define STEP 1200
+	//desenhar solo
+	glPushName(PAREDE + 5);
+	glPushMatrix();
 	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_CHAO]);
 	glColor3f(1.0f,1.0f,1.0f);
 	glBegin(GL_QUADS);
 	glNormal3f(0,0,1);
-	for(int i=-350;i<350;i+=STEP){
-		for(int j=-350;j<350;j+=STEP){
+	for(int i=-600;i<600;i+=STEP){
+		for(int j=-600;j<600;j+=STEP){
 			glTexCoord2f(1,1);glVertex2f(i,j);
 			glTexCoord2f(0,1);glVertex2f(i+STEP,j);
 			glTexCoord2f(0,0);glVertex2f(i+STEP,j+STEP);
@@ -506,6 +535,116 @@ void desenhaSolo()
 	}
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();
+
+
+	glPushName(PAREDE + 1);
+	glPushMatrix();
+	glTranslatef(0,0,600);
+	glRotatef(90,0,1,0);
+	glRotatef(90,0,1,0);
+	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_PAREDE]);
+	glColor3f(1.0f,1.0f,1.0f);
+	gluQuadricDrawStyle(quad,GLU_FILL);
+	gluQuadricTexture(quad,1.0);
+	gluCylinder(quad, 500, 500, 600, 32,32);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();
+
+	/*
+	//desenhar parede 1
+	glPushName(PAREDE + 1);
+	glPushMatrix();
+	glRotatef(90,1,0,0);
+	glTranslatef(0,600,0);
+	glTranslatef(0,0,-600);
+	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_PAREDE]);
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_QUADS);
+	glNormal3f(0,0,1);
+	for(int i=-600;i<600;i+=STEP){
+	for(int j=-600;j<600;j+=STEP){
+	glTexCoord2f(1,1);glVertex2f(i,j);
+	glTexCoord2f(0,1);glVertex2f(i+STEP,j);
+	glTexCoord2f(0,0);glVertex2f(i+STEP,j+STEP);
+	glTexCoord2f(1,0);glVertex2f(i,j+STEP);
+	}
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();
+
+	//desenhar parede 2
+	glPushName(PAREDE + 2);
+	glPushMatrix();
+	glRotatef(90,1,0,0);
+	glTranslatef(0,600,0);
+	glTranslatef(0,0,600);
+	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_PAREDE]);
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_QUADS);
+	glNormal3f(0,0,1);
+	for(int i=-600;i<600;i+=STEP){
+	for(int j=-600;j<600;j+=STEP){
+	glTexCoord2f(1,1);glVertex2f(i,j);
+	glTexCoord2f(0,1);glVertex2f(i+STEP,j);
+	glTexCoord2f(0,0);glVertex2f(i+STEP,j+STEP);
+	glTexCoord2f(1,0);glVertex2f(i,j+STEP);
+	}
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();
+
+	//desenhar parede 3
+	glPushName(PAREDE + 3);
+	glPushMatrix();
+	glRotatef(90,0,1,0);
+	glTranslatef(0,0,-600);
+	glTranslatef(-600,0,0);
+	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_PAREDE]);
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_QUADS);
+	glNormal3f(0,0,1);
+	for(int i=-600;i<600;i+=STEP){
+	for(int j=-600;j<600;j+=STEP){
+	glTexCoord2f(1,0);glVertex2f(i,j);
+	glTexCoord2f(1,1);glVertex2f(i+STEP,j);
+	glTexCoord2f(0,1);glVertex2f(i+STEP,j+STEP);
+	glTexCoord2f(0,0);glVertex2f(i,j+STEP);
+	}
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();
+
+	//desenhar parede 4
+	glPushName(PAREDE + 4);
+	glPushMatrix();
+	glRotatef(90,0,1,0);
+	glTranslatef(0,0,600);
+	glTranslatef(-600,0,0);
+	glBindTexture(GL_TEXTURE_2D, modelo.texID[ID_TEXTURA_PAREDE]);
+	glColor3f(1.0f,1.0f,1.0f);
+	glBegin(GL_QUADS);
+	glNormal3f(0,0,1);
+	for(int i=-600;i<600;i+=STEP){
+	for(int j=-600;j<600;j+=STEP){
+	glTexCoord2f(1,0);glVertex2f(i,j);
+	glTexCoord2f(1,1);glVertex2f(i+STEP,j);
+	glTexCoord2f(0,1);glVertex2f(i+STEP,j+STEP);
+	glTexCoord2f(0,0);glVertex2f(i,j+STEP);
+	}
+	}
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	glPopMatrix();
+	glPopName();*/
 }
 
 void CrossProduct (GLdouble v1[], GLdouble v2[], GLdouble cross[])
@@ -643,14 +782,17 @@ break;
 }
 */
 
-void desenhaEsfera(GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio)
+void desenhaEsfera(int no,GLfloat xi, GLfloat yi, GLfloat zi, GLfloat raio)
 {
 	GLdouble cross[3];
 	GLfloat valAng=0;
 	GLint n=32;
 
 	glPushMatrix();
-	material(azul);
+	if(no==0)
+		material(red_plastic);
+	else
+		material(azul);
 	glNormal3f(0,0,1);
 	glTranslatef(xi,yi,zi+10); //meter mais para cima
 
@@ -678,26 +820,25 @@ void desenhaNo(int no,int texID)
 	glTranslatef(nos[no].x,nos[no].y,(nos[no].z + 10.0 + nos[no].largura + 2.0));
 	glRotatef(-90,0,0,1);
 	glScalef(SCALE_HOMER,SCALE_HOMER,SCALE_HOMER);
-	mdlviewer_display(modelo.homer);
 
-	/*
-	if(avatar.compare("homer")==0)
-	mdlviewer_display(modelo.homer);
-	if(avatar.compare("urban")==0)
-	mdlviewer_display(modelo.urban);
-	if(avatar.compare("spiderman")==0)
-	mdlviewer_display(modelo.Spiderman);
-	if(avatar.compare("anonymous")==0)
-	mdlviewer_display(modelo.anonymous);
-	if(avatar.compare("bugsbunny")==0)
-	mdlviewer_display(modelo.bugsbunny);
-	if(avatar.compare("hostage")==0)
-	mdlviewer_display(modelo.hostage);
-	if(avatar.compare("nuku_Girl")==0)
-	mdlviewer_display(modelo.nuku_Girl);
-	if(avatar.compare("scientist")==0)
-	mdlviewer_display(modelo.scientist);
-	*/
+	material(white);
+	if(no==0/*avatar.compare("homer")==0*/)
+		mdlviewer_display(modelo.homer);
+	if(no==1/*avatar.compare("urban")==0*/)
+		mdlviewer_display(modelo.urban);
+	if(no==2/*avatar.compare("spiderman")==0*/)
+		mdlviewer_display(modelo.Spiderman);
+	if(no==3/*avatar.compare("anonymous")==0*/)
+		mdlviewer_display(modelo.anonymous);
+	if(no==4/*avatar.compare("bugsbunny")==0*/)
+		mdlviewer_display(modelo.bugsbunny);
+	if(no==5/*avatar.compare("hostage")==0*/)
+		mdlviewer_display(modelo.hostage);
+	if(no==6/*avatar.compare("nuku_Girl")==0*/)
+		mdlviewer_display(modelo.nuku_Girl);
+	if(no==7/*avatar.compare("scientist")==0*/)
+		mdlviewer_display(modelo.scientist);
+
 	glPopMatrix();
 
 	glPushMatrix();
@@ -717,7 +858,7 @@ void desenhaNo(int no,int texID)
 
 	glPopMatrix();
 
-	desenhaEsfera(nos[no].x,nos[no].y,nos[no].z,nos[no].largura);
+	desenhaEsfera(no,nos[no].x,nos[no].y,nos[no].z,nos[no].largura);
 
 	if(estado.zmin > nos[no].z)
 	{
@@ -735,10 +876,17 @@ void desenhaArco(Arco arco)
 	No *noi,*nof;
 	noi=&nos[arco.noi];
 	nof=&nos[arco.nof];
-	GLUquadricObj *quad;
 	GLfloat d= sqrt(pow(nof->x-noi->x,2)+pow(nof->y-noi->y,2));
 	GLfloat r= sqrt(pow(d,2)+pow(nof->z-noi->z,2));
-	quad=gluNewQuadric();
+
+	//recebe o no de destino 
+	//o prolog determina o caminho mais curto entre dois users
+	//se houver pinta de cor diferente
+	if((arco.noi == 0 && arco.nof == name1 -1) || (arco.noi == name1 -1 && arco.nof == 0))
+		material(brass);
+	//senão 
+	else		
+		material(cinza);
 
 	glPushMatrix();
 
@@ -761,10 +909,9 @@ void desenhaLabirinto()
 
 	for(int i=0; i<numNos; i++){
 		glPushName(NO + i);
-		desenhaNo(i,modelo.texID[ID_TEXTURA_CHAO]);
+		desenhaNo(i,modelo.texID[ID_TEXTURA_BILLBOARD]);
 		glPopName();
 	}
-	material(azul);
 	for(int i=0; i<numArcos; i++){
 		glPushName(ARCO + i);
 		desenhaArco(arcos[i]);
@@ -773,6 +920,7 @@ void desenhaLabirinto()
 	glPopMatrix();
 	glFlush();
 }
+
 /*
 void desenhaEixo()
 {
@@ -825,6 +973,7 @@ void desenhaPlanoDrag(int eixo)
 	glEnd();
 	glPopMatrix();
 }
+
 /*
 void desenhaEixos()
 {
@@ -852,14 +1001,16 @@ glPopName();
 glPopMatrix();
 }
 */
+
 void setCamera()
 {
+	Vertice eye;
 	estado.camera.center[0] = estado.camera.eye.x + estado.camera.dist * cos(estado.camera.dir_long) * cos(estado.camera.dir_lat);
 	estado.camera.center[1] = estado.camera.eye.y + estado.camera.dist * sin(estado.camera.dir_long) * cos(estado.camera.dir_lat);
 	estado.camera.center[2] = estado.camera.eye.z + estado.camera.dist * sin(estado.camera.dir_lat);
 
 	putLights((GLfloat*)white_light);
-	gluLookAt(estado.camera.eye.x,estado.camera.eye.y,estado.camera.eye.z,estado.camera.center[0],estado.camera.center[1],estado.camera.center[2],0,0,1);
+	//gluLookAt(estado.camera.eye.x,estado.camera.eye.y,estado.camera.eye.z,estado.camera.center[0],estado.camera.center[1],estado.camera.center[2],0,0,1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -1159,6 +1310,7 @@ GLdouble colisaoLivre()
 	glRotatef(graus(-M_PI / 2.0 - atan2(estado.camera.velv, estado.camera.velh)),1,0,0);
 	glRotatef(graus(M_PI / 2.0 - estado.camera.dir_long),0,0,1);
 	glTranslatef(-estado.camera.eye.x,-estado.camera.eye.y,-estado.camera.eye.z);
+	desenhaSolo();
 	desenhaLabirinto();
 	n = glRenderMode(GL_RENDER);
 	ptr = (GLuint *) buffer;
@@ -1389,7 +1541,8 @@ void Timer(int value)
 			// subir camara
 			estado.camera.velh = 0;
 			estado.camera.velv = VELOCIDADE_VERTICAL;
-			k = colisaoLivre();
+			if(estado.camera.center[2] < 600)
+				k = colisaoLivre();
 			nz = estado.camera.eye.z + k * sin(estado.camera.dir_lat);
 			estado.camera.eye.z = nz;
 			estado.camera.velv = 0;
@@ -1399,10 +1552,8 @@ void Timer(int value)
 			estado.camera.velh = 0;
 			estado.camera.velv = -VELOCIDADE_VERTICAL;
 			k = colisaoLivre();
-			if(estado.camera.center[2]>=4){
-				nz = estado.camera.eye.z - k * sin(estado.camera.dir_lat);
-				estado.camera.eye.z = nz;
-			}
+			nz = estado.camera.eye.z - k * sin(estado.camera.dir_lat);
+			estado.camera.eye.z = nz;
 			estado.camera.velv = 0;
 		}
 	}
@@ -1607,8 +1758,7 @@ void Reshape(int w, int h)
 	height = h;
 }
 
-void motionRotate(int x, int y)
-{
+void motionRotate(int x, int y){
 #define DRAG_SCALE	0.01
 	double lim=M_PI/2-0.1;
 	estado.camera.dir_long+=(estado.xMouse-x)*DRAG_SCALE;
@@ -1738,23 +1888,23 @@ void processHits(GLint hits, GLuint buffer[])
 	unsigned int j;
 	GLuint names, *ptr;
 
-	printf("hits = %d\n", hits);
+	//printf("hits = %d\n", hits);
 	ptr = (GLuint *) buffer;
 	for (i = 0; i < hits; i++) {  /* for each hit  */
 		names = *ptr;
 		estado.posMouse.numeroNo=names;
-		printf(" number of names for hit = %d\n", names);
+		//printf(" number of names for hit = %d\n", names);
 		ptr++;
-		printf("  z1 is %g;", (float) *ptr/0xffffffff);
+		//printf("  z1 is %g;", (float) *ptr/0xffffffff);
 		ptr++;
-		printf(" z2 is %g\n", (float) *ptr/0xffffffff);
+		//printf(" z2 is %g\n", (float) *ptr/0xffffffff);
 		ptr++;
-		printf("   the name is ");
+		//printf("   the name is ");
 		for (j = 0; j < names; j++) {  /* for each name */
-			printf("%d ", *ptr);
+			//printf("%d ", *ptr);
 			ptr++;
 		}
-		printf("\n");
+		//printf("\n");
 	}
 }
 
@@ -1810,6 +1960,32 @@ int pickingToolTip(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 	myReshape2(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
 	return n;
+}
+
+void process(GLint hits, GLuint buffer[])
+{
+	int i;
+	unsigned int j;
+	GLuint names, *ptr, name=0;
+	ptr = (GLuint *) buffer;
+	for (i = 0; i < hits; i++) { /* for each hit */
+		names = *ptr;
+		ptr+=3;
+		for (j = 0; j < names; j++) { /* for each name */
+			try{
+				name = *ptr;
+			}catch(exception e)
+			{}
+			//ptr++;
+		}
+		ptr++;
+	}
+	if(name1 == -1){
+		name1 = name;
+	}
+	else if(name1 != 1){
+		name1 = name;
+	}
 }
 
 void desenhaAngVisao(camera_t *cam)
@@ -1874,7 +2050,7 @@ void redisplayTopSubwindow(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	//gluOrtho2D(0, width, height, 0);
-	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,500);
+	gluPerspective(estado.camera.fov+15,(GLfloat)glutGet(GLUT_WINDOW_WIDTH) /glutGet(GLUT_WINDOW_HEIGHT),1,DoD);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -1896,26 +2072,71 @@ void mouse(int btn, int state, int x, int y)
 			//cout << "Left up\n";
 		}
 		break;
-	case GLUT_LEFT_BUTTON :
+		/*case GLUT_LEFT_BUTTON :
 		if(state == GLUT_DOWN){
-			estado.eixoTranslaccao=picking(x,y);
-			if(estado.eixoTranslaccao)
-				glutMotionFunc(motionDrag);
+		estado.eixoTranslaccao=picking(x,y);
+		if(estado.eixoTranslaccao)
+		glutMotionFunc(motionDrag);
 
-			//cout << "Right down - objecto:" << estado.eixoTranslaccao << endl;
+		//cout << "Right down - objecto:" << estado.eixoTranslaccao << endl;
 		}
 		else{
-			if(estado.eixoTranslaccao!=0) {
-				/*estado.camera.center[0]=estado.eixo[0];
-				estado.camera.center[1]=estado.eixo[1];
-				estado.camera.center[2]=estado.eixo[2];*/
-				glutMotionFunc(NULL);
-				estado.eixoTranslaccao=0;
-				glutPostRedisplay();
+		if(estado.eixoTranslaccao!=0) {
+		/*estado.camera.center[0]=estado.eixo[0];
+		estado.camera.center[1]=estado.eixo[1];
+		estado.camera.center[2]=estado.eixo[2];*/
+		/*	glutMotionFunc(NULL);
+		estado.eixoTranslaccao=0;
+		glutPostRedisplay();
+		}*/
+		//cout << "Right up\n";
+		/*}
+		break;*/
+	case GLUT_LEFT_BUTTON :
+		if(state == GLUT_DOWN){
+			int numero,i, n, objid=0;
+			double zmin = 10.0;
+			GLint width,height;
+			GLuint selectBuf[BUFSIZE];
+
+			glSelectBuffer(BUFSIZE, selectBuf);
+			glRenderMode(GL_SELECT);
+			glInitNames();
+
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			setProjection(x,y,GL_TRUE);
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+
+			setCamera();
+			//desenhar so os nos
+			glPushMatrix();
+			glTranslatef(0,0,0.05);
+			glScalef(5,5,5);
+
+			for(int i=0; i<numNos; i++){
+				glPushName(NO+i);
+				desenhaNo(i,modelo.texID[ID_TEXTURA_CHAO]);
+				glPopName();
 			}
-			//cout << "Right up\n";
+			glPopMatrix();
+
+			n = glRenderMode(GL_RENDER);
+
+			if (n>0){
+				process (n, selectBuf);
+			}else{
+				name1 = -1;
+			}
+
+			glMatrixMode(GL_PROJECTION); //repõe matriz projecção
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+			myReshape2(glutGet(GLUT_WINDOW_WIDTH),glutGet(GLUT_WINDOW_HEIGHT));
 		}
-		break;
 	}
 }
 
@@ -1948,6 +2169,7 @@ void processaUser()
 		glutKeyboardUpFunc(keyboardUp);
 		glutSpecialFunc(Special);
 		glutSpecialUpFunc(SpecialKeyUp);
+		glutMouseFunc(mouse);
 		glutMouseFunc(mouse);
 		glutPassiveMotionFunc(mouseToolTip);
 		myInit();
@@ -2128,8 +2350,6 @@ void main(int argc, char **argv)
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
 	glutPassiveMotionFunc(mouseToolTip);
-	/*createTextures(modelo.texID);
-	mdlviewer_init("urban.mdl", modelo.homer);*/
 	imprime_ajuda();
 
 	// criar a sub window topSubwindow
@@ -2137,15 +2357,11 @@ void main(int argc, char **argv)
 	myInit();
 	glutReshapeFunc(redisplayTopSubwindow);
 	glutDisplayFunc(displayTopSubwindow);
-
-	//glutTimerFunc(estado.timer,Timer,0);
 	glutKeyboardFunc(keyboard);
 	glutKeyboardUpFunc(keyboardUp);
 	glutSpecialFunc(Special);
 	glutSpecialUpFunc(SpecialKeyUp);
 	glutMouseFunc(mouse);
-
-
 	createTextures(modelo.texID);
 	glutMainLoop();
 }

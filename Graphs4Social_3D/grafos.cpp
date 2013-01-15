@@ -96,6 +96,7 @@ void gravaGrafo(){
 		myfile << arcos[i].noi << " " << arcos[i].nof << " " << arcos[i].peso << " " << arcos[i].largura << endl;
 	myfile.close();
 }
+
 void leGrafo(){
 	ifstream myfile;
 	

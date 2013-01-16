@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Editar_Avatar" xml:space="preserve">
+    <value>Choose your avatar</value>
+  </data>
+  <data name="Editar_Button" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Editar_DataNascimentoTexto" xml:space="preserve">
+    <value>Your birthday</value>
+  </data>
+  <data name="Editar_Digote" xml:space="preserve">
+    <value>Tell you later</value>
+  </data>
+  <data name="Editar_Facebook" xml:space="preserve">
+    <value>Login with Facebook</value>
+  </data>
+  <data name="Editar_Feminino" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="Editar_IdiomaEnUS" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Editar_IdiomaPt" xml:space="preserve">
+    <value>Portuguese</value>
+  </data>
+  <data name="Editar_IdiomaTexto" xml:space="preserve">
+    <value>Your language</value>
+  </data>
+  <data name="Editar_Indeciso" xml:space="preserve">
+    <value>Undecided</value>
+  </data>
+  <data name="Editar_Linkedin" xml:space="preserve">
+    <value>Login with LinkedIn</value>
+  </data>
+  <data name="Editar_Masculino" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="Editar_NumeroTelefoneTexto" xml:space="preserve">
+    <value>Your phone number</value>
+  </data>
+  <data name="Editar_RegiaoTexto" xml:space="preserve">
+    <value>Your zone</value>
+  </data>
+  <data name="Editar_Sexo_Label" xml:space="preserve">
+    <value>I'm</value>
+  </data>
+  <data name="Inicio_Amigo" xml:space="preserve">
+    <value>Friend</value>
+  </data>
+  <data name="Inicio_Ano" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="Inicio_Contacto" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="Inicio_DataNasc" xml:space="preserve">
+    <value>Birthday</value>
+  </data>
+  <data name="Inicio_Enviado" xml:space="preserve">
+    <value>Friend Request Sent</value>
+  </data>
+  <data name="Inicio_Idade" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="Inicio_Info" xml:space="preserve">
+    <value>No information available</value>
+  </data>
+  <data name="Inicio_Lingua" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Inicio_NoTags" xml:space="preserve">
+    <value>No Tags Selected</value>
+  </data>
+  <data name="Inicio_Pedido" xml:space="preserve">
+    <value>Send Friendship Request</value>
+  </data>
+  <data name="Inicio_Regiao" xml:space="preserve">
+    <value>Zone</value>
+  </data>
+  <data name="Inicio_Rejeitado" xml:space="preserve">
+    <value>Rejected Friend Request</value>
+  </data>
+  <data name="Inicio_Sexo" xml:space="preserve">
+    <value>Sex</value>
+  </data>
+  <data name="Inicio_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Master_Download" xml:space="preserve">
+    <value>3D App Download</value>
+  </data>
+  <data name="Master_Editar" xml:space="preserve">
+    <value>Edit Your Profile</value>
+  </data>
+  <data name="Master_Gerir" xml:space="preserve">
+    <value>Account Management</value>
+  </data>
+  <data name="Master_Pedidos" xml:space="preserve">
+    <value>Friendship Requests</value>
+  </data>
+  <data name="Master_Warning" xml:space="preserve">
+    <value>User not found</value>
+  </data>
+  <data name="Master_Welcome" xml:space="preserve">
+    <value>Hello, </value>
+  </data>
+  <data name="Pedidos_NoRequest" xml:space="preserve">
+    <value>No Friendship Requests</value>
+  </data>
+  <data name="Pedido_Adicionado" xml:space="preserve">
+    <value>Friend added with success</value>
+  </data>
+  <data name="Pedido_Erro" xml:space="preserve">
+    <value>An error ocurred, try again later</value>
+  </data>
+  <data name="Default_Text" xml:space="preserve">
+    <value>Get to know your social network in a 3D way with our website and a 3D Windows-based application</value>
+  </data>
+  <data name="Default_Title" xml:space="preserve">
+    <value>Graphs4Social - Much more than a Social Network</value>
+  </data>
+  <data name="Estado_Aborrecido" xml:space="preserve">
+    <value>Bored</value>
+  </data>
+  <data name="Estado_Alegre" xml:space="preserve">
+    <value>Smiley</value>
+  </data>
+  <data name="Estado_Baixo" xml:space="preserve">
+    <value>Upset</value>
+  </data>
+  <data name="Estado_Chorar" xml:space="preserve">
+    <value>Teards</value>
+  </data>
+  <data name="Estado_Entusiasmado" xml:space="preserve">
+    <value>Pleased</value>
+  </data>
+  <data name="Estado_Sonolento" xml:space="preserve">
+    <value>Sleepy</value>
+  </data>
+  <data name="Estado_Triste" xml:space="preserve">
+    <value>Sad</value>
+  </data>
+  <data name="Inicio_Estado" xml:space="preserve">
+    <value>How are you today?</value>
+  </data>
+  <data name="Inicio_EstadoOutro1" xml:space="preserve">
+    <value>How </value>
+  </data>
+  <data name="Inicio_EstadoOutro2" xml:space="preserve">
+    <value> is today</value>
+  </data>
+  <data name="Master_Tags" xml:space="preserve">
+    <value>Edit Tags</value>
+  </data>
+  <data name="Created_By" xml:space="preserve">
+    <value>Website created by</value>
+  </data>
+  <data name="Login_Entrar" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="Login_IfDont" xml:space="preserve">
+    <value>if you don't have an account.</value>
+  </data>
+  <data name="Login_Lembrar" xml:space="preserve">
+    <value>Remember me?</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Login_UseLocal" xml:space="preserve">
+    <value>Use a local account to log in.</value>
+  </data>
+  <data name="Login_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register_ConfPass" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_Pass1" xml:space="preserve">
+    <value>Passwords are required to be a minimum of</value>
+  </data>
+  <data name="Register_Pass2" xml:space="preserve">
+    <value>characters in length.</value>
+  </data>
+  <data name="Register_Registration" xml:space="preserve">
+    <value>Registration Form</value>
+  </data>
+  <data name="Register_UseForm" xml:space="preserve">
+    <value>Use the form below to create a new account.</value>
+  </data>
+  <data name="Gerir_Aceitar" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="Gerir_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Gerir_Nome" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Gerir_Qtd" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Gerir_Rejeitar" xml:space="preserve">
+    <value>Reject</value>
+  </data>
+  <data name="Gerir_SemTags" xml:space="preserve">
+    <value>No tags to aprove!</value>
+  </data>
+  <data name="Gerir_SubTit1" xml:space="preserve">
+    <value>Tags to Aprove</value>
+  </data>
+  <data name="Gerir_SubTit2" xml:space="preserve">
+    <value>Actual Tags</value>
+  </data>
+  <data name="Gerir_Titulo" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Gerir_Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="GerirC_Amigos" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="GerirC_Nome" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="GerirC_Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="GerirC_Titulo" xml:space="preserve">
+    <value>Account Manager</value>
+  </data>
+  <data name="Pedido_Rejeitado" xml:space="preserve">
+    <value>Request rejected sucessfully.</value>
+  </data>
+  <data name="Pedido_TitRej" xml:space="preserve">
+    <value>Friendship Requests</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>User not found!</value>
+  </data>
+  <data name="Master_Sugestao" xml:space="preserve">
+    <value>Friendship Sugestion</value>
+  </data>
+  <data name="Inicio_Estatisticas" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="Inicio_GMS" xml:space="preserve">
+    <value>Average degree of separation</value>
+  </data>
+  <data name="Inicio_TR2" xml:space="preserve">
+    <value>Network size level 2</value>
+  </data>
+  <data name="Inicio_TR3" xml:space="preserve">
+    <value>Network size level 3</value>
+  </data>
+  <data name="Master_Mavens" xml:space="preserve">
+    <value>Mavens</value>
+  </data>
+  <data name="Master_User" xml:space="preserve">
+    <value>Maven User:</value>
+  </data>
+  <data name="Maven_Erro" xml:space="preserve">
+    <value>Does not exist the Maven for the selected tag.</value>
+  </data>
+  <data name="PesquisarTags_Titulo" xml:space="preserve">
+    <value>Search friends by Tag</value>
+  </data>
+  <data name="PesquisarTags_Amigos" xml:space="preserve">
+    <value>Friends</value>
+  </data>
+  <data name="PesquisarTags_Button" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="PesquisarTags_Erro" xml:space="preserve">
+    <value>Not found any friends in common with the selected tag</value>
+  </data>
+</root>

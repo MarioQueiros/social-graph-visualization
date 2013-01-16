@@ -524,6 +524,27 @@ tr.pager td {
     padding: 0 0.25em 0 0;
 }
 
+/*  Notificacoes  */
+
+.noti_Container {
+    position:relative;	
+}
+.noti_balao {
+    position:absolute;
+    padding-right:2px;
+	padding-left:1px;
+    background-color:red;
+    color:white;
+    font-weight:bold;
+    font-size:0.80em;
+    margin-left:158px;
+    margin-top:-25px;
+    border-radius:2px;
+    box-shadow:1px 1px 1px gray;
+    z-index:10000000;
+}
+
+
 
 /********************
 *   Mobile Styles   *
@@ -578,6 +599,8 @@ tr.pager td {
     nav {
         margin-bottom: 5px;
     }
+
+
 
     ul#menu {
         margin: 0;
@@ -716,3 +739,5 @@ tr.pager td {
 }
 
 /* End Table Avatar*/
+
+

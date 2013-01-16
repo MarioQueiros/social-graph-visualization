@@ -289,12 +289,17 @@ namespace Graphs4Social_AR
                 ligacao.Estado = 1;
                 ligacao.Save();
 
+                var x = new IA_AR.Utils();
+
                 ligacao = Ligacao.LoadByUserNames(username2, username1);
                 if (ligacao != null)
                 {
-
                     ligacao.Estado = 1;
                     ligacao.Save();
+
+                    x.insertLig(username1.ToLower(), username2.ToLower(), forca);
+                    x.insertLig(username2.ToLower(), username1.ToLower(), ligacao.ForcaDeLigacao);
+
                     return true;
                 }
                 return false;

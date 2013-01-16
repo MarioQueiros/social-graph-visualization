@@ -72,8 +72,6 @@ namespace Graphs4Social_AR
             }
         }
 
-
-
         // Gets e Sets
         //
         //
@@ -96,19 +94,18 @@ namespace Graphs4Social_AR
             set { this._gravado = value; }
         }
 
-            public bool Eliminado
+        public bool Eliminado
         {
             get { return _eliminado; }
             set { this._eliminado = value; }
         }
 
-            public string Username
+        public string Username
             {
                 get { return _username; }
                 set { this._username = value; }
 
             }
-
 
         // To String
         //
@@ -118,8 +115,6 @@ namespace Graphs4Social_AR
         {
             return UniqueIdentifierUserId+" "+IdUserLigado+" "+Gravado+" "+Eliminado;
         }
-        
-
         
         // Metodos
         //
@@ -143,8 +138,10 @@ namespace Graphs4Social_AR
             return true;
         }
 
-
-
+        public static int AdicionarUtilizadorIA(string username)
+        {
+            return new IA_AR.Utils().insertUser(username.ToLower());
+        }
 
         // Load
         //
@@ -198,7 +195,6 @@ namespace Graphs4Social_AR
             }
             return users;
         }
-
 
         // Load de um User através do Username
         public static User LoadByUserName(string username)
@@ -291,8 +287,6 @@ namespace Graphs4Social_AR
 
             return pedidos;
         }
-
-
 
         public static IList<string> LoadProfileByUser(string username)
         {

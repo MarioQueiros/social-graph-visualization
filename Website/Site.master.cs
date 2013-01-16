@@ -72,6 +72,7 @@ public partial class SiteMaster : MasterPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        numeroPedidosAmizade();
         if (IsPostBack)
         {
             try
@@ -106,6 +107,7 @@ public partial class SiteMaster : MasterPage
             ((Label)loginView2.FindControl("Label7")).Text = rm.GetString("Master_Download", ci);
             ((Label)loginView2.FindControl("Label15")).Text = rm.GetString("Master_Sugestao", ci);
             ((Label)loginView2.FindControl("Label14")).Text = rm.GetString("Master_Mavens", ci);
+            ((Label)loginView2.FindControl("Label13")).Text = rm.GetString("Master_PesqTags", ci);
 
             /*HtmlAnchor hl = loginView.FindControl("linkProfile") as HtmlAnchor;
 
@@ -165,4 +167,24 @@ public partial class SiteMaster : MasterPage
         }
     }
 
+    public void numeroPedidosAmizade()
+    {
+        try
+        {
+            int a = ((IList<Graphs4Social_AR.User>)(Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName))).Count;
+            if (a == 0)
+            {
+                ((Label)loginView2.FindControl("num")).Text = "";
+            }
+            else
+                ((Label)loginView2.FindControl("num")).Text = a.ToString();
+        }
+        catch (Exception ex)
+        {
+            if (!Profile.IsAnonymous)
+            {
+                ((Label)loginView2.FindControl("num")).Text = "";
+            }
+        }
+    }
 }

@@ -8,7 +8,7 @@ public class moduloIA : IModuloIa
     {
         if (nivel != 2 && nivel != 3)
             return "-1";
-        var op = "tamanho" + nivel + "(" + user + ",R)";
+        var op = "tamanho" + nivel + "(" + user.ToLower() + ",R)";
 
         return carregaPL(op).Trim();
     }
@@ -17,50 +17,61 @@ public class moduloIA : IModuloIa
     {
         if (nivel != 2 && nivel != 3)
             return "-1";
-        var op = "redeNivel" + nivel + "(" + user + ",R)";
+        var op = "redeNivel" + nivel + "(" + user.ToLower() + ",R)";
 
         return carregaPL(op);
     }
 
     public string amigosTag(string user, string tags)
     {
-        return carregaPL("amigosTag(" + user + ",[" + tags + "],R)");
+        if (tags.Contains("[") || tags.Contains("]"))
+            return "verifique o envio de tags (colocou '[|]'?)";
+        return carregaPL("amigosTag(" + user.ToLower() + ",[" + tags.ToLower() + "],R)");
     }
 
     public string sugerirAmigos(string user)
     {
-        return carregaPL("sugereAmigos(" + user + ",R)");
+        return carregaPL("sugereAmigos(" + user.ToLower() + ",R)");
     }
 
     public string maven(string tag)
     {
-        return carregaPL("maven(" + tag + ",R)");
+        return carregaPL("maven(" + tag.ToLower() + ",R)");
     }
 
     public string amigosComuns(string user1, string user2)
     {
-        return carregaPL("grafoComum(" + user1 + "," + user2 + ",R)");
+        return carregaPL("grafoComum(" + user1.ToLower() + "," + user2.ToLower() + ",R)");
     }
 
     public string caminhoForte(string userOrigem, string userDestino)
     {
-        return carregaPL("camForte(" + userOrigem + "," + userDestino + ",R)");
+        return carregaPL("camForte(" + userOrigem.ToLower() + "," + userDestino.ToLower() + ",R)");
     }
 
     public string caminhoCurto(string userOrigem, string userDestino)
     {
-        return carregaPL("camCurto(" + userOrigem + "," + userDestino + ",R)");
+        return carregaPL("camCurto(" + userOrigem.ToLower() + "," + userDestino.ToLower() + ",R)");
     }
 
     public string grauMedioSeparacao()
     {
         const string op = "grauMedio(R)";
-        return carregaPL(op).Trim().Substring(0,5);
+        var x = carregaPL(op).Trim();
+        if (x != "-1")
+            return x.Substring(0, 5);
+        else
+            return "ERRO! verifique se existem ligacoes na bd do prolog";
     }
 
     public string grafoNivel3(string user)
     {
-        return carregaPL("grafoNivel3(" + user + ",R)");
+        return carregaPL("grafoNivel3(" + user.ToLower() + ",R)");
+    }
+
+    public string traduzir(string orig)
+    {
+        return carregaPL("traduzir(" + orig.ToLower()+ ",R)");
     }
 
     public string debug()

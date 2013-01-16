@@ -177,7 +177,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
             {
 
 
-                IList<User> list = Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName);
+                IList<User> list = Graphs4Social_AR.User.LoadAllPedidosUser(Profile.UserName.ToLower());
 
 
                 HtmlTable htmltb = new HtmlTable();
@@ -200,9 +200,10 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                 for (int i = 0; i < list.Count; i++)
                 {
 
-                    IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(list[i].Username);
+                    IList<string> profile = Graphs4Social_AR.User.LoadProfileByUser(list[i].Username.ToLower());
 
                     System.Web.UI.WebControls.Image img1 = new System.Web.UI.WebControls.Image();
+                    img1.ImageUrl = "";
 
                     foreach (string elemento in profile)
                     {
@@ -215,6 +216,11 @@ public partial class Profile_Pedidos : System.Web.UI.Page
                         }
 
                     }
+                    if (img1.ImageUrl.Equals(""))
+                    {
+                        img1.ImageUrl = "~/Images/" + "Indeciso.png";
+                    }
+
                     img1.Height = 150;
                     img1.Width = 150;
                     img1.BorderWidth = 2;
@@ -262,6 +268,11 @@ public partial class Profile_Pedidos : System.Web.UI.Page
 
                     cell.Controls.Add(htmltb);
 
+
+                    if (i == 0)
+                    {
+                        pedidosTable.Controls.Add(rw);
+                    }
 
                     if (i % 3 == 0 && i != 0)
                     {
@@ -331,7 +342,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
     private void FillTagsCombo(string username)
     {
 
-        IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username);
+        IList<string> lis = Graphs4Social_AR.User.LoadProfileByUser(username.ToLower());
 
         string sexo = "";
 
@@ -422,6 +433,7 @@ public partial class Profile_Pedidos : System.Web.UI.Page
         }
         return p;
     }
+
     protected void btt1_Click(object sender, EventArgs e)
     {
 

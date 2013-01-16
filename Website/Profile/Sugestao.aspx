@@ -21,5 +21,7 @@
         <SortedDescendingCellStyle BackColor="#E5E5E5" />
         <SortedDescendingHeaderStyle BackColor="#242121" />
     </asp:GridView>
+
+<h3><asp:Label ID="erro" runat="server" Text="" Visible="false"></asp:Label></h3>
 </asp:Content>
 

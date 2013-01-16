@@ -63,6 +63,7 @@
                             <asp:LoginView ID="loginView3" runat="server" ViewStateMode="Disabled">
                                 <AnonymousTemplate></AnonymousTemplate>
                                 <LoggedInTemplate>
+
                                     <asp:TextBox ID="pesquisarText" runat="server" CssClass="pesquisarText" />
 
                                     <asp:HyperLink ID="pesquisarLink" runat="server" ImageUrl="~/Images/search.png"></asp:HyperLink>
@@ -105,10 +106,7 @@
                             </AnonymousTemplate>
                             <LoggedInTemplate>
                                 <p>
-                                    <asp:Label ID="Label6" runat="server" Text=""></asp:Label>
-                                    <a runat="server" id="linkProfile" class="username" href="~/Profile/Inicio.aspx" title="Manage your account">
-                                        <asp:LoginName runat="server" CssClass="username"/>
-                                    </a>!
+                                    <asp:Label ID="Label6" runat="server" Text=""></asp:Label><a runat="server" id="linkProfile" class="username" href="~/Profile/Inicio.aspx" title="Manage your account"><asp:LoginName runat="server" CssClass="username"/></a>!
                                     
                                 </p>
                             </LoggedInTemplate>
@@ -120,16 +118,19 @@
                 <asp:LoginView ID="loginView2" runat="server" ViewStateMode="Disabled">
                     <LoggedInTemplate>
                         <ul class="nav">
-                            <li><a href="~/Profile/Pedidos.aspx" runat="server">
-                                <asp:Label ID="Label2" runat="server" Text=""></asp:Label></a></li>
+                            <li><div class="noti_Container"><a href="~/Profile/Pedidos.aspx" runat="server">
+                                <asp:Label ID="Label2" runat="server" Text="">
+					            </asp:Label></a></div><div class="noti_balao"><asp:Label ID="num" runat="server" Text=""></asp:Label></div></li>
                             <li><a href="Profile/Sugestao.aspx" runat="server">
                                 <asp:Label ID="Label15" runat="server" Text=""></asp:Label></a></li>
-                            <li><a href="~/Profile/Editar.aspx" id="editar" runat="server">
+                            <li><a href="~/Profile/Mavens.aspx" runat="server">
+                                <asp:Label ID="Label14" runat="server" Text=""></asp:Label></a></li>
+							<li><a href="~/Profile/PesquisarPorTag.aspx" runat="server">
+                                <asp:Label ID="Label13" runat="server" Text=""></asp:Label></a></li>
+							<li><a href="~/Profile/Editar.aspx" id="editar" runat="server">
                                 <asp:Label ID="Label3" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Profile/Tags.aspx" runat="server">
                                 <asp:Label ID="Label4" runat="server" Text=""></asp:Label></a></li>
-                            <li><a href="~/Profile/Mavens.aspx" runat="server">
-                                <asp:Label ID="Label14" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Account/Manage.aspx" runat="server">
                                 <asp:Label ID="Label5" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="#" runat="server">

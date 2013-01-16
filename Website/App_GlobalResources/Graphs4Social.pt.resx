@@ -399,4 +399,34 @@
   <data name="PesquisarTags_Erro" xml:space="preserve">
     <value>Não foram encontrados amigos em comum com a tag seleccionada</value>
   </data>
+  <data name="Gerir_BtSave" xml:space="preserve">
+    <value>Gravar</value>
+  </data>
+  <data name="Gerir_ErroTraduzir1" xml:space="preserve">
+    <value>Insira tags nas caixas de texto</value>
+  </data>
+  <data name="Gerir_ErroTraduzir2" xml:space="preserve">
+    <value>Ocorreu um erro. Por favor tente novamente mais tarde.</value>
+  </data>
+  <data name="Gerir_LabelFinal" xml:space="preserve">
+    <value>Tag final: </value>
+  </data>
+  <data name="Gerir_LabelOrig" xml:space="preserve">
+    <value>Tag origem: </value>
+  </data>
+  <data name="Master_PesqTags" xml:space="preserve">
+    <value>Amigos por Tag</value>
+  </data>
+  <data name="Tags_Titulo" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Sugestao_Titulo" xml:space="preserve">
+    <value>Sugestões de amigos</value>
+  </data>
+  <data name="Sugestao_Erro" xml:space="preserve">
+    <value>Não foram encontradas sugestões de amigos.</value>
+  </data>
+  <data name="Inicio_NOPROLOG" xml:space="preserve">
+    <value>Não têm amigos para calcular as estatisticas da rede: </value>
+  </data>
 </root>

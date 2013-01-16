@@ -60,6 +60,9 @@ public partial class Account_Register : Page
     protected void RegisterUser_CreatedUser(object sender, EventArgs e)
     {
         FormsAuthentication.SetAuthCookie(RegisterUser.UserName, createPersistentCookie: false);
+
+        Graphs4Social_AR.User.AdicionarUtilizadorIA(RegisterUser.UserName);
+
         Response.Redirect("~/Profile/Editar.aspx");
     }
 }

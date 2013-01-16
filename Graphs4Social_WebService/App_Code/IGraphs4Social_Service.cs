@@ -6,7 +6,22 @@ using System.ServiceModel;
 using System.Text;
 using Graphs4Social_AR;
 
- 
+[ServiceContract]
+public interface IGraphs4Social_Service
+{
+    [OperationContract]
+    Grafo carregaGrafo(string username);
+
+
+    [OperationContract]
+    string carregaGrafoAmigosComum(string username1, string username2);
+
+    [OperationContract]
+    string DoWork();
+}
+
+
+
 [DataContract]
 public class Grafo
 {
@@ -32,13 +47,8 @@ public class Grafo
 
         Users = new List<User>();
         Ligacoes = new List<Ligacao>();
-        int numTags = 0;
         int numTagsTotal = Graphs4Social_AR.Tag.LoadAllTag().Count;
         //
-        double minraio = 3;
-        double maxraio = 7.5;
-        double raio = 0;
-        
 
         if (!username1.Equals(""))
         {
@@ -699,15 +709,15 @@ public class Grafo
 
             txt += "]||[";
 
-            foreach (Tag tag in user.Tags)
+            foreach (string tag in user.Tags)
             {
-                if (user.Tags.ElementAt(0).Nome.Equals(tag.Nome))
+                if (user.Tags.ElementAt(0).Equals(tag))
                 {
-                    txt += tag.Nome;
+                    txt += tag;
                 }
                 else
                 {
-                    txt += "|" + tag.Nome;
+                    txt += "|" + tag;
                 }
             }
 
@@ -749,10 +759,10 @@ public class User
     [DataMember]
     public string Username { get; set; }
 
-    [DataMember]
-    public IList<Graphs4Social_AR.Tag> Tags { get; set; }
+    [DataMember(IsRequired = true)]
+    public IList<string> Tags { get; set; }
 
-    [DataMember]
+    [DataMember(IsRequired = true)]
     public IList<string> Profile { get; set; }
 
     [DataMember]
@@ -771,12 +781,12 @@ public class User
         //  A REPOR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //Profile = Graphs4Social_AR.User.LoadProfileByUser(username);
         //Tags = Graphs4Social_AR.Tag.LoadAllByUsername(username);
-        Tags = new List<Graphs4Social_AR.Tag>();
-        Tags.Add(Graphs4Social_AR.Tag.LoadTagById(Graphs4Social_AR.Tag.LoadAllTag()[0].ID));
+        Tags = new List<string>();
+        Tags.Add(Graphs4Social_AR.Tag.LoadTagById(Graphs4Social_AR.Tag.LoadAllTag()[0].ID).Nome);
         Profile = new List<string>();
         Profile.Add("Sexo:Masculino");
 
-        Z = prologService.tamanhoRede(2, Username);
+        Z = Convert.ToDouble(prologService.tamanhoRede(2, Username));
         //
         int numTags = Tags.Count;
         //
@@ -913,16 +923,6 @@ public class Ligacao
     }
 }
 
-[ServiceContract]
-public interface IGraphs4Social_Service
-{
-    [OperationContract]
-    string carregaGrafo(string username);
 
-
-    [OperationContract]
-    string carregaGrafoAmigosComum(string username1, string username2);
-
-}
 
 

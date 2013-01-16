@@ -11,7 +11,7 @@
   <xs:element name="tamanhoRedeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="tamanhoRedeResult" type="xs:int" />
+        <xs:element minOccurs="0" name="tamanhoRedeResult" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -126,7 +126,7 @@
   <xs:element name="grauMedioSeparacaoResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="grauMedioSeparacaoResult" type="xs:float" />
+        <xs:element minOccurs="0" name="grauMedioSeparacaoResult" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

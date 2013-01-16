@@ -4,11 +4,13 @@
 #include "Webservice.h"
 #include "stdafx.h"
 #include "WebServices.h"
+#include "schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h"
 #include "schemas.microsoft.com.2003.10.Serialization.xsd.h"
 #include "tempuri.org.xsd.h"
 #include "tempuri.org.wsdl.h"
+#include "schema.xsd.h"
 
-string webServiceRequest(char* user)
+Grafo webServiceRequest(char* user)
 {
 	wstring text1;
 	copy(user, user + strlen(user), back_inserter(text1));
@@ -59,46 +61,36 @@ string webServiceRequest(char* user)
 	
 	
 	address.url = url; 
-	hr = WsCreateHeap(5120, 512, NULL, 0, &heap, error); 
+	hr = WsCreateHeap(10240, 512, NULL, 0, &heap, error); 
 	WS_HTTP_BINDING_TEMPLATE templ = {};
 	
 	
 	
 	//criação do proxy para o serviço 
 	hr = BasicHttpBinding_IGraphs4Social_Service_CreateServiceProxy(&templ, NULL, 0, &proxy, error); 
-	hr = WsOpenServiceProxy(proxy, &address, NULL, error); 
-	WCHAR * result;
+	hr = WsOpenServiceProxy(proxy, &address, NULL, error);
+	Grafo * result ;
 
 
-	
 	//chamada de uma operação do serviço alvo. O resultado vem no parâmetro result 
 	hr = BasicHttpBinding_IGraphs4Social_Service_carregaGrafo(proxy, username, &result,heap, NULL, 0, NULL, error); 
 	
-
-
+	
+	
 
 	if(proxy){ 
 	WsCloseServiceProxy(proxy, NULL, NULL); 
 	WsFreeServiceProxy(proxy); 
 	}
 
-	
-
-	wstring returnValue = result;
-	size_t buffersize = wcslen(result);
-	size_t num;
 
 
-	char* returnValueChar = (char *)malloc( buffersize );
-	
-	wcstombs_s(&num,returnValueChar,buffersize+1,result,buffersize+1);
-
-	if(heap){
+	/*if(heap){
 		WsFreeHeap(heap);
 	} 
 	if(error){ 
 		WsFreeError(error);
-	}
+	}*/
 
-	return returnValueChar;
+	return *result;
 }

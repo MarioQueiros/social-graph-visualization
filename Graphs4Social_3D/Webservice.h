@@ -7,8 +7,9 @@
 #include <stdlib.h> 
 #include <iostream>
 #include <fstream>
+#include "schema.xsd.h"
 using namespace std;
 
-string webServiceRequest(char* user);
+Grafo webServiceRequest(char* user);
 
 #endif

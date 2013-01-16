@@ -40,6 +40,9 @@ public interface IModuloIa
     string grafoNivel3(string user);
 
     [OperationContract]
+    string traduzir(string orig);
+
+    [OperationContract]
     string debug();
 
 }

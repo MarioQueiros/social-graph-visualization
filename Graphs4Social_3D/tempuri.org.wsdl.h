@@ -125,6 +125,8 @@ extern "C" {
 // The following client functions were generated:
 
 //     BasicHttpBinding_IGraphs4Social_Service_carregaGrafo
+//     BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum
+//     BasicHttpBinding_IGraphs4Social_Service_DoWork
 
 // The following server function tables were generated:
 
@@ -138,6 +140,8 @@ extern "C" {
 // The following header files must be included in this order before this one
 
 // #include <WebServices.h>
+// #include "schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h"
+// #include "schema.xsd.h"
 // #include "tempuri.org.xsd.h"
 
 ////////////////////////////////////////////////
@@ -176,7 +180,29 @@ HRESULT BasicHttpBinding_IGraphs4Social_Service_CreateServiceEndpoint(
 HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_carregaGrafo(
     __in WS_SERVICE_PROXY* _serviceProxy,
     __in_opt __nullterminated WCHAR* username, 
-    __out_opt __deref __nullterminated WCHAR** carregaGrafoResult, 
+    __deref_out_opt Grafo** carregaGrafoResult, 
+    __in WS_HEAP* _heap,
+    __in_ecount_opt(_callPropertyCount) const WS_CALL_PROPERTY* _callProperties,
+    __in const ULONG _callPropertyCount,
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
+// operation: BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum
+HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum(
+    __in WS_SERVICE_PROXY* _serviceProxy,
+    __in_opt __nullterminated WCHAR* username1, 
+    __in_opt __nullterminated WCHAR* username2, 
+    __out_opt __deref __nullterminated WCHAR** carregaGrafoAmigosComumResult, 
+    __in WS_HEAP* _heap,
+    __in_ecount_opt(_callPropertyCount) const WS_CALL_PROPERTY* _callProperties,
+    __in const ULONG _callPropertyCount,
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
+// operation: BasicHttpBinding_IGraphs4Social_Service_DoWork
+HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_DoWork(
+    __in WS_SERVICE_PROXY* _serviceProxy,
+    __out_opt __deref __nullterminated WCHAR** DoWorkResult, 
     __in WS_HEAP* _heap,
     __in_ecount_opt(_callPropertyCount) const WS_CALL_PROPERTY* _callProperties,
     __in const ULONG _callPropertyCount,
@@ -190,7 +216,21 @@ HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_carregaGrafo(
 typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_carregaGrafoCallback) (
     __in const WS_OPERATION_CONTEXT* _context,
     __in_opt __nullterminated WCHAR* username, 
-    __out_opt __deref __nullterminated WCHAR** carregaGrafoResult, 
+    __deref_out_opt Grafo** carregaGrafoResult, 
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
+typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComumCallback) (
+    __in const WS_OPERATION_CONTEXT* _context,
+    __in_opt __nullterminated WCHAR* username1, 
+    __in_opt __nullterminated WCHAR* username2, 
+    __out_opt __deref __nullterminated WCHAR** carregaGrafoAmigosComumResult, 
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
+typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_DoWorkCallback) (
+    __in const WS_OPERATION_CONTEXT* _context,
+    __out_opt __deref __nullterminated WCHAR** DoWorkResult, 
     __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
     __in_opt WS_ERROR* _error);
 
@@ -198,6 +238,8 @@ typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_carregaGrafoC
 typedef struct BasicHttpBinding_IGraphs4Social_ServiceFunctionTable 
 {
     BasicHttpBinding_IGraphs4Social_Service_carregaGrafoCallback BasicHttpBinding_IGraphs4Social_Service_carregaGrafo;
+    BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComumCallback BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum;
+    BasicHttpBinding_IGraphs4Social_Service_DoWorkCallback BasicHttpBinding_IGraphs4Social_Service_DoWork;
 } BasicHttpBinding_IGraphs4Social_ServiceFunctionTable;
 
 ////////////////////////////////////////////////
@@ -220,6 +262,30 @@ typedef struct _tempuri_org_wsdl
         // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_carregaGrafo_OutputMessage
         WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_carregaGrafo_OutputMessage;
         
+        // message: IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage
+        // c type: _carregaGrafoAmigosComum
+        // action: "http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComum"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage;
+        
+        // message: IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage
+        // c type: _carregaGrafoAmigosComumResponse
+        // action: "http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComumResponse"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage;
+        
+        // message: IGraphs4Social_Service_DoWork_InputMessage
+        // c type: _DoWork
+        // action: "http://tempuri.org/IGraphs4Social_Service/DoWork"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_DoWork_InputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_DoWork_InputMessage;
+        
+        // message: IGraphs4Social_Service_DoWork_OutputMessage
+        // c type: _DoWorkResponse
+        // action: "http://tempuri.org/IGraphs4Social_Service/DoWorkResponse"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_DoWork_OutputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_DoWork_OutputMessage;
+        
     } messages;
     struct // contracts
     {
@@ -228,6 +294,12 @@ typedef struct _tempuri_org_wsdl
         // operation: BasicHttpBinding_IGraphs4Social_Service_carregaGrafo
         //     input message: IGraphs4Social_Service_carregaGrafo_InputMessage
         //     output message: IGraphs4Social_Service_carregaGrafo_OutputMessage
+        // operation: BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum
+        //     input message: IGraphs4Social_Service_carregaGrafoAmigosComum_InputMessage
+        //     output message: IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage
+        // operation: BasicHttpBinding_IGraphs4Social_Service_DoWork
+        //     input message: IGraphs4Social_Service_DoWork_InputMessage
+        //     output message: IGraphs4Social_Service_DoWork_OutputMessage
         // contractDescription: tempuri_org_wsdl.contracts.BasicHttpBinding_IGraphs4Social_Service
         WS_CONTRACT_DESCRIPTION BasicHttpBinding_IGraphs4Social_Service;
         

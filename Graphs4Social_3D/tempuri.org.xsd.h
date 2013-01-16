@@ -43,10 +43,16 @@ extern "C" {
 
 //     struct _carregaGrafo;
 //     struct _carregaGrafoResponse;
+//     struct _carregaGrafoAmigosComum;
+//     struct _carregaGrafoAmigosComumResponse;
+//     struct _DoWork;
+//     struct _DoWorkResponse;
 
 // The following header files must be included in this order before this one
 
 // #include <WebServices.h>
+// #include "schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h"
+// #include "schema.xsd.h"
 
 ////////////////////////////////////////////////
 // C structure definitions for generated types
@@ -61,8 +67,29 @@ typedef struct _carregaGrafo
 // typeDescription: n/a
 typedef struct _carregaGrafoResponse 
 {
-    WCHAR* carregaGrafoResult; // optional
+    struct Grafo* carregaGrafoResult; // optional
 } _carregaGrafoResponse;
+
+// typeDescription: n/a
+typedef struct _carregaGrafoAmigosComum 
+{
+    WCHAR* username1; // optional
+    WCHAR* username2; // optional
+} _carregaGrafoAmigosComum;
+
+// typeDescription: n/a
+typedef struct _carregaGrafoAmigosComumResponse 
+{
+    WCHAR* carregaGrafoAmigosComumResult; // optional
+} _carregaGrafoAmigosComumResponse;
+
+typedef struct _DoWork _DoWork;
+
+// typeDescription: n/a
+typedef struct _DoWorkResponse 
+{
+    WCHAR* DoWorkResult; // optional
+} _DoWorkResponse;
 
 ////////////////////////////////////////////////
 // Global web service descriptions.
@@ -82,11 +109,35 @@ typedef struct _tempuri_org_xsd
         // elementDescription: tempuri_org_xsd.globalElements.carregaGrafoResponse
         WS_ELEMENT_DESCRIPTION carregaGrafoResponse;
         
+        // xml element: carregaGrafoAmigosComum ("http://tempuri.org/")
+        // c type: _carregaGrafoAmigosComum
+        // elementDescription: tempuri_org_xsd.globalElements.carregaGrafoAmigosComum
+        WS_ELEMENT_DESCRIPTION carregaGrafoAmigosComum;
+        
+        // xml element: carregaGrafoAmigosComumResponse ("http://tempuri.org/")
+        // c type: _carregaGrafoAmigosComumResponse
+        // elementDescription: tempuri_org_xsd.globalElements.carregaGrafoAmigosComumResponse
+        WS_ELEMENT_DESCRIPTION carregaGrafoAmigosComumResponse;
+        
+        // xml element: DoWork ("http://tempuri.org/")
+        // c type: _DoWork
+        // elementDescription: tempuri_org_xsd.globalElements.DoWork
+        WS_ELEMENT_DESCRIPTION DoWork;
+        
+        // xml element: DoWorkResponse ("http://tempuri.org/")
+        // c type: _DoWorkResponse
+        // elementDescription: tempuri_org_xsd.globalElements.DoWorkResponse
+        WS_ELEMENT_DESCRIPTION DoWorkResponse;
+        
     } globalElements;
     struct // externallyReferencedTypes
     {
         WS_STRUCT_DESCRIPTION carregaGrafo;
         WS_STRUCT_DESCRIPTION carregaGrafoResponse;
+        WS_STRUCT_DESCRIPTION carregaGrafoAmigosComum;
+        WS_STRUCT_DESCRIPTION carregaGrafoAmigosComumResponse;
+        WS_STRUCT_DESCRIPTION DoWork;
+        WS_STRUCT_DESCRIPTION DoWorkResponse;
     } externallyReferencedTypes;
 } _tempuri_org_xsd;
 

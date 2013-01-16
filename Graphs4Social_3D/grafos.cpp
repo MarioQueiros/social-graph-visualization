@@ -2,6 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include "Webservice.h"
+#include "schemas.microsoft.com.2003.10.Serialization.Arrays.xsd.h"
+#include "schemas.microsoft.com.2003.10.Serialization.xsd.h"
+#include "tempuri.org.xsd.h"
+#include "tempuri.org.wsdl.h"
+#include "schema.xsd.h"
+#include <vector>
 
 #define __GRAFO__FILE__ "exemplo.grafo"
 
@@ -110,11 +116,87 @@ void leGrafo(){
 	myfile >> numArcos ;
 	for(int i=0; i<numArcos;i++)
 		myfile >> arcos[i].noi >> arcos[i].nof >> arcos[i].peso >> arcos[i].largura ;
-	myfile.close();	
+	myfile.close();
 }
 
-void carregaGrafo(char* username){
-	string resposta = webServiceRequest(username);
-	//char * respostaArray = resposta.c_str;
+bool carregaGrafo(char* username){
+	try{
+		Grafo grafo = webServiceRequest(username);
+
+
+		numNos = grafo.NrNos;
+		numArcos = grafo.NrArcos;
+
+		for(int i = 0;i< grafo.UsersCount; i++){
+			User * u = grafo.Users[i];
+
+			nos[i].x = (float)(*u).X;
+			nos[i].y = (float)(*u).Y;
+			nos[i].z = (float)(*u).Z;
+			nos[i].largura = (float)(*u).Raio;
+
+
+			size_t buffersize = wcslen((*u).Username);
+			size_t num;
+			char* returnValueChar = (char *)malloc( buffersize );
+
+			wcstombs_s(&num,returnValueChar,buffersize+1,(*u).Username,buffersize+1);
+
+			nos[i].username = returnValueChar;
+
+			for(int k = 0; k< (*u).ProfileCount;k++){
+
+				WCHAR * prof = (*u).Profile[k];
+
+				buffersize = wcslen(prof);
+
+				returnValueChar = (char *)malloc( buffersize );
+
+				wcstombs_s(&num,returnValueChar,buffersize+1,prof,buffersize+1);
+
+				nos[i].profile.push_back(returnValueChar);
+			}
+
+			for(int k = 0; k< (*u).TagsCount;k++){
+
+				WCHAR * tag = (*u).Tags[k];
+
+				buffersize = wcslen(tag);
+
+				returnValueChar = (char *)malloc( buffersize );
+
+				wcstombs_s(&num,returnValueChar,buffersize+1,tag,buffersize+1);
+
+				nos[i].tags.push_back(returnValueChar);
+			}
+
+		}
+
+		for(int i = 0;i< grafo.LigacoesCount; i++){
+			//arcos[i].noi >> arcos[i].nof >> arcos[i].peso >> arcos[i].largura ;
+			Ligacao * l = grafo.Ligacoes[i];
+
+			arcos[i].noi = (*(*l).User1).Id;
+			arcos[i].nof = (*(*l).User2).Id;
+
+			arcos[i].largura = (float)(*l).Forca;
+			arcos[i].peso = (float)(*l).Peso;
+
+			size_t buffersize = wcslen((*l).Tag);
+			size_t num;
+			char* returnValueChar = (char *)malloc( buffersize );
+
+			wcstombs_s(&num,returnValueChar,buffersize+1,(*l).Tag,buffersize+1);
+
+			arcos[i].tagRelacao = returnValueChar;
+
+
+		}
+
+		return true;
+	}catch(exception e){
+
+		return false;
+	}
 }
 

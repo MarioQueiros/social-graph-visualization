@@ -1,0 +1,20 @@
+﻿  lapr5.cpp
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(670): warning C4101: 'larguraNorte' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(672): warning C4101: 'nof' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(670): warning C4101: 'larguraEste' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(670): warning C4101: 'larguraOeste' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(670): warning C4101: 'larguraSul' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(906): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(913): warning C4018: '<' : signed/unsigned mismatch
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(917): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(953): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(956): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : see declaration of 'strcpy'
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(1761): warning C4101: 'numero' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(1761): warning C4101: 'i' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(1763): warning C4101: 'height' : unreferenced local variable
+c:\users\tiago\documents\lapr5\graphs4social_3d\lapr5.cpp(1763): warning C4101: 'width' : unreferenced local variable
+  Lapr5.vcxproj -> C:\Users\Tiago\Documents\LAPR5\Graphs4Social_3D\Debug\Lapr5.exe

@@ -15,9 +15,7 @@ namespace IA_DLL_Consumer
             var r = new IA_AR.Utils();
 
 
-            r.deleteTag("chelsea");
-
-
+            //r.deleteTag("chelsea");
 
             Console.Write("Nova traducao c#...\n");
             r.insertTraducao("TESTE#", "TESTEsharp");
@@ -41,7 +39,7 @@ namespace IA_DLL_Consumer
             r.deleteTraducao("TESTE#");
 
             Console.Write("A apagar lig  TesteOrig/Dest...\n");
-            r.deleteLig("TesTeOrig", "TesTeOrig");
+            r.deleteLig("TesTeOrig", "TestEdEstino");
 
             Console.Write("A apagar tag testeTag ([carlos,bruno]...\n");
             r.deleteTag("testeTag");

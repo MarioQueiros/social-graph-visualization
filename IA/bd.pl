@@ -32,7 +32,6 @@ lig(mario,carlos,1).
 lig(sara,catia,3).
 lig(catia,sara,2).
 
-%Verificar 
 minimoMaven(3).
 percentagemMaven(1.25).
 
@@ -51,12 +50,10 @@ tamanho3(U,R):-redeNivel3(U,L),cl(L,R).
 redeNivel2(U,R):-user(U),findall(X,ligado(U,X),R).
 
 redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
-
-
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
-%percorre(Amigo a verificar|restantes,Já verificados,resposta
+%percorre(Amigo a verificar|restantes,JÃ¡ verificados,resposta
 percorre([A|L],V,R):-somaRede(A,V,RV,RX),percorre(L,RV,RS),append(RX,RS,R).
 percorre([],_,[]).
 
@@ -102,13 +99,6 @@ semelhante(U,F,[_|LT]):-semelhante(U,F,LT).
 semelhante(_,_,[]).
 
 
-%Ver Calculo Equilibrio vertices Estrela
-%Maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,TM,R).
-
-%calculaMaven(T,[U|UR],TV,UA,VA,R):-forca(T,U,TV,CL),CL>VA,!,calculaMaven(T,UR,TV,U,CL,R).
-%calculaMaven(T,[_|UR],TV,UA,VA,R):-calculaMaven(T,UR,RV,UA,VA,R).
-%calculaMaven(_,[],_,UA,_,UA).
-
 maven(T,R):-tag(T,U),cl(U,TM),minimoMaven(X),TM>X,calculaMaven(T,U,F,TM),!,estrela(U,F,R).
 %Tag, users, forcas, total vertices
 calculaMaven(T,[U|UR],[F|FR],TV):-forca(T,U,TV,F),calculaMaven(T,UR,FR,TV).
@@ -119,12 +109,6 @@ forca(T,U,TV,R):-tag(T,L),deletelist(L,[U],LF),calculaForcaVertices(U,LF,RS),R i
 calculaForcaVertices(U,[A|L],R):-ligado(U,A),!,calculaForcaVertices(U,L,RS),R is RS + 1.
 calculaForcaVertices(U,[_|L],R):-calculaForcaVertices(U,L,R).
 calculaForcaVertices(_,[],0).
-
-%estrela(U,F,R):-estrela(U,F,F,R).
-
-%estrela([U|UR],[F|FR],OF,U):-percorreForca(F,OF),!.
-%estrela([_|UR],[_|FR],OF,R):-estrela(UR,FR,OF,R).
-%estrela([],[],_,_):-write('Nao existe ninguem com forca maven'),fail.
 
 estrela(U,F,R):-estrela(U,F,U,F,R).
 %manipulados e originais, max actuais, resposta
@@ -161,6 +145,7 @@ add(X,[],[X]).
 add(X,[A|L],[A|L1]):- add(X,L,L1).
 
 notmember(X,L):-(member(X,L), !, fail);true.
+
 
 deletelist([], _, []).                  
 deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
@@ -209,6 +194,7 @@ contaPassos(U,[UA|UP],P,NC):-verificado(UA,U),!,contaPassos(U,UP,P,NC).
 
 contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
 							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.
+contaPassos(U,[_|UP],P,NC):-contaPassos(U,UP,P,NC).
 contaPassos(_,[],0,0).
 
 string_to_list(S,L):-
@@ -216,9 +202,6 @@ string_to_list(S,L):-
     eread(L) <~ S2.
 
 
-%contaPassos([C|CR],P):-contaPassos(CR,PR), length(C,X), P is PR + X.
-%contaPassos([],0).
-	
 %para criar o grafo
 grafoNivel3(U,R):-user(U),redeNivel2(U,X),ligacaoCompl(U,X,R1),ligacaoAmigos(X,R2),append(R1,R2,R).
 

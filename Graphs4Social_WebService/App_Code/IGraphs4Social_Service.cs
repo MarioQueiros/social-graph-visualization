@@ -12,12 +12,12 @@ public interface IGraphs4Social_Service
     [OperationContract]
     Grafo carregaGrafo(string username);
 
+    [OperationContract]
+    Grafo carregaGrafoAmigosComum(string username1, string username2);
 
     [OperationContract]
-    string carregaGrafoAmigosComum(string username1, string username2);
+    string caminhoMaisCurto(string username1, string username2);
 
-    [OperationContract]
-    string DoWork();
 }
 
 
@@ -61,27 +61,41 @@ public class Grafo
             separator[1] = ',';
             separator[2] = '[';
 
-            char [] arraytemp = new char[pedidosuser.Length+pedidosuser1.Length];
+            string[] arraytemp = new string[pedidosuser.Length + pedidosuser1.Length];
 
             IList<string> ligacoes = pedidosuser.Split(separator);
-            pedidosuser1.Split(separator).CopyTo(arraytemp, ligacoes.Count);
 
-            //ligacoes = arraytemp.ToList();
+            IList<string> ligacoes1 = pedidosuser1.Split(separator);
+            ligacoes.CopyTo(arraytemp, 0);
 
+            ligacoes1.CopyTo(arraytemp, ligacoes.Count);
+
+
+
+            ligacoes = new List<string>();
+
+            for (int i = 0; i < arraytemp.Length; i++)
+            {
+                if (!ligacoes.Contains(arraytemp[i]) && !(arraytemp[i].Equals("") || arraytemp[i] == null))
+                {
+                    ligacoes.Add(arraytemp[i]);
+                }
+
+            }
 
 
             //  Carrega o user "dono" do grafo
             Users.Add(new User(username, 0, prologService,numTagsTotal));
             Users[0].Definido = true;
-            Users[0].X = -100;
-            Users[0].Y = -100;
+            Users[0].X = -50;
+            Users[0].Y = -50;
             //  Carrega as ligações do user
             //  IList<string> ligacoes = RedeNivel2(userdono,U)
 
             Users.Add(new User(username1, 1, prologService,numTagsTotal));
             Users[1].Definido = true;
-            Users[1].X = 100;
-            Users[1].Y = 100;
+            Users[1].X = 50;
+            Users[1].Y = 50;
         }
         else
         {
@@ -104,15 +118,33 @@ public class Grafo
 
 
 
+            while(true){
 
-            Ligacoes = Ligacao.trataListas(ligacoes, username, prologService, numTagsTotal);
+                if (!(ligacoes.Count < 2))
+                {
+                    Ligacoes = Ligacao.trataListas(ligacoes, username, prologService, numTagsTotal);
+                    break;
+                }
+
+                pedidoLigacoes = prologService.grafoNivel3(username);
+
+                pedidoLigacoes = pedidoLigacoes.Substring(1, pedidoLigacoes.Length - 2);
+
+                ligacoes = pedidoLigacoes.Split(separator);
+
+                prologService.Close();
+            }
+
+
 
             foreach(Ligacao lig in Ligacoes)
             {
-                if(Users.Count == lig.User1.Id)
+                if(!Users.Contains(lig.User1)){
                     Users.Add(lig.User1);
-                if (Users.Count == lig.User2.Id)
+                }
+                if(!Users.Contains(lig.User2)){
                     Users.Add(lig.User2);
+                }
             }
 
             //  Carrega o user "dono" do grafo
@@ -121,7 +153,7 @@ public class Grafo
             Users[0].Y = 0;
         }
 
-
+        prologService.Close();
 
         NrNos = Users.Count;
         NrArcos = Ligacoes.Count;
@@ -130,7 +162,7 @@ public class Grafo
         bool notDone = true;
         bool flagBreak = false;
 
-        int max = 6 * NrArcos;
+        int max = 8 * NrArcos;
         Random valor = new Random();
 
 
@@ -138,24 +170,24 @@ public class Grafo
         {
             for(int k = 0;k<Ligacoes.Count;k++)
             {
-                if (!Users[Ligacoes[k].User2.Id].Definido)
+                if (!Ligacoes[k].User2.Definido)
                 {
                     if (valor.NextDouble() >= 0.5)
                     {
-                        Users[Ligacoes[k].User2.Id].X = valor.Next(10, max) * -1;
+                        Ligacoes[k].User2.X = valor.Next(10, max) * -1;
                     }
                     else
                     {
-                        Users[Ligacoes[k].User2.Id].X = valor.Next(10, max);
+                        Ligacoes[k].User2.X = valor.Next(10, max);
                     }
                     //
                     if (valor.NextDouble() >= 0.5)
                     {
-                        Users[Ligacoes[k].User2.Id].Y = valor.Next(10, max) * -1;
+                        Ligacoes[k].User2.Y = valor.Next(10, max) * -1;
                     }
                     else
                     {
-                        Users[Ligacoes[k].User2.Id].Y = valor.Next(10, max);
+                        Ligacoes[k].User2.Y = valor.Next(10, max);
                     }
                     
                 }
@@ -169,7 +201,7 @@ public class Grafo
                     {
                         if (!(Ligacoes[j].User1.Id == Ligacoes[k].User1.Id && Ligacoes[j].User2.Id == Ligacoes[k].User2.Id))
                         {
-                            if (intersecta(Users[Ligacoes[j].User1.Id], Users[Ligacoes[j].User2.Id], Users[Ligacoes[k].User1.Id], Users[Ligacoes[k].User2.Id]))
+                            if (intersecta(Ligacoes[j].User1, Ligacoes[j].User2, Ligacoes[k].User1, Ligacoes[k].User2))
                             {
                                 tentativas++;
                                 flagBreak = true;
@@ -188,7 +220,7 @@ public class Grafo
                     break;
                 }
                 else if (!flagBreak)
-                    Users[Ligacoes[k].User2.Id].Definido = true;
+                    Ligacoes[k].User2.Definido = true;
                 else
                 {
                     flagBreak = false;
@@ -258,28 +290,46 @@ public class Grafo
                 {
                     if (userLigado2.Definido)
                     {
-                        if (userDono1.X < x && x < userLigado1.X)
+                        if ((userDono2.X == userLigado1.X && userDono2.Y == userLigado1.Y))
                         {
-                            if (userDono1.Y < y && y < userLigado1.Y)
-                            {
-                                return true;
-                            }
-                            else if (userDono1.Y > y && y > userLigado1.Y)
+                            if (intersectaCirculoCirculo(userDono1, userLigado2, extra))
                             {
                                 return true;
                             }
                         }
-                        else if (userDono1.X > x && x > userLigado1.X)
+                        else if ((userDono2.X == userDono1.X && userDono2.Y == userDono1.Y))
                         {
-                            if (userDono1.Y < y && y < userLigado1.Y)
+                            if (intersectaCirculoCirculo(userDono2, userLigado2, extra))
                             {
                                 return true;
                             }
-                            else if (userDono1.Y > y && y > userLigado1.Y)
+                        }
+                        else
+                        {
+                            if (userDono1.X < x && x < userLigado1.X)
                             {
-                                return true;
-                            }
 
+                                if (userDono1.Y < y && y < userLigado1.Y)
+                                {
+                                    return true;
+                                }
+                                else if (userDono1.Y > y && y > userLigado1.Y)
+                                {
+                                    return true;
+                                }
+                            }
+                            else if (userDono1.X > x && x > userLigado1.X)
+                            {
+                                if (userDono1.Y < y && y < userLigado1.Y)
+                                {
+                                    return true;
+                                }
+                                else if (userDono1.Y > y && y > userLigado1.Y)
+                                {
+                                    return true;
+                                }
+
+                            }
                         }
                         return false;
                     }
@@ -356,13 +406,25 @@ public class Grafo
                         //
                         //
                         if (interseccaoLinhaCirculo(userLigado2, extra, pontosLigacao[0], pontosLigacao[1], pontosLigacao[4], pontosLigacao[5]))
-                        {
-                            return true;
-                        }
-                        else if (interseccaoLinhaCirculo(userLigado2, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[6], pontosLigacao[7]))
-                        {
-                            return true;
-                        }
+                            {
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado2, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[6], pontosLigacao[7]))
+                            {
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado2, extra , pontosLigacao[0], pontosLigacao[1], pontosLigacao[2], pontosLigacao[3])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado2, extra , pontosLigacao[4], pontosLigacao[5], pontosLigacao[6], pontosLigacao[7])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado2, extra , pontosLigacao[0], pontosLigacao[1], pontosLigacao[6], pontosLigacao[7])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado2, extra , pontosLigacao[2], pontosLigacao[3], pontosLigacao[4], pontosLigacao[5])){
+                                return true;
+                            }
                         //
                         //
                         //  Verificar se o circulo UserLigado1 intersecta nos limites do rectangulo formado pela nova ligacao
@@ -379,12 +441,24 @@ public class Grafo
                             //
                             //
                             //
-
                             if (interseccaoLinhaCirculo(userLigado1, extra, pontosLigacao[0], pontosLigacao[1], pontosLigacao[4], pontosLigacao[5]))
                             {
                                 return true;
                             }
                             else if (interseccaoLinhaCirculo(userLigado1, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[6], pontosLigacao[7]))
+                            {
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado1, extra , pontosLigacao[0], pontosLigacao[1], pontosLigacao[2], pontosLigacao[3])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado1, extra , pontosLigacao[4], pontosLigacao[5], pontosLigacao[6], pontosLigacao[7])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado1, extra , pontosLigacao[0], pontosLigacao[1], pontosLigacao[6], pontosLigacao[7])){
+                                return true;
+                            }
+                            else if (interseccaoLinhaCirculo(userLigado1, extra, pontosLigacao[2], pontosLigacao[3], pontosLigacao[4], pontosLigacao[5]))
                             {
                                 return true;
                             }
@@ -759,10 +833,10 @@ public class User
     [DataMember]
     public string Username { get; set; }
 
-    [DataMember(IsRequired = true)]
+    [DataMember]
     public IList<string> Tags { get; set; }
 
-    [DataMember(IsRequired = true)]
+    [DataMember]
     public IList<string> Profile { get; set; }
 
     [DataMember]
@@ -778,13 +852,15 @@ public class User
 
         Id = id;
         Username = username;
-        //  A REPOR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //Profile = Graphs4Social_AR.User.LoadProfileByUser(username);
-        //Tags = Graphs4Social_AR.Tag.LoadAllByUsername(username);
+
+        Profile = Graphs4Social_AR.User.LoadProfileByUser(username);
+
+        IList<Graphs4Social_AR.Tag> tagList = Graphs4Social_AR.Tag.LoadAllByUsername(username);
         Tags = new List<string>();
-        Tags.Add(Graphs4Social_AR.Tag.LoadTagById(Graphs4Social_AR.Tag.LoadAllTag()[0].ID).Nome);
-        Profile = new List<string>();
-        Profile.Add("Sexo:Masculino");
+        foreach (Graphs4Social_AR.Tag tag in tagList)
+        {
+            Tags.Add(tag.Nome);
+        }
 
         Z = Convert.ToDouble(prologService.tamanhoRede(2, Username));
         //
@@ -810,10 +886,8 @@ public class Ligacao
     [DataMember]
     public int Forca { get; set; }
 
-    [DataMember]
-    public string Tag { get; set; }
 
-    public Ligacao(User user1, User user2, int forca, string tag)
+    public Ligacao(User user1, User user2, int forca)
     {
         User1 = user1;
         User2 = user2;
@@ -821,8 +895,7 @@ public class Ligacao
         //  Para já não utilizado
         Peso = 1;
 
-        //  Força e Tag
-        Tag = tag;
+        //  Força
 
         Forca = forca;
     }
@@ -832,10 +905,7 @@ public class Ligacao
         IList<string> ligacoes = new List<string>();
         IList<string> tags = new List<string>();
 
-        for (int t = 0; t < ligacoes1.Count; t++)
-        {
-            tags.Add("Amigo");
-        }
+        
 
 
         foreach (string lig in ligacoes1)
@@ -859,7 +929,6 @@ public class Ligacao
         usernames.Add(username);
 
         int id = 1;
-        int idLig = 0;
 
         for(int k=0;k<ligacoes.Count-1;k=k+3)
         {
@@ -873,14 +942,13 @@ public class Ligacao
 
             if (usernames.IndexOf(ligacoes[k]) == 0)
             {
-                ligacoesDirectas.Add(new Ligacao(users[0], users[usernames.IndexOf(ligacoes[k + 1])], Convert.ToInt32(ligacoes[k + 2]), tags[idLig]));
+                ligacoesDirectas.Add(new Ligacao(users[0], users[usernames.IndexOf(ligacoes[k + 1])], Convert.ToInt32(ligacoes[k + 2])));
             }
             else
             {
-                ligacoesRetornadas.Add(new Ligacao(users[usernames.IndexOf(ligacoes[k])], users[usernames.IndexOf(ligacoes[k + 1])], Convert.ToInt32(ligacoes[k + 2]), tags[idLig]));
+                ligacoesRetornadas.Add(new Ligacao(users[usernames.IndexOf(ligacoes[k])], users[usernames.IndexOf(ligacoes[k + 1])], Convert.ToInt32(ligacoes[k + 2])));
             }
 
-            idLig++;
         }
 
 

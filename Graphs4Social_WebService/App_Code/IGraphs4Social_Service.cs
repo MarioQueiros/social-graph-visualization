@@ -18,6 +18,9 @@ public interface IGraphs4Social_Service
     [OperationContract]
     string caminhoMaisCurto(string username1, string username2);
 
+    [OperationContract]
+    bool verificarUser(string username);
+
 }
 
 

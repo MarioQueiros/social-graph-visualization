@@ -13,7 +13,7 @@
 #include "mathlib.h"
 #include "studio.h"
 #include "mdlviewer.h"
-
+#include "Webservice.h"
 using namespace std;
 #define graus(X) (double)((X)*180/M_PI)
 #define rad(X)   (double)((X)*M_PI/180)
@@ -2049,45 +2049,49 @@ char* toLowerCase(char* str)
 void processaUser() 
 {
 	username = toLowerCase(convertstringtochar(username));
-	if(username.compare("")!=0 && pass.compare("")!=0)
-	{
-		glutDestroyWindow(estado.barWindow);
-		glutDestroyWindow(1);
-		if(carrega==0){
-			try{
-				carregaGrafo(convertstringtochar(username));
-			}catch(exception e){
+	if(webServiceVerificarUser(convertstringtochar(username))){
+		if(pass.compare("")!=0)
+		{
+			glutDestroyWindow(estado.barWindow);
+			glutDestroyWindow(1);
+			if(carrega==0){
+				try{
+					carregaGrafo(convertstringtochar(username));
+				}catch(exception e){
+				}
+				carrega++;
 			}
-			carrega++;
+			InitAudio();
+			glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+			glutInitWindowSize(width, height);  
+			glutCreateWindow("Graphs4Social");
+			myInit();
+			createTextures(modelo.texID);
+			glutReshapeFunc(myReshape);
+			glutDisplayFunc(display);
+			glutTimerFunc(estado.timer,Timer,0);
+			glutKeyboardFunc(keyboard);
+			glutKeyboardUpFunc(keyboardUp);
+			glutSpecialFunc(Special);
+			glutSpecialUpFunc(SpecialKeyUp);
+			glutMouseFunc(mouse);
+			glutPassiveMotionFunc(mouseToolTip);
+			imprime_ajuda();
+			// criar a sub window topSubwindow
+			estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
+			myInit();
+			glutReshapeFunc(redisplayTopSubwindow);
+			glutDisplayFunc(displayTopSubwindow);
+			glutKeyboardFunc(keyboard);
+			glutKeyboardUpFunc(keyboardUp);
+			glutSpecialFunc(Special);
+			glutSpecialUpFunc(SpecialKeyUp);
+			glutMouseFunc(mouse);
+			createTextures(modelo.texID);
+			valido = 1;
+		}else{
+			valido = -1;
 		}
-		InitAudio();
-		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-		glutInitWindowSize(width, height);  
-		glutCreateWindow("Graphs4Social");
-		myInit();
-		createTextures(modelo.texID);
-		glutReshapeFunc(myReshape);
-		glutDisplayFunc(display);
-		glutTimerFunc(estado.timer,Timer,0);
-		glutKeyboardFunc(keyboard);
-		glutKeyboardUpFunc(keyboardUp);
-		glutSpecialFunc(Special);
-		glutSpecialUpFunc(SpecialKeyUp);
-		glutMouseFunc(mouse);
-		glutPassiveMotionFunc(mouseToolTip);
-		imprime_ajuda();
-		// criar a sub window topSubwindow
-		estado.navigateSubwindow=glutCreateSubWindow(1, 10, height-200, 200, 200);
-		myInit();
-		glutReshapeFunc(redisplayTopSubwindow);
-		glutDisplayFunc(displayTopSubwindow);
-		glutKeyboardFunc(keyboard);
-		glutKeyboardUpFunc(keyboardUp);
-		glutSpecialFunc(Special);
-		glutSpecialUpFunc(SpecialKeyUp);
-		glutMouseFunc(mouse);
-		createTextures(modelo.texID);
-		valido = 1;
 	}else{
 		valido = -1;
 	}

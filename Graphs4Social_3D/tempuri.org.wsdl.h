@@ -127,6 +127,7 @@ extern "C" {
 //     BasicHttpBinding_IGraphs4Social_Service_carregaGrafo
 //     BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum
 //     BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto
+//     BasicHttpBinding_IGraphs4Social_Service_verificarUser
 
 // The following server function tables were generated:
 
@@ -211,6 +212,17 @@ HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto(
     __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
     __in_opt WS_ERROR* _error);
 
+// operation: BasicHttpBinding_IGraphs4Social_Service_verificarUser
+HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_verificarUser(
+    __in WS_SERVICE_PROXY* _serviceProxy,
+    __in_opt __nullterminated WCHAR* username, 
+    __out BOOL* verificarUserResult, 
+    __in WS_HEAP* _heap,
+    __in_ecount_opt(_callPropertyCount) const WS_CALL_PROPERTY* _callProperties,
+    __in const ULONG _callPropertyCount,
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
 ////////////////////////////////////////////////
 // Service functions definitions
 ////////////////////////////////////////////////
@@ -238,12 +250,20 @@ typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCu
     __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
     __in_opt WS_ERROR* _error);
 
+typedef HRESULT (CALLBACK* BasicHttpBinding_IGraphs4Social_Service_verificarUserCallback) (
+    __in const WS_OPERATION_CONTEXT* _context,
+    __in_opt __nullterminated WCHAR* username, 
+    __out BOOL* verificarUserResult, 
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error);
+
 // binding: BasicHttpBinding_IGraphs4Social_Service
 typedef struct BasicHttpBinding_IGraphs4Social_ServiceFunctionTable 
 {
     BasicHttpBinding_IGraphs4Social_Service_carregaGrafoCallback BasicHttpBinding_IGraphs4Social_Service_carregaGrafo;
     BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComumCallback BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum;
     BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurtoCallback BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto;
+    BasicHttpBinding_IGraphs4Social_Service_verificarUserCallback BasicHttpBinding_IGraphs4Social_Service_verificarUser;
 } BasicHttpBinding_IGraphs4Social_ServiceFunctionTable;
 
 ////////////////////////////////////////////////
@@ -290,6 +310,18 @@ typedef struct _tempuri_org_wsdl
         // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_caminhoMaisCurto_OutputMessage
         WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_caminhoMaisCurto_OutputMessage;
         
+        // message: IGraphs4Social_Service_verificarUser_InputMessage
+        // c type: _verificarUser
+        // action: "http://tempuri.org/IGraphs4Social_Service/verificarUser"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_verificarUser_InputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_verificarUser_InputMessage;
+        
+        // message: IGraphs4Social_Service_verificarUser_OutputMessage
+        // c type: _verificarUserResponse
+        // action: "http://tempuri.org/IGraphs4Social_Service/verificarUserResponse"
+        // messageDescription: tempuri_org_wsdl.messages.IGraphs4Social_Service_verificarUser_OutputMessage
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_verificarUser_OutputMessage;
+        
     } messages;
     struct // contracts
     {
@@ -304,6 +336,9 @@ typedef struct _tempuri_org_wsdl
         // operation: BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto
         //     input message: IGraphs4Social_Service_caminhoMaisCurto_InputMessage
         //     output message: IGraphs4Social_Service_caminhoMaisCurto_OutputMessage
+        // operation: BasicHttpBinding_IGraphs4Social_Service_verificarUser
+        //     input message: IGraphs4Social_Service_verificarUser_InputMessage
+        //     output message: IGraphs4Social_Service_verificarUser_OutputMessage
         // contractDescription: tempuri_org_wsdl.contracts.BasicHttpBinding_IGraphs4Social_Service
         WS_CONTRACT_DESCRIPTION BasicHttpBinding_IGraphs4Social_Service;
         

@@ -42,6 +42,16 @@ typedef struct _tempuri_org_xsdLocalDefinitions
             WS_FIELD_DESCRIPTION caminhoMaisCurtoResult;
             WS_FIELD_DESCRIPTION* _caminhoMaisCurtoResponseFields [1]; 
         } _caminhoMaisCurtoResponsedescs; // end of _caminhoMaisCurtoResponse
+        struct // _verificarUser
+        {
+            WS_FIELD_DESCRIPTION username;
+            WS_FIELD_DESCRIPTION* _verificarUserFields [1]; 
+        } _verificarUserdescs; // end of _verificarUser
+        struct // _verificarUserResponse
+        {
+            WS_FIELD_DESCRIPTION verificarUserResult;
+            WS_FIELD_DESCRIPTION* _verificarUserResponseFields [1]; 
+        } _verificarUserResponsedescs; // end of _verificarUserResponse
     } globalElements;  // end of global elements
     struct // XML dictionary
     {
@@ -60,6 +70,9 @@ typedef struct _tempuri_org_xsdLocalDefinitions
             WS_XML_STRING _caminhoMaisCurtoTypeName;  // caminhoMaisCurto
             WS_XML_STRING _caminhoMaisCurtoResponseTypeName;  // caminhoMaisCurtoResponse
             WS_XML_STRING _caminhoMaisCurtoResponsecaminhoMaisCurtoResultLocalName;  // caminhoMaisCurtoResult
+            WS_XML_STRING _verificarUserTypeName;  // verificarUser
+            WS_XML_STRING _verificarUserResponseTypeName;  // verificarUserResponse
+            WS_XML_STRING _verificarUserResponseverificarUserResultLocalName;  // verificarUserResult
         } xmlStrings; // end of XML string list
         WS_XML_DICTIONARY dict;  
     } dictionary;  // end of XML dictionary
@@ -189,6 +202,38 @@ const static _tempuri_org_xsdLocalDefinitions tempuri_org_xsdLocalDefinitions =
             (WS_FIELD_DESCRIPTION*)&tempuri_org_xsdLocalDefinitions.globalElements._caminhoMaisCurtoResponsedescs.caminhoMaisCurtoResult,
             },
         },    // _caminhoMaisCurtoResponse
+        {   // _verificarUser
+            { // field description for username
+            WS_ELEMENT_FIELD_MAPPING,
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafousernameLocalName, // username
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+            WS_WSZ_TYPE,
+            0,
+            WsOffsetOf(_verificarUser, username),
+             WS_FIELD_OPTIONAL| WS_FIELD_NILLABLE,
+            0,
+            0xffffffff
+            },    // end of field description for username
+            {    // fields description for _verificarUser
+            (WS_FIELD_DESCRIPTION*)&tempuri_org_xsdLocalDefinitions.globalElements._verificarUserdescs.username,
+            },
+        },    // _verificarUser
+        {   // _verificarUserResponse
+            { // field description for verificarUserResult
+            WS_ELEMENT_FIELD_MAPPING,
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._verificarUserResponseverificarUserResultLocalName, // verificarUserResult
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+            WS_BOOL_TYPE,
+            0,
+            WsOffsetOf(_verificarUserResponse, verificarUserResult),
+             WS_FIELD_OPTIONAL,
+            0,
+            0xffffffff
+            },    // end of field description for verificarUserResult
+            {    // fields description for _verificarUserResponse
+            (WS_FIELD_DESCRIPTION*)&tempuri_org_xsdLocalDefinitions.globalElements._verificarUserResponsedescs.verificarUserResult,
+            },
+        },    // _verificarUserResponse
     }, // end of global elements
     {    // dictionary 
         { // xmlStrings
@@ -205,13 +250,16 @@ const static _tempuri_org_xsdLocalDefinitions tempuri_org_xsdLocalDefinitions =
             WS_XML_STRING_DICTIONARY_VALUE("caminhoMaisCurto",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 10),
             WS_XML_STRING_DICTIONARY_VALUE("caminhoMaisCurtoResponse",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 11),
             WS_XML_STRING_DICTIONARY_VALUE("caminhoMaisCurtoResult",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 12),
+            WS_XML_STRING_DICTIONARY_VALUE("verificarUser",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 13),
+            WS_XML_STRING_DICTIONARY_VALUE("verificarUserResponse",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 14),
+            WS_XML_STRING_DICTIONARY_VALUE("verificarUserResult",&tempuri_org_xsdLocalDefinitions.dictionary.dict, 15),
         },  // end of xmlStrings
         
         {   // tempuri_org_xsddictionary
-        // e6246224-daa3-492a-983b-36a2ccd033f1 
-        { 0xe6246224, 0xdaa3, 0x492a, { 0x98, 0x3b, 0x36,0xa2, 0xcc, 0xd0, 0x33, 0xf1 } },
+        // b02fa645-76db-493a-8587-5a1cbcb1c5b3 
+        { 0xb02fa645, 0x76db, 0x493a, { 0x85, 0x87, 0x5a,0x1c, 0xbc, 0xb1, 0xc5, 0xb3 } },
         (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings,
-        13,
+        16,
         TRUE,
         },
     },   //  end of dictionary
@@ -255,6 +303,18 @@ const _tempuri_org_xsd tempuri_org_xsd =
             (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
             WS_STRUCT_TYPE,
             (void*)&tempuri_org_xsd.externallyReferencedTypes.caminhoMaisCurtoResponse,
+        },
+        {
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._verificarUserTypeName, // verificarUser
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+            WS_STRUCT_TYPE,
+            (void*)&tempuri_org_xsd.externallyReferencedTypes.verificarUser,
+        },
+        {
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._verificarUserResponseTypeName, // verificarUserResponse
+            (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+            WS_STRUCT_TYPE,
+            (void*)&tempuri_org_xsd.externallyReferencedTypes.verificarUserResponse,
         },
     }, // globalElements
     {  // begin of externallyReferencedTypes
@@ -324,5 +384,27 @@ const _tempuri_org_xsd tempuri_org_xsd =
         0,
         0,
         },   // end of struct description for _caminhoMaisCurtoResponse
+        {
+        sizeof(_verificarUser),
+        __alignof(_verificarUser),
+        (WS_FIELD_DESCRIPTION**)&tempuri_org_xsdLocalDefinitions.globalElements._verificarUserdescs._verificarUserFields,
+        WsCountOf(tempuri_org_xsdLocalDefinitions.globalElements._verificarUserdescs._verificarUserFields),
+        (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._verificarUserTypeName, // verificarUser
+        (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+        0,
+        0,
+        0,
+        },   // end of struct description for _verificarUser
+        {
+        sizeof(_verificarUserResponse),
+        __alignof(_verificarUserResponse),
+        (WS_FIELD_DESCRIPTION**)&tempuri_org_xsdLocalDefinitions.globalElements._verificarUserResponsedescs._verificarUserResponseFields,
+        WsCountOf(tempuri_org_xsdLocalDefinitions.globalElements._verificarUserResponsedescs._verificarUserResponseFields),
+        (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._verificarUserResponseTypeName, // verificarUserResponse
+        (WS_XML_STRING*)&tempuri_org_xsdLocalDefinitions.dictionary.xmlStrings._carregaGrafoTypeNamespace, // http://tempuri.org/
+        0,
+        0,
+        0,
+        },   // end of struct description for _verificarUserResponse
     }, // end of externallyReferencedTypes;
 }; // end of _tempuri_org_xsd

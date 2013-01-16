@@ -26,6 +26,12 @@
   <wsdl:message name="IGraphs4Social_Service_caminhoMaisCurto_OutputMessage">
     <wsdl:part name="parameters" element="tns:caminhoMaisCurtoResponse" />
   </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_verificarUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:verificarUser" />
+  </wsdl:message>
+  <wsdl:message name="IGraphs4Social_Service_verificarUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:verificarUserResponse" />
+  </wsdl:message>
   <wsdl:portType name="IGraphs4Social_Service">
     <wsdl:operation name="carregaGrafo">
       <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/carregaGrafo" message="tns:IGraphs4Social_Service_carregaGrafo_InputMessage" />
@@ -38,6 +44,10 @@
     <wsdl:operation name="caminhoMaisCurto">
       <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurto" message="tns:IGraphs4Social_Service_caminhoMaisCurto_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurtoResponse" message="tns:IGraphs4Social_Service_caminhoMaisCurto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="verificarUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGraphs4Social_Service/verificarUser" message="tns:IGraphs4Social_Service_verificarUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGraphs4Social_Service/verificarUserResponse" message="tns:IGraphs4Social_Service_verificarUser_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IGraphs4Social_Service" type="tns:IGraphs4Social_Service">
@@ -62,6 +72,15 @@
     </wsdl:operation>
     <wsdl:operation name="caminhoMaisCurto">
       <soap:operation soapAction="http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="verificarUser">
+      <soap:operation soapAction="http://tempuri.org/IGraphs4Social_Service/verificarUser" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

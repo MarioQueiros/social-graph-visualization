@@ -47,6 +47,8 @@ extern "C" {
 //     struct _carregaGrafoAmigosComumResponse;
 //     struct _caminhoMaisCurto;
 //     struct _caminhoMaisCurtoResponse;
+//     struct _verificarUser;
+//     struct _verificarUserResponse;
 
 // The following header files must be included in this order before this one
 
@@ -96,6 +98,18 @@ typedef struct _caminhoMaisCurtoResponse
     WCHAR* caminhoMaisCurtoResult; // optional
 } _caminhoMaisCurtoResponse;
 
+// typeDescription: n/a
+typedef struct _verificarUser 
+{
+    WCHAR* username; // optional
+} _verificarUser;
+
+// typeDescription: n/a
+typedef struct _verificarUserResponse 
+{
+    BOOL verificarUserResult;
+} _verificarUserResponse;
+
 ////////////////////////////////////////////////
 // Global web service descriptions.
 ////////////////////////////////////////////////
@@ -134,6 +148,16 @@ typedef struct _tempuri_org_xsd
         // elementDescription: tempuri_org_xsd.globalElements.caminhoMaisCurtoResponse
         WS_ELEMENT_DESCRIPTION caminhoMaisCurtoResponse;
         
+        // xml element: verificarUser ("http://tempuri.org/")
+        // c type: _verificarUser
+        // elementDescription: tempuri_org_xsd.globalElements.verificarUser
+        WS_ELEMENT_DESCRIPTION verificarUser;
+        
+        // xml element: verificarUserResponse ("http://tempuri.org/")
+        // c type: _verificarUserResponse
+        // elementDescription: tempuri_org_xsd.globalElements.verificarUserResponse
+        WS_ELEMENT_DESCRIPTION verificarUserResponse;
+        
     } globalElements;
     struct // externallyReferencedTypes
     {
@@ -143,6 +167,8 @@ typedef struct _tempuri_org_xsd
         WS_STRUCT_DESCRIPTION carregaGrafoAmigosComumResponse;
         WS_STRUCT_DESCRIPTION caminhoMaisCurto;
         WS_STRUCT_DESCRIPTION caminhoMaisCurtoResponse;
+        WS_STRUCT_DESCRIPTION verificarUser;
+        WS_STRUCT_DESCRIPTION verificarUserResponse;
     } externallyReferencedTypes;
 } _tempuri_org_xsd;
 

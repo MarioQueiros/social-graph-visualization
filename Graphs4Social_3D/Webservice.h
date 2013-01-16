@@ -12,4 +12,7 @@ using namespace std;
 
 Grafo webServiceRequest(char* user);
 
+char * webServiceCaminhoCurto(char* user1, char * user2);
+
+bool webServiceVerificarUser(char * user);
 #endif

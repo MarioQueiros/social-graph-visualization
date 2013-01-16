@@ -16,6 +16,8 @@ typedef struct _tempuri_org_wsdlLocalDefinitions
         WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessage;
         WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_caminhoMaisCurto_InputMessage;
         WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_caminhoMaisCurto_OutputMessage;
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_verificarUser_InputMessage;
+        WS_MESSAGE_DESCRIPTION IGraphs4Social_Service_verificarUser_OutputMessage;
     } messages; // end of messages
     struct // contracts
     {
@@ -36,7 +38,12 @@ typedef struct _tempuri_org_wsdlLocalDefinitions
                 WS_PARAMETER_DESCRIPTION params[3];
                 WS_OPERATION_DESCRIPTION BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto;
             } BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto;
-            WS_OPERATION_DESCRIPTION* operations[3];
+            struct // BasicHttpBinding_IGraphs4Social_Service_verificarUser
+            {
+                WS_PARAMETER_DESCRIPTION params[2];
+                WS_OPERATION_DESCRIPTION BasicHttpBinding_IGraphs4Social_Service_verificarUser;
+            } BasicHttpBinding_IGraphs4Social_Service_verificarUser;
+            WS_OPERATION_DESCRIPTION* operations[4];
             WS_CONTRACT_DESCRIPTION contractDesc;
         } BasicHttpBinding_IGraphs4Social_Service;
     } contracts;  // endof contracts 
@@ -60,6 +67,8 @@ typedef struct _tempuri_org_wsdlLocalDefinitions
             WS_XML_STRING IGraphs4Social_Service_carregaGrafoAmigosComum_OutputMessageactionName;  // http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComumResponse
             WS_XML_STRING IGraphs4Social_Service_caminhoMaisCurto_InputMessageactionName;  // http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurto
             WS_XML_STRING IGraphs4Social_Service_caminhoMaisCurto_OutputMessageactionName;  // http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurtoResponse
+            WS_XML_STRING IGraphs4Social_Service_verificarUser_InputMessageactionName;  // http://tempuri.org/IGraphs4Social_Service/verificarUser
+            WS_XML_STRING IGraphs4Social_Service_verificarUser_OutputMessageactionName;  // http://tempuri.org/IGraphs4Social_Service/verificarUserResponse
         } xmlStrings; // end of XML string list
         WS_XML_DICTIONARY dict;  
     } dictionary;  // end of XML dictionary
@@ -162,6 +171,37 @@ HRESULT CALLBACK BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurtoOperati
 #if (_MSC_VER >=1400) 
 #pragma warning(pop)
 #endif
+
+typedef struct BasicHttpBinding_IGraphs4Social_Service_verificarUserParamStruct 
+{
+    WCHAR** username;
+    BOOL* verificarUserResult;
+} BasicHttpBinding_IGraphs4Social_Service_verificarUserParamStruct;
+
+#if (_MSC_VER >=1400) 
+#pragma warning(push)
+#endif
+#pragma warning(disable: 4055) // conversion from data pointer to function pointer
+HRESULT CALLBACK BasicHttpBinding_IGraphs4Social_Service_verificarUserOperationStub(
+    __in const WS_OPERATION_CONTEXT* _context,
+    __in void* _stackStruct,
+    __in const void* _callback,
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error)
+{
+    BasicHttpBinding_IGraphs4Social_Service_verificarUserCallback _operation = (BasicHttpBinding_IGraphs4Social_Service_verificarUserCallback)_callback;
+    BasicHttpBinding_IGraphs4Social_Service_verificarUserParamStruct *_stack =(BasicHttpBinding_IGraphs4Social_Service_verificarUserParamStruct*)_stackStruct;
+    return _operation( 
+        _context,
+        *(_stack->username),
+        (_stack->verificarUserResult),
+        (WS_ASYNC_CONTEXT*)_asyncContext,
+        _error);
+}
+#pragma warning(default: 4055)  // conversion from data pointer to function pointer
+#if (_MSC_VER >=1400) 
+#pragma warning(pop)
+#endif
 const static _tempuri_org_wsdlLocalDefinitions tempuri_org_wsdlLocalDefinitions =
 {
     { // messages
@@ -189,6 +229,14 @@ const static _tempuri_org_wsdlLocalDefinitions tempuri_org_wsdlLocalDefinitions 
             (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_caminhoMaisCurto_OutputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurtoResponse
             (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.caminhoMaisCurtoResponse, 
         },    // message description for IGraphs4Social_Service_caminhoMaisCurto_OutputMessage
+        {    // message description for IGraphs4Social_Service_verificarUser_InputMessage
+            (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_verificarUser_InputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/verificarUser
+            (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.verificarUser, 
+        },    // message description for IGraphs4Social_Service_verificarUser_InputMessage
+        {    // message description for IGraphs4Social_Service_verificarUser_OutputMessage
+            (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_verificarUser_OutputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/verificarUserResponse
+            (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.verificarUserResponse, 
+        },    // message description for IGraphs4Social_Service_verificarUser_OutputMessage
     }, // end of messages 
     { // contracts
         {    // BasicHttpBinding_IGraphs4Social_Service,
@@ -245,13 +293,31 @@ const static _tempuri_org_wsdlLocalDefinitions tempuri_org_wsdlLocalDefinitions 
                     WS_NON_RPC_LITERAL_OPERATION
                 }, //operation description for BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto
             },  // BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto
+            { // BasicHttpBinding_IGraphs4Social_Service_verificarUser
+                { // parameter descriptions for BasicHttpBinding_IGraphs4Social_Service_verificarUser
+                    { WS_PARAMETER_TYPE_NORMAL, (USHORT)0, (USHORT)-1 },
+                    { WS_PARAMETER_TYPE_NORMAL, (USHORT)-1, (USHORT)0 },
+                },    // parameter descriptions for BasicHttpBinding_IGraphs4Social_Service_verificarUser
+                {    // operation description for BasicHttpBinding_IGraphs4Social_Service_verificarUser
+                    1,
+                    (WS_MESSAGE_DESCRIPTION*)&tempuri_org_wsdl.messages.IGraphs4Social_Service_verificarUser_InputMessage, 
+                    (WS_MESSAGE_DESCRIPTION*)&tempuri_org_wsdl.messages.IGraphs4Social_Service_verificarUser_OutputMessage, 
+                    0,
+                    0,
+                    2,
+                    (WS_PARAMETER_DESCRIPTION*)tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_verificarUser.params,
+                    BasicHttpBinding_IGraphs4Social_Service_verificarUserOperationStub,
+                    WS_NON_RPC_LITERAL_OPERATION
+                }, //operation description for BasicHttpBinding_IGraphs4Social_Service_verificarUser
+            },  // BasicHttpBinding_IGraphs4Social_Service_verificarUser
             {    // array of operations for BasicHttpBinding_IGraphs4Social_Service
                 (WS_OPERATION_DESCRIPTION*)&tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_carregaGrafo.BasicHttpBinding_IGraphs4Social_Service_carregaGrafo,
                 (WS_OPERATION_DESCRIPTION*)&tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum.BasicHttpBinding_IGraphs4Social_Service_carregaGrafoAmigosComum,
                 (WS_OPERATION_DESCRIPTION*)&tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto.BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto,
+                (WS_OPERATION_DESCRIPTION*)&tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_verificarUser.BasicHttpBinding_IGraphs4Social_Service_verificarUser,
             },    // array of operations for BasicHttpBinding_IGraphs4Social_Service
             {    // contract description for BasicHttpBinding_IGraphs4Social_Service
-            3,
+            4,
             (WS_OPERATION_DESCRIPTION**)tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.operations,
             },  // end of contract description for BasicHttpBinding_IGraphs4Social_Service
         },    // BasicHttpBinding_IGraphs4Social_Service
@@ -288,13 +354,15 @@ const static _tempuri_org_wsdlLocalDefinitions tempuri_org_wsdlLocalDefinitions 
             WS_XML_STRING_DICTIONARY_VALUE("http://tempuri.org/IGraphs4Social_Service/carregaGrafoAmigosComumResponse",&tempuri_org_wsdlLocalDefinitions.dictionary.dict, 3),
             WS_XML_STRING_DICTIONARY_VALUE("http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurto",&tempuri_org_wsdlLocalDefinitions.dictionary.dict, 4),
             WS_XML_STRING_DICTIONARY_VALUE("http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurtoResponse",&tempuri_org_wsdlLocalDefinitions.dictionary.dict, 5),
+            WS_XML_STRING_DICTIONARY_VALUE("http://tempuri.org/IGraphs4Social_Service/verificarUser",&tempuri_org_wsdlLocalDefinitions.dictionary.dict, 6),
+            WS_XML_STRING_DICTIONARY_VALUE("http://tempuri.org/IGraphs4Social_Service/verificarUserResponse",&tempuri_org_wsdlLocalDefinitions.dictionary.dict, 7),
         },  // end of xmlStrings
         
         {   // tempuri_org_wsdldictionary
-        // be58b050-f359-413d-8a05-27907eeec673 
-        { 0xbe58b050, 0xf359, 0x413d, { 0x8a, 0x05, 0x27,0x90, 0x7e, 0xee, 0xc6, 0x73 } },
+        // 7ead8aa9-cbb9-48e3-9125-df66f1675c32 
+        { 0x7ead8aa9, 0xcbb9, 0x48e3, { 0x91, 0x25, 0xdf,0x66, 0xf1, 0x67, 0x5c, 0x32 } },
         (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings,
-        6,
+        8,
         TRUE,
         },
     },   //  end of dictionary
@@ -376,6 +444,30 @@ HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_caminhoMaisCurto(
         _asyncContext,
         _error);
 }
+
+// operation: BasicHttpBinding_IGraphs4Social_Service_verificarUser
+HRESULT WINAPI BasicHttpBinding_IGraphs4Social_Service_verificarUser(
+    __in WS_SERVICE_PROXY* _serviceProxy,
+    __in_opt __nullterminated WCHAR* username, 
+    __out BOOL* verificarUserResult, 
+    __in WS_HEAP* _heap,
+    __in_ecount_opt(_callPropertyCount) const WS_CALL_PROPERTY* _callProperties,
+    __in const ULONG _callPropertyCount,
+    __in_opt const WS_ASYNC_CONTEXT* _asyncContext,
+    __in_opt WS_ERROR* _error)
+{
+    void* _argList[2]; 
+    _argList[0] = &username;
+    _argList[1] = &verificarUserResult;
+    return WsCall(_serviceProxy,
+        (WS_OPERATION_DESCRIPTION*)&tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.BasicHttpBinding_IGraphs4Social_Service_verificarUser.BasicHttpBinding_IGraphs4Social_Service_verificarUser,
+        (const void **)&_argList,
+        _heap,
+        _callProperties,
+        _callPropertyCount,
+        _asyncContext,
+        _error);
+}
 const _tempuri_org_wsdl tempuri_org_wsdl =
 {
     {// messages
@@ -403,10 +495,18 @@ const _tempuri_org_wsdl tempuri_org_wsdl =
             (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_caminhoMaisCurto_OutputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/caminhoMaisCurtoResponse
             (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.caminhoMaisCurtoResponse, 
         },    // message description for IGraphs4Social_Service_caminhoMaisCurto_OutputMessage
+        {    // message description for IGraphs4Social_Service_verificarUser_InputMessage
+            (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_verificarUser_InputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/verificarUser
+            (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.verificarUser, 
+        },    // message description for IGraphs4Social_Service_verificarUser_InputMessage
+        {    // message description for IGraphs4Social_Service_verificarUser_OutputMessage
+            (WS_XML_STRING*)&tempuri_org_wsdlLocalDefinitions.dictionary.xmlStrings.IGraphs4Social_Service_verificarUser_OutputMessageactionName, // http://tempuri.org/IGraphs4Social_Service/verificarUserResponse
+            (WS_ELEMENT_DESCRIPTION*)&tempuri_org_xsd.globalElements.verificarUserResponse, 
+        },    // message description for IGraphs4Social_Service_verificarUser_OutputMessage
     }, // messages
     {// contracts
         {   // BasicHttpBinding_IGraphs4Social_Service
-            3,
+            4,
             (WS_OPERATION_DESCRIPTION**)tempuri_org_wsdlLocalDefinitions.contracts.BasicHttpBinding_IGraphs4Social_Service.operations,
         },    // end of BasicHttpBinding_IGraphs4Social_Service
     }, // contracts

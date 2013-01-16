@@ -31,4 +31,18 @@ using System.Web.Security;
 
             return aux;
         }
+
+        public bool verificarUser(string username)
+        {
+
+            Graphs4Social_AR.User user = Graphs4Social_AR.User.LoadByUserName(username);
+
+            if (user != null)
+            {
+
+                return true;
+            }
+
+            return false;
+        }
     }

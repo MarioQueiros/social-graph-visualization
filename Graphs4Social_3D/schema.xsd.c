@@ -383,8 +383,8 @@ const static _schema_xsdLocalDefinitions schema_xsdLocalDefinitions =
         },  // end of xmlStrings
         
         {   // schema_xsddictionary
-        // 5a47665d-d3dc-4198-97a6-14f8a659e045 
-        { 0x5a47665d, 0xd3dc, 0x4198, { 0x97, 0xa6, 0x14,0xf8, 0xa6, 0x59, 0xe0, 0x45 } },
+        // a2356510-8334-45d4-b413-6a5cdb400f0b 
+        { 0xa2356510, 0x8334, 0x45d4, { 0xb4, 0x13, 0x6a,0x5c, 0xdb, 0x40, 0x0f, 0x0b } },
         (WS_XML_STRING*)&schema_xsdLocalDefinitions.dictionary.xmlStrings,
         25,
         TRUE,

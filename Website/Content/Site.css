@@ -1,0 +1,743 @@
+﻿html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+    width:100%;
+}
+body {
+	margin: 0;
+	padding: 0;
+    width:100%;
+	height: 100%;
+    font: 100%/1.4 Tahoma, Geneva, sans-serif;
+	background:url("../Images/bg.png");
+}
+
+#profiletab {
+	background: transparent;
+	border: none;
+}
+#profiletab .ui-widget-header {
+	background: transparent;
+	border: none;
+	border-bottom: 1px solid #c0c0c0;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+#profiletab .ui-state-default {
+	background: transparent;
+	border: none;
+}
+#profiletab .ui-state-active {
+	background: transparent url(../Images/uiTabsArrow.png) no-repeat bottom center;
+	border: none;
+}
+#profiletab .ui-state-default a {
+	color: #c0c0c0;
+}
+#profiletab .ui-state-active a {
+	color: #191970;
+}
+
+/* ~~ Element/tag selectors ~~ */
+ul, ol, dl { /* Due to variations between browsers, it's best practices to zero padding and margin on lists. For consistency, you can either specify the amounts you want here, or on the list items (LI, DT, DD) they contain. Remember that what you do here will cascade to the .nav list unless you write a more specific selector. */
+	padding: 0;
+	margin: 0;
+}
+h1, h2, h3, h4, h5, h6, p {
+	margin-top: 0;	 /* removing the top margin gets around an issue where margins can escape from their containing div. The remaining bottom margin will hold it away from any elements that follow. */
+	padding-right: 15px;
+	padding-left: 15px; /* adding the padding to the sides of the elements within the divs, instead of the divs themselves, gets rid of any box model math. A nested div with side padding can also be used as an alternate method. */
+}
+a img { /* this selector removes the default blue border displayed in some browsers around an image when it is surrounded by a link */
+	border: none;
+}
+
+/* ~~ Styling for your site's links must remain in this order - including the group of selectors that create the hover effect. ~~ */
+a:link {
+	color: #42413C;
+	text-decoration: underline; /* unless you style your links to look extremely unique, it's best to provide underlines for quick visual identification */
+}
+a:visited {
+	color: #6E6C64;
+	text-decoration: underline;
+}
+a:hover, a:active, a:focus { /* this group of selectors will give a keyboard navigator the same hover experience as the person using a mouse. */
+	text-decoration: none;
+}
+
+/* ~~this fixed width container surrounds the other divs~~ */
+.container {
+	width: 1050px;
+
+    
+    height:100%;
+    overflow:hidden;
+
+	background: #FFF;
+	margin: 0 auto;
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-radius: 5px;
+	/* the auto value on the sides, coupled with the width, centers the layout */
+	border-width:1px;
+	border-style:solid;
+	border-color:#666666;
+	-moz-box-shadow: 0 0 5px 5px #D3D3D3;
+	-webkit-box-shadow: 0 0 5px 5px #D3D3D3;
+	box-shadow: 0 0 5px 5px #D3D3D3;
+}
+
+.spacing {
+	height: 70px;
+	width: 980px;
+	margin: 0 auto;
+}
+
+.warning {
+    position: absolute;
+    background: #FFF;
+    height:50px;
+    width:250px;
+    z-index:2000;
+    top: 45px;
+    margin-left: 63%;
+    border-width:1px;
+	border-style:solid;
+	border-color:#666666;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-radius: 5px;
+    opacity:0.9;
+}
+
+.warningLabel {
+    margin-left:40px;
+    position:inherit;
+    top:15px;
+}
+
+/* ~~ the header is not given a width. It will extend the full width of your layout. It contains an image placeholder that should be replaced with your own linked logo ~~ */
+header {
+	background:#191970;
+	position:fixed;
+	width: 100%;
+	height: 50px;
+	-moz-box-shadow: inset 0 0 5px #000, 0 0 5px 5px #888;
+	-webkit-box-shadow: inset 0 0 5px#000, 0 0 5px 5px#888;
+	box-shadow: inset 0 0 5px #000, 0 0 5px 5px #888;
+	text-align:left;
+    z-index:3000;
+}
+
+.headerAlign{
+	
+	position:relative;
+	width: 1000px;
+	height: inherit;
+	margin: 0 auto;
+}
+
+.headerRight {
+	margin-top:-1px;
+	width:300px;
+    height:50px;
+	float:right;
+    vertical-align:middle;
+}
+
+.search {
+	width:230px;
+	height:25px;
+    float:left;
+}
+
+
+
+.search input{
+	width:170px;
+	height:inherit;
+	background-color:#FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+	vertical-align:top;
+	
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-radius: 5px;
+	font-variant:small-caps;
+	font-weight:bold;
+	color:#999;
+}
+
+.logo{
+
+	margin-top:10px;
+	margin-left:20px;
+
+}
+
+.logo a{
+	color:#FFFFFF;
+	text-decoration:none;
+	font-size:20px;
+	font-weight:bold;
+	font-variant:small-caps;
+}
+
+/* ~~ These are the columns for the layout. ~~ 
+
+1) Padding is only placed on the top and/or bottom of the divs. The elements within these divs have padding on their sides. This saves you from any "box model math". Keep in mind, if you add any side padding or border to the div itself, it will be added to the width you define to create the *total* width. You may also choose to remove the padding on the element in the div and place a second div within it with no width and the padding necessary for your design. You may also choose to remove the padding on the element in the div and place a second div within it with no width and the padding necessary for your design.
+
+2) No margin has been given to the columns since they are all floated. If you must add margin, avoid placing it on the side you're floating toward (for example: a right margin on a div set to float right). Many times, padding can be used instead. For divs where this rule must be broken, you should add a "display:inline" declaration to the div's rule to tame a bug where some versions of Internet Explorer double the margin.
+
+3) Since classes can be used multiple times in a document (and an element can also have multiple classes applied), the columns have been assigned class names instead of IDs. For example, two sidebar divs could be stacked if necessary. These can very easily be changed to IDs if that's your preference, as long as you'll only be using them once per document.
+
+4) If you prefer your nav on the right instead of the left, simply float these columns the opposite direction (all right instead of all left) and they'll render in reverse order. There's no need to move the divs around in the HTML source.
+
+*/
+.content {
+	padding: 10px;
+	width: 800px;
+	float: left;
+    margin-left: 15px;
+	
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-radius: 5px;
+    font-variant:small-caps;
+}
+
+.profile{
+	width: inherit;
+	height: 150px;
+	background:#F5F5FE;
+
+	-moz-border-top-left-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -khtml-border-top-left-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-top-left-radius: 5px;
+
+	padding-top:10px;
+
+    border-bottom: 1px solid;
+    border-color: #666666;
+    position:relative;
+    z-index:40;
+}
+
+.profile a{
+	text-decoration:none;
+}
+
+.profile ul{
+	list-style: none;
+}
+
+.sidebar1 {
+	float: left;
+	width: 180px;
+
+	background: #F5F5FE;
+	
+	-moz-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -khtml-border-bottom-left-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-bottom-left-radius: 5px;
+	
+	-moz-border-top-left-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -khtml-border-top-left-radius: 5px;
+	behavior: url(/css/border-radius.htc);
+    border-top-left-radius: 5px;
+	
+	border-width:0px;
+	border-right:1px solid #666666;
+}
+
+
+
+
+/* ~~ This grouped selector gives the lists in the .content area space ~~ */
+.content ul, .content ol { 
+	padding: 0 15px 15px 40px; /* this padding mirrors the right padding in the headings and paragraph rule above. Padding was placed on the bottom for space between other elements on the lists and on the left to create the indention. These may be adjusted as you wish. */
+}
+
+/* ~~ The navigation list styles (can be removed if you choose to use a premade flyout menu like Spry) ~~ */
+ul.nav {
+	list-style: none; /* this removes the list marker */
+	position:relative;
+	font-variant:small-caps;
+	font-weight:bold;
+    z-index:39;
+}
+ul.nav li {
+	border-bottom: 1px solid #666; /* this creates the button separation */
+}
+ul.nav a, ul.nav a:visited { /* grouping these selectors makes sure that your links retain their button look even after being visited */
+	padding: 5px 5px 5px 15px;
+	display: block; /* this gives the link block properties causing it to fill the whole LI containing it. This causes the entire area to react to a mouse click. */
+	width: 160px;  /*this width makes the entire button clickable for IE6. If you don't need to support IE6, it can be removed. Calculate the proper width by subtracting the padding on this link from the width of your sidebar container. */
+	text-decoration: none;
+	color:#333;
+	background: #F5F5FE;
+}
+ul.nav a:hover, ul.nav a:active, ul.nav a:focus { /* this changes the background and text color for both mouse and keyboard navigators */
+	background: #CDD7E4;
+}
+
+.footer {
+    margin: 0 auto;
+}
+
+/* ~~ The footer ~~ */
+.footerDiv {
+    
+    font-variant:small-caps;
+	padding-left:14%;
+	padding-right:14%;
+	position: relative;/* this gives IE6 hasLayout to properly clear */
+	clear: both; /* this clear property forces the .container to understand where the columns end and contain them */
+}
+
+/* ~~ miscellaneous float/clear classes ~~ */
+.fltrt {  /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.fltlft { /* this class can be used to float an element left in your page. The floated element must precede the element it should be next to on the page. */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class can be placed on a <br /> or empty div as the final element following the last floated div (within the #container) if the #footer is removed or taken out of the #container */
+	clear:both;
+	height:0;
+	font-size: 1px;
+	line-height: 0px;
+}
+
+.login {
+    font-size: medium;
+	font-variant:small-caps;
+	font-weight:bold;
+    
+}
+
+    .login a {
+        /*background-color: #d3dce0;*/
+        margin-left: 10px;
+        margin-right: 3px;
+        padding: 2px 3px;
+        text-decoration: none;
+    }
+
+    .login a.username {
+        background: none;
+        margin-left: 0px;
+        text-decoration: underline;
+    }
+
+    .login ul {
+        margin: 0;
+    }
+
+    .login li {
+        display: inline;
+        list-style: none;
+    }
+
+#editarProfile {
+    width: 500px;
+    margin-left: 150px;
+}
+
+#editarProfile tablesEditar {
+    width: 500px;
+}
+
+
+
+
+
+/* login page */
+#loginForm {
+    border-right: solid 2px #c8c8c8;
+    float: left;
+    width: 55%;
+}
+
+    #loginForm .validation-error {
+        display: block;
+        margin-left: 15px;
+    }
+
+#socialLoginForm {
+    margin-left: 40px;
+    float: left;
+    width: 40%;
+}
+
+    #socialLoginForm h2 {
+        margin-bottom:  5px;
+    }
+
+fieldset.open-auth-providers {
+    margin-top: 15px;
+}
+
+    fieldset.open-auth-providers button {
+        margin-bottom: 12px;
+    }
+    
+
+/* info and errors */
+.message-info {
+    border: 1px solid;
+    clear: both;
+    padding: 10px 20px;
+}
+
+.message-error {
+    clear: both;
+    color: #e80c4d;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+}
+
+.message-success {
+    color: #7ac0da;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+}
+
+.error {
+    color: #e80c4d;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #e80c4d;
+    font-weight: bold;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #e80c4d;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #e80c4d;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* tables
+----------------------------------------------------------*/
+table {
+    border-style: none;
+    border-color: inherit;
+    border-width: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 0.75em;
+    text-align: justify;
+    float: none;
+    position: relative;
+    top: -1px;
+    left: 0px;
+}
+
+th {
+	font-size: 1.2em;
+    text-align: left;
+    border: none 0px;
+    padding-left: 0;
+}
+
+    th a {
+        display: block;
+        position: relative;
+        
+    }
+
+	th a:link, th a:visited, th a:active, th a:hover {
+		color: #333;
+		font-weight: 600;
+		text-decoration: none;
+        padding: 0;
+	}
+
+	th a:hover {
+		color: #000;
+	}
+
+    th.asc a, th.desc a {
+        margin-right: .75em;
+    }
+    
+    th.asc a:after, th.desc a:after {
+		display: block;
+        position: absolute;
+        right: 0em;
+        top: 0;
+        font-size: 0.75em;
+	}
+
+	th.asc a:after {
+		content: '▲';
+	}
+
+	th.desc a:after {
+		content: '▼';
+	}
+
+td {
+    padding: 0.25em 2em 0.25em 0em;
+    border: 0 none;
+}
+
+tr.pager td {
+    padding: 0 0.25em 0 0;
+}
+
+/*  Notificacoes  */
+
+.noti_Container {
+    position:relative;	
+}
+.noti_balao {
+    position:absolute;
+    padding-right:2px;
+	padding-left:1px;
+    background-color:red;
+    color:white;
+    font-weight:bold;
+    font-size:0.80em;
+    margin-left:158px;
+    margin-top:-25px;
+    border-radius:2px;
+    box-shadow:1px 1px 1px gray;
+    z-index:10000000;
+}
+
+
+
+/********************
+*   Mobile Styles   *
+********************/
+@media only screen and (max-width: 850px) {
+
+    /* header
+    ----------------------------------------------------------*/
+    header .float-left,
+    header .float-right {
+        float: none;
+    }
+
+    /* logo */
+    header .site-title {
+        margin: 10px;
+        text-align: center;
+    }
+
+    /* login */
+    #login {
+        font-size: .85em;
+        margin: 0 0 12px;
+        text-align: center;
+    }
+
+        #login ul {
+            margin: 5px 0;
+            padding: 0;
+        }
+
+        #login li {
+            display: inline;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #login a {
+            background: none;
+            color: #999;
+            font-weight: 600;
+            margin: 2px;
+            padding: 0;
+        }
+
+        #login a:hover {
+            color: #333;
+        }
+
+    /* menu */
+    nav {
+        margin-bottom: 5px;
+    }
+
+
+
+    ul#menu {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+        ul#menu li {
+            margin: 0;
+            padding: 0;
+        }
+
+
+    /* main layout
+    ----------------------------------------------------------*/
+    .main-content,
+    .featured + .main-content {
+        background-position: 10px 0;
+    }
+
+    .content-wrapper {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .featured .content-wrapper {
+        padding: 10px;
+    }
+
+    /* page content */
+    article, aside {
+        float: none;
+        width: 100%;
+    }
+
+    /* ordered list */
+    ol.round {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+        ol.round li {
+            padding-left: 10px;
+            margin: 25px 0;
+        }
+
+            ol.round li.zero,
+            ol.round li.one,
+            ol.round li.two,
+            ol.round li.three,
+            ol.round li.four,
+            ol.round li.five,
+            ol.round li.six,
+            ol.round li.seven,
+            ol.round li.eight,
+            ol.round li.nine {
+                background: none;
+            }
+
+     /* features */
+     section.feature {
+        float: none;
+        padding: 10px;
+        width: auto;
+     }
+
+        section.feature img {
+            color: #999;
+            content: attr(alt);
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+    /* forms */
+    input {
+        width: 90%;
+    }
+
+    
+    
+    /* login page */
+    #loginForm {
+        border-right: none;
+        float: none;
+        width: auto;
+    }
+
+        #loginForm .validation-error {
+            display: block;
+            margin-left: 15px;
+        }
+
+    #socialLoginForm {
+        margin-left: 0;
+        float: none;
+        width: auto;
+    }
+
+    /* footer
+    ----------------------------------------------------------*/
+    footer .float-left,
+    footer .float-right {
+        float: none;
+    }
+
+    footer {
+        text-align: center;
+        height: auto;
+        padding: 10px 0;
+    }
+
+        footer p {
+            margin: 0;
+        }
+}
+/* END: Mobile Styles */
+
+
+/* Table Avatar */
+
+.tableavatar td {
+    border: 1px solid #FFF;
+    margin: auto;
+    text-align:center;
+    padding-left:30px;
+    padding-top: 10px;
+}
+
+.tableavatar td:hover {
+   border: 1px solid #666;
+}
+
+.avatar{
+    width:131px;
+    height:128px;
+}
+
+/* End Table Avatar*/
+
+

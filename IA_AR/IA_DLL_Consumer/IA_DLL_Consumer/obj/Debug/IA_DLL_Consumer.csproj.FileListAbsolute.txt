@@ -1,0 +1,8 @@
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\bin\Debug\IA_DLL_Consumer.exe.config
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\bin\Debug\IA_DLL_Consumer.exe
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\bin\Debug\IA_DLL_Consumer.pdb
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\bin\Debug\IA_AR.dll
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\bin\Debug\IA_AR.pdb
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\obj\Debug\IA_DLL_Consumer.csprojResolveAssemblyReference.cache
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\obj\Debug\IA_DLL_Consumer.exe
+C:\Users\Administrador\Documents\LaprV\IA_AR\IA_DLL_Consumer\IA_DLL_Consumer\obj\Debug\IA_DLL_Consumer.pdb

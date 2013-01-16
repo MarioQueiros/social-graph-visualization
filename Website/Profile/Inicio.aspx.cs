@@ -240,7 +240,7 @@ public partial class Profile_Inicio : System.Web.UI.Page
 
     protected string mudarEstadoHumor()
     {
-        if (Profile.EstadoHumor != "")
+        if (!Profile.EstadoHumor.Trim().Equals(""))
             return Profile.EstadoHumor;
         else
             return "Smiley.png";

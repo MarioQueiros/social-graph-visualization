@@ -373,13 +373,13 @@
     <value>Stats</value>
   </data>
   <data name="Inicio_GMS" xml:space="preserve">
-    <value>Average degree of separation</value>
+    <value>Average degree of separation: </value>
   </data>
   <data name="Inicio_TR2" xml:space="preserve">
-    <value>Network size level 2</value>
+    <value>Network size level 2: </value>
   </data>
   <data name="Inicio_TR3" xml:space="preserve">
-    <value>Network size level 3</value>
+    <value>Network size level 3: </value>
   </data>
   <data name="Master_Mavens" xml:space="preserve">
     <value>Mavens</value>

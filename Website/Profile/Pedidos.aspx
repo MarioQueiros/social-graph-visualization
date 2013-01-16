@@ -67,6 +67,7 @@
     <asp:Label ID="Label2" runat="server" Visible="false" Style="font-weight: 700"></asp:Label>
     <h1><asp:Label ID="tituloRej" runat="server" Visible="false" Style="font-weight: 700"></asp:Label></h1>
     <asp:Label ID="lblRejeitado" runat="server" Visible="false" Style="font-weight:700"></asp:Label>
+    
     <div id="dialog" title="Força Ligação">
         Escolha a força da ligação:<br />
         <select id="dropdown">

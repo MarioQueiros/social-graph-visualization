@@ -133,7 +133,7 @@
                                 <asp:Label ID="Label4" runat="server" Text=""></asp:Label></a></li>
                             <li><a href="~/Account/Manage.aspx" runat="server">
                                 <asp:Label ID="Label5" runat="server" Text=""></asp:Label></a></li>
-                            <li><a href="#" runat="server">
+                            <li><a href="~/Graphs4Social.exe" runat="server">
                                 <asp:Label ID="Label7" runat="server" Text=""></asp:Label></a></li>
                         </ul>
                     </LoggedInTemplate>

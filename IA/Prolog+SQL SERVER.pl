@@ -8,7 +8,7 @@ iniDb:-
 	db_attach( traduzir, 'IA_traduzir' ),
 	db_attach( lig, 'IA_lig' ),
 	db_attach( strTag, 'IA_tag' ),
-	db_flag( show_sql, _, off ), % não mostra as queries SQL geradas
+	db_flag( show_sql, _, off ), % nÃ£o mostra as queries SQL geradas
 	criaTags.
 
 endDb:-
@@ -44,7 +44,7 @@ redeNivel3(U,R):-user(U),ligacoes(U,L),percorreUser(U,L,R).
 %percorre(user original, lista ligacoes, resposta)
 percorreUser(U,L,R):-append([U],L,V),percorre(L,V,R).
 
-%percorre(Amigo a verificar|restantes,Já verificados,resposta
+%percorre(Amigo a verificar|restantes,JÃ¡ verificados,resposta
 percorre([A|L],V,R):-somaRede(A,V,RV,RX),percorre(L,RV,RS),append(RX,RS,R).
 percorre([],_,[]).
 
@@ -185,6 +185,7 @@ contaPassos(U,[UA|UP],P,NC):-verificado(UA,U),!,contaPassos(U,UP,P,NC).
 
 contaPassos(U,[UA|UP],P,NC):-camCurto(U,UA,C),length(C,PX),assert(verificado(U,UA)),
 							contaPassos(U,UP,PR,NR),NC is NR+1, P is PX + PR.
+contaPassos(U,[_|UP],P,NC):-contaPassos(U,UP,P,NC).
 contaPassos(_,[],0,0).
 
 string_to_list(S,L):-

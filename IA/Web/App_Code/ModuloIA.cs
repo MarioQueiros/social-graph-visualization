@@ -57,7 +57,11 @@ public class moduloIA : IModuloIa
     public string grauMedioSeparacao()
     {
         const string op = "grauMedio(R)";
-        return carregaPL(op).Trim().Substring(0,5);
+        var x = carregaPL(op).Trim();
+        if (x != "-1")
+            return x.Substring(0, 5);
+        else
+            return "ERRO! verifique se existem ligacoes na bd do prolog";
     }
 
     public string grafoNivel3(string user)

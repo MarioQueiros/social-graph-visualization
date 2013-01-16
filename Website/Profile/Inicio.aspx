@@ -153,11 +153,11 @@
 
         </div>
         <div id="tabs-3">
-            <asp:Label ID="gms" runat="server" Text=""></asp:Label> : <%= GrauMedioSeparacao() %>
+            <asp:Label ID="gms" runat="server" Text=""></asp:Label><asp:Label ID="gmsTxt" runat="server" Text=""></asp:Label>
             </br></br>
-            <asp:Label ID="tr2" runat="server" Text=""></asp:Label> : <%= TamanhoRede2() %>     
+            <asp:Label ID="tr2" runat="server" Text=""></asp:Label><asp:Label ID="tm2" runat="server" Text=""></asp:Label>     
             <br /><br />
-            <asp:Label ID="tr3" runat="server" Text=""></asp:Label> : <%= TamanhoRede3() %>
+            <asp:Label ID="tr3" runat="server" Text=""></asp:Label><asp:Label ID="tm3" runat="server" Text=""></asp:Label>
         </div>
     </div>
 

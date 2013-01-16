@@ -48,9 +48,10 @@ public partial class Profile_Inicio : System.Web.UI.Page
         bool flag = true;
         if (!IsPostBack)
         {
+            
             chooseLanguage();
             string username = Request.QueryString["user"];
-
+            
             Label17.Text = rm.GetString("Inicio_Estado", ci);
             subEstadoHumor.Text = rm.GetString("Editar_Button", ci);
             Label19.Text = rm.GetString("Inicio_Amigo", ci) + "s";
@@ -68,11 +69,25 @@ public partial class Profile_Inicio : System.Web.UI.Page
             }
             else
             {
+                ModuloIA.ModuloIaClient proxy = new ModuloIA.ModuloIaClient();
+                gmsTxt.Text = GrauMedioSeparacao(proxy);
+                if (Graphs4Social_AR.User.LoadAllAmigosUser(username).Count > 0)
+                {
+                    tm2.Text = TamanhoRede2(proxy);
+                    tm3.Text = TamanhoRede3(proxy);
+                }
+                else
+                {
+                    gms.Text = rm.GetString("Inicio_NOPROLOG", ci);
+                    tr2.Visible = false;
+                    tr3.Visible = false;
+                }
+                proxy.Close();
                 try
                 {
                     username = Graphs4Social_AR.User.LoadByUserName(username).Username;
 
-                    if (!Profile.UserName.Equals(username))
+                    if (!Profile.UserName.ToLower().Equals(username.ToLower()))
                     {
                         Label17.Text = rm.GetString("Inicio_EstadoOutro1", ci) + username + rm.GetString("Inicio_EstadoOutro2", ci);
                         Ligacao lig = null;
@@ -307,6 +322,8 @@ public partial class Profile_Inicio : System.Web.UI.Page
                 {
                     img.ImageUrl = "~/Images/404-image.png";
                 }
+                img.Width = 150;
+                img.Height = 150;
                 cell1.Controls.Add(img);
 
 
@@ -643,24 +660,41 @@ public partial class Profile_Inicio : System.Web.UI.Page
         return tags;
     }
 
-    protected string GrauMedioSeparacao()
+    protected string GrauMedioSeparacao(ModuloIA.ModuloIaClient proxy)
     {
-        var proxy = new ModuloIA.ModuloIaClient();
+        try
+        {
+            var x = proxy.grauMedioSeparacao();
 
-        return proxy.grauMedioSeparacao();
+            return x;
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
     }
 
-    protected string TamanhoRede2()
+    protected string TamanhoRede2(ModuloIA.ModuloIaClient proxy)
     {
-        var proxy = new ModuloIA.ModuloIaClient();
-
-        return proxy.tamanhoRede(2, Profile.UserName);
+        try
+        {
+            return proxy.tamanhoRede(2, Profile.UserName.ToLower());
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
     }
 
-    protected string TamanhoRede3()
+    protected string TamanhoRede3(ModuloIA.ModuloIaClient proxy)
     {
-        var proxy = new ModuloIA.ModuloIaClient();
-
-        return proxy.tamanhoRede(3, Profile.UserName);
+        try
+        {
+            return proxy.tamanhoRede(3, Profile.UserName.ToLower());
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
     }
 }

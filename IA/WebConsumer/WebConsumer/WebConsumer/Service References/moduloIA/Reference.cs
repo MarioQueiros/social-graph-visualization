@@ -16,10 +16,10 @@ namespace WebConsumer.moduloIA {
     public interface IModuloIa {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/tamanhoRede", ReplyAction="http://tempuri.org/IModuloIa/tamanhoRedeResponse")]
-        int tamanhoRede(int nivel, string user);
+        string tamanhoRede(int nivel, string user);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/tamanhoRede", ReplyAction="http://tempuri.org/IModuloIa/tamanhoRedeResponse")]
-        System.Threading.Tasks.Task<int> tamanhoRedeAsync(int nivel, string user);
+        System.Threading.Tasks.Task<string> tamanhoRedeAsync(int nivel, string user);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/redeNivel", ReplyAction="http://tempuri.org/IModuloIa/redeNivelResponse")]
         string redeNivel(int nivel, string user);
@@ -64,16 +64,22 @@ namespace WebConsumer.moduloIA {
         System.Threading.Tasks.Task<string> caminhoCurtoAsync(string userOrigem, string userDestino);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grauMedioSeparacao", ReplyAction="http://tempuri.org/IModuloIa/grauMedioSeparacaoResponse")]
-        float grauMedioSeparacao();
+        string grauMedioSeparacao();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grauMedioSeparacao", ReplyAction="http://tempuri.org/IModuloIa/grauMedioSeparacaoResponse")]
-        System.Threading.Tasks.Task<float> grauMedioSeparacaoAsync();
+        System.Threading.Tasks.Task<string> grauMedioSeparacaoAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grafoNivel3", ReplyAction="http://tempuri.org/IModuloIa/grafoNivel3Response")]
         string grafoNivel3(string user);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/grafoNivel3", ReplyAction="http://tempuri.org/IModuloIa/grafoNivel3Response")]
         System.Threading.Tasks.Task<string> grafoNivel3Async(string user);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/traduzir", ReplyAction="http://tempuri.org/IModuloIa/traduzirResponse")]
+        string traduzir(string orig);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/traduzir", ReplyAction="http://tempuri.org/IModuloIa/traduzirResponse")]
+        System.Threading.Tasks.Task<string> traduzirAsync(string orig);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IModuloIa/debug", ReplyAction="http://tempuri.org/IModuloIa/debugResponse")]
         string debug();
@@ -109,11 +115,11 @@ namespace WebConsumer.moduloIA {
                 base(binding, remoteAddress) {
         }
         
-        public int tamanhoRede(int nivel, string user) {
+        public string tamanhoRede(int nivel, string user) {
             return base.Channel.tamanhoRede(nivel, user);
         }
         
-        public System.Threading.Tasks.Task<int> tamanhoRedeAsync(int nivel, string user) {
+        public System.Threading.Tasks.Task<string> tamanhoRedeAsync(int nivel, string user) {
             return base.Channel.tamanhoRedeAsync(nivel, user);
         }
         
@@ -173,11 +179,11 @@ namespace WebConsumer.moduloIA {
             return base.Channel.caminhoCurtoAsync(userOrigem, userDestino);
         }
         
-        public float grauMedioSeparacao() {
+        public string grauMedioSeparacao() {
             return base.Channel.grauMedioSeparacao();
         }
         
-        public System.Threading.Tasks.Task<float> grauMedioSeparacaoAsync() {
+        public System.Threading.Tasks.Task<string> grauMedioSeparacaoAsync() {
             return base.Channel.grauMedioSeparacaoAsync();
         }
         
@@ -187,6 +193,14 @@ namespace WebConsumer.moduloIA {
         
         public System.Threading.Tasks.Task<string> grafoNivel3Async(string user) {
             return base.Channel.grafoNivel3Async(user);
+        }
+        
+        public string traduzir(string orig) {
+            return base.Channel.traduzir(orig);
+        }
+        
+        public System.Threading.Tasks.Task<string> traduzirAsync(string orig) {
+            return base.Channel.traduzirAsync(orig);
         }
         
         public string debug() {

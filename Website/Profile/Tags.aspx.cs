@@ -44,6 +44,7 @@ public partial class Profile_Tags : System.Web.UI.Page
             saveTags(Request.QueryString["tags"]);
             Response.Redirect("~/Profile/Tags.aspx");
         }
+        titulo.Text = rm.GetString("Tags_Titulo", ci);
     }
 
     protected string setTags()
@@ -68,27 +69,18 @@ public partial class Profile_Tags : System.Web.UI.Page
 
         string[] array = s.Split(',');
 
+        IList<string> tagslis = new List<string>();
+
         for (int i = 0; i < array.Length; i++)
         {
             if (!array[i].Equals(""))
             {
                 array[i] = array[i].Trim().Replace(" ", "_");
-                Graphs4Social_AR.Tag tag = Graphs4Social_AR.Tag.AdicionarTag(array[i]);
+                Graphs4Social_AR.Tag tag = Graphs4Social_AR.Tag.AdicionarTag(array[i], Profile.UserName);
+                tagslis.Add(tag.Nome);
             }
         }
 
-        IList<string> list = new List<string>();
-        if (array.Length < 2)
-        {
-            list.Add(array[0]);
-        }
-        else
-        {
-            foreach (string str in array)
-            {
-                list.Add(str);
-            }
-        }
         IList<Graphs4Social_AR.Tag> al = Graphs4Social_AR.Tag.LoadAllByUsername(Profile.UserName);
 
         IList<string> alist = new List<string>();
@@ -100,7 +92,9 @@ public partial class Profile_Tags : System.Web.UI.Page
 
         }
 
-        Graphs4Social_AR.Tag.RefreshTagsUser(alist, list, Profile.UserName);
+        Graphs4Social_AR.Tag.RefreshTagsUser(alist, tagslis, Profile.UserName);
+
+
 
     }
 

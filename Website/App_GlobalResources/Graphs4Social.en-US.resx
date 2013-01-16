@@ -402,4 +402,34 @@
   <data name="PesquisarTags_Erro" xml:space="preserve">
     <value>Not found any friends in common with the selected tag</value>
   </data>
+  <data name="Gerir_BtSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Gerir_ErroTraduzir1" xml:space="preserve">
+    <value>Insert tags in the textbox's</value>
+  </data>
+  <data name="Gerir_ErroTraduzir2" xml:space="preserve">
+    <value>An error occurred. Please try again later.</value>
+  </data>
+  <data name="Gerir_LabelFinal" xml:space="preserve">
+    <value>Final Tag: </value>
+  </data>
+  <data name="Gerir_LabelOrig" xml:space="preserve">
+    <value>Original Tag: </value>
+  </data>
+  <data name="Master_PesqTags" xml:space="preserve">
+    <value>Friends by Tag</value>
+  </data>
+  <data name="Tags_Titulo" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="Sugestao_Titulo" xml:space="preserve">
+    <value>Friendship Sugestion</value>
+  </data>
+  <data name="Sugestao_Erro" xml:space="preserve">
+    <value>Not found any friendship sugestion.</value>
+  </data>
+  <data name="Inicio_NOPROLOG" xml:space="preserve">
+    <value>Doesn't have friends to calculate the graph stats: </value>
+  </data>
 </root>

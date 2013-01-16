@@ -45,6 +45,7 @@ public partial class Admin_GerirTags : System.Web.UI.Page
         {
             FillTags();
             FillActuaisTags();
+            error.Visible = false;
         }
         
         chooseLanguage();
@@ -54,6 +55,11 @@ public partial class Admin_GerirTags : System.Web.UI.Page
         delete.Text = rm.GetString("Gerir_Delete", ci);
         aceitar.Text = rm.GetString("Gerir_Aceitar",ci);
         rejeitar.Text = rm.GetString("Gerir_Rejeitar", ci);
+
+        lblfinal.Text = rm.GetString("Gerir_LabelFinal", ci);
+        lblorig.Text = rm.GetString("Gerir_LabelOrig", ci);
+
+        btsave.Text = rm.GetString("Gerir_BtSave", ci);
     }
 
     protected void FillTags()
@@ -87,6 +93,7 @@ public partial class Admin_GerirTags : System.Web.UI.Page
 
         FillTags();
         FillActuaisTags();
+        error.Visible = false;
     }
 
 
@@ -108,6 +115,7 @@ public partial class Admin_GerirTags : System.Web.UI.Page
 
         FillTags();
         FillActuaisTags();
+        error.Visible = false;
     }
 
     protected void rejeitar_Click(object sender, EventArgs e)
@@ -129,5 +137,28 @@ public partial class Admin_GerirTags : System.Web.UI.Page
 
         FillTags();
         FillActuaisTags();
+        error.Visible = false;
+    }
+    protected void btsave_Click(object sender, EventArgs e)
+    {
+        string tag1 = tb1.Text.Trim(), tag2=tb2.Text.Trim();
+
+        if (tag1.Equals("") && tag2.Equals(""))
+        {
+            error.Text = rm.GetString("Gerir_ErroTraduzir1", ci);
+            error.Visible = true;
+        }
+        else
+        {
+            try
+            {
+                Graphs4Social_AR.Tag.AdicionarTagsTraducao(tag1, tag2);
+            }
+            catch (Exception ex)
+            {
+                error.Text = rm.GetString("Gerir_ErroTraduzir2", ci);
+                error.Visible = true;
+            }
+        }
     }
 }

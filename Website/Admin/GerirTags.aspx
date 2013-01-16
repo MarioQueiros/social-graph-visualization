@@ -80,4 +80,12 @@
 </table>
 
 
+<br />
+<br />
+
+<h3><asp:Label ID="subtitle3" runat="server" Text=""></asp:Label></h3>
+
+<asp:Label ID="lblorig" runat="server" Text=""></asp:Label><asp:TextBox ID="tb1" runat="server" Text=""></asp:TextBox> - <asp:Label ID="lblfinal" Text="" runat="server"></asp:Label><asp:TextBox ID="tb2" runat="server" Text=""></asp:TextBox> <asp:Button runat="server" ID="btsave" OnClick="btsave_Click" />
+<br />
+<asp:Label ID="error" runat="server" Text="" Visible="false"></asp:Label>
 </asp:Content>

@@ -137,16 +137,41 @@ namespace Graphs4Social_AR
         //
         //
         // Adicionar uma Tag na Bd, havendo a possibilidade de retornar null
-        public static Tag AdicionarTag(string nome)
+        public static Tag AdicionarTag(string nome, string username)
         {
             Tag tag = Tag.LoadTagByNome(nome);
             if (tag == null)
             {
-                tag = new Tag(false);
-                tag.Nome = nome;
-                tag.Save();
+                var proxy = new ModuloIA.ModuloIaClient();
+                var n = proxy.traduzir(nome.ToLower());
 
+                if(n.Trim().Contains("-1"))
+                {
+                    tag = new Tag(false);
+                    tag.Nome = nome;
+                    tag.Save();
+
+                    var x = new IA_AR.Utils();
+                    x.insertTag(nome.ToLower(), "[" + username.ToLower() + "]");
+                }
+                else
+                {
+                    tag = new Tag(false);
+                    tag.Nome = n.Trim().ToLower();
+                    tag.Save();
+
+                    var x = new IA_AR.Utils();
+                    x.insertTag(n.ToLower(), "[" + username.ToLower() + "]");
+                }
+                
+
+                
                 return tag;
+            }
+            else
+            {
+                var x = new IA_AR.Utils();
+                x.insertIntoTag(nome.ToLower(), username.ToLower());
             }
 
             return tag;
@@ -161,7 +186,11 @@ namespace Graphs4Social_AR
 
                 Estado = estado;
                 Save();
-
+                var x = new IA_AR.Utils();
+                if (Estado == -1)
+                {
+                    x.deleteTag(Nome.ToLower());
+                }
                 return Gravado;
             }
 
@@ -216,6 +245,8 @@ namespace Graphs4Social_AR
                 Tag tag = Tag.LoadTagByNome(tagR);
                 tag.Ocorrencia(-1);
                 idRem.Add(tag.ID);
+                var x = new IA_AR.Utils();
+                x.deleteFromTag(tag.Nome.ToLower(), username.ToLower());
 
             }
             
@@ -225,6 +256,11 @@ namespace Graphs4Social_AR
             RemoverTagsUser(userId, idRem);
         }
 
+        public static void AdicionarTagsTraducao(string tag1, string tag2)
+        {
+            var x = new IA_AR.Utils();
+            x.insertTraducao(tag1.ToLower(), tag2.ToLower());
+        }
 
         // Modificações Tabela N para N
         //

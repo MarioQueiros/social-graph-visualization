@@ -66,6 +66,12 @@
   <wsdl:message name="IModuloIa_grafoNivel3_OutputMessage">
     <wsdl:part name="parameters" element="tns:grafoNivel3Response" />
   </wsdl:message>
+  <wsdl:message name="IModuloIa_traduzir_InputMessage">
+    <wsdl:part name="parameters" element="tns:traduzir" />
+  </wsdl:message>
+  <wsdl:message name="IModuloIa_traduzir_OutputMessage">
+    <wsdl:part name="parameters" element="tns:traduzirResponse" />
+  </wsdl:message>
   <wsdl:message name="IModuloIa_debug_InputMessage">
     <wsdl:part name="parameters" element="tns:debug" />
   </wsdl:message>
@@ -112,6 +118,10 @@
     <wsdl:operation name="grafoNivel3">
       <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/grafoNivel3" message="tns:IModuloIa_grafoNivel3_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/grafoNivel3Response" message="tns:IModuloIa_grafoNivel3_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="traduzir">
+      <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/traduzir" message="tns:IModuloIa_traduzir_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IModuloIa/traduzirResponse" message="tns:IModuloIa_traduzir_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="debug">
       <wsdl:input wsaw:Action="http://tempuri.org/IModuloIa/debug" message="tns:IModuloIa_debug_InputMessage" />
@@ -203,6 +213,15 @@
     </wsdl:operation>
     <wsdl:operation name="grafoNivel3">
       <soap:operation soapAction="http://tempuri.org/IModuloIa/grafoNivel3" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="traduzir">
+      <soap:operation soapAction="http://tempuri.org/IModuloIa/traduzir" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
